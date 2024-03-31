@@ -46,7 +46,7 @@ func (a *App) Message(file1 string) string {
 	return result
 }
 
-func (a *App) Dialog() {
+func (a *App) Dialog() string {
 	fmt.Println("Dialog start")
 	result, err := runtime.OpenFileDialog(a.ctx, runtime.OpenDialogOptions{
 		Title:            "Question",
@@ -56,6 +56,7 @@ func (a *App) Dialog() {
 		log.Fatal(err)
 	}
 	fmt.Println(result)
+	return result
 }
 
 func (a *App) ListTrees() {
@@ -71,6 +72,7 @@ func (a *App) ListTrees() {
 func (a *App) ExcelChoice(file1 string, file2 string) {
 	Compare(ImportXLSX(file1), ImportXLSX(file2))
 }
+
 func ImportXLSX(x string) map[string]int {
 	m := make(map[string]int)
 	headSkip := 1
@@ -87,8 +89,10 @@ func ImportXLSX(x string) map[string]int {
 		}
 	}()
 
+	fmt.Println(f.GetSheetList()[0])
+
 	//read rows in sheet
-	rows, err := f.GetRows("Blatt1")
+	rows, err := f.GetRows(f.GetSheetList()[0])
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -109,6 +113,40 @@ func ImportXLSX(x string) map[string]int {
 }
 
 func Compare(x map[string]int, y map[string]int) {
+	file := excelize.NewFile()
+
+	headers := []string{
+		"Artikelnummer",
+		"»»» Stücklisten/Sets «««",
+		"ist Stückliste",
+		"Stücklistenart",
+		"Positionen ausblenden",
+		"SL-Pos.Rang",
+		"SL-Pos.Nummer",
+		"SL-Pos.Menge",
+		"Löschen",
+	}
+	for i, header := range headers {
+		file.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+i)), 1), header)
+	}
+
+	data := [][]interface{}{
+		{1, "John", 30},
+		{2, "Alex", 20},
+		{3, "Bob", 40},
+	}
+
+	for i, row := range data {
+		dataRow := i + 2
+		for j, col := range row {
+			file.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+j)), dataRow), col)
+		}
+	}
+
+	if err := file.SaveAs("\\\\ME-Datenbank-1\\Database\\Schnittstelle\\Stueckliste.xlsx"); err != nil {
+		log.Fatal(err)
+	}
+
 	listDif := make(map[string]int)
 	for k, v := range y {
 		_, ok := x[k]
@@ -116,7 +154,7 @@ func Compare(x map[string]int, y map[string]int) {
 			//add changed items
 			if v != x[k] {
 				listDif[k] = v - x[k]
-				fmt.Println("Dif |", k, ":", listDif[k])
+				//fmt.Println("Dif |", k, ":", listDif[k])
 				delete(x, k)
 			}
 
@@ -129,7 +167,7 @@ func Compare(x map[string]int, y map[string]int) {
 	for k, v := range x {
 
 		listDif[k] = v * -1
-		fmt.Println("Dif |", k, ":", listDif[k])
+		//fmt.Println("Dif |", k, ":", listDif[k])
 		delete(x, k)
 	}
 }

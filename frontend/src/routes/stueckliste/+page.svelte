@@ -5,14 +5,14 @@
 <script>
 	import { Dialog, ExcelChoice } from "$lib/wailsjs/go/main/App";
 	let list1 = "";
+	let list1Last = "";
 	let list2 = "";
+	let list2Last = "";
 	function dialog1(){
-		//Dialog().then((result) => (list1 = result));
-		Dialog()
+			Dialog().then((result) => (list1 = result));
 	}
 	function dialog2(){
-		//Dialog().then((result) => (list2 = result));
-		Dialog()
+			Dialog().then((result) => (list2 = result));
 	}
 	function reset(){
 		list1 = "";
@@ -24,9 +24,9 @@
 </script>
 <div class="text-column">
 	<h1>Stückliste</h1>
-	<h3></h3>
+	<h3>Current: {list1}</h3>
 	<button on:click={dialog1}>Stückliste alt</button>
-	<h3></h3>
+	<h3>Current: {list2}</h3>
 	<button on:click={dialog2}>Stückliste neu</button>
 	<h3> </h3>
 	<div>
