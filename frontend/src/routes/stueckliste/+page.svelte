@@ -5,21 +5,33 @@
 <script>
 	import { Dialog, ExcelChoice } from "$lib/wailsjs/go/main/App";
 	let list1 = "";
-	let list1Last = "";
+	let list1Last = "replace";
 	let list2 = "";
-	let list2Last = "";
+	let list2Last = "replace";
+
+
 	function dialog1(){
+		if(list1 != list1Last){
+			list1 = "loading..."
+			list1Last = "loading..."
 			Dialog().then((result) => (list1 = result));
+		}
 	}
 	function dialog2(){
+		if(list2 != list2Last){
+			list2 = "loading..."
+			list2Last = "loading..."
 			Dialog().then((result) => (list2 = result));
+		}
 	}
 	function reset(){
 		list1 = "";
 		list2 = "";
 	}
 	function compare(){
-		ExcelChoice(list1,list2);
+		if (list1 && list2 != "loading..") {
+			ExcelChoice(list1,list2);
+		}
 	}
 </script>
 <div class="text-column">

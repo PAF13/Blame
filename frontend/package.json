@@ -22,6 +22,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"svelte-file-dropzone": "^2.0.4"
+		"svelte-file-dropzone": "^2.0.4",
+		"svelte-sheets": "^1.0.0"
 	}
 }

@@ -70,10 +70,58 @@ func (a *App) ListTrees() {
 }
 
 func (a *App) ExcelChoice(file1 string, file2 string) {
-	Compare(ImportXLSX(file1), ImportXLSX(file2))
+	fmt.Println("Stueckliste Compare: Recieving Stücklisten")
+	CompareStueckliste(LoadStueckliste(file1), LoadStueckliste(file2))
+	fmt.Println("Stueckliste Compare: Stücklisten recieved")
+
+}
+func LoadStueckliste(x string) map[string][]string {
+	fmt.Println("Stueckliste Compare: Creating map for:", x)
+	//creating map of list
+	stuecklisteMap := make(map[string][]string)
+	headSkip := 1
+	skip := 0
+	//opening spreadsheet
+	spreadsheet, err := excelize.OpenFile(x)
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer func() {
+		// Close the spreadsheet.
+		if err := spreadsheet.Close(); err != nil {
+			fmt.Println(err)
+		}
+	}()
+
+	fmt.Println(spreadsheet.GetSheetList()[0])
+	//Selecting rows from first sheet
+	rows, err := spreadsheet.GetRows(spreadsheet.GetSheetList()[0])
+	if err != nil {
+		fmt.Println(err)
+	}
+	//reading rows
+	for line, row := range rows {
+		//cleaning empty erp numbers
+		if row[6] == "" {
+			t := strconv.Itoa(line)
+			row[6] = "Empty" + t
+		}
+		//loading map with data as string
+		if skip > headSkip {
+			stuecklisteMap[row[6]] = row
+			fmt.Println(stuecklisteMap[row[6]])
+		}
+		skip++
+
+	}
+
+	return stuecklisteMap
+}
+func CompareStueckliste(x map[string][]string, y map[string][]string) {
 }
 
 func ImportXLSX(x string) map[string]int {
+	fmt.Println("Now Reading: ", x)
 	m := make(map[string]int)
 	headSkip := 1
 	skip := 0
@@ -113,6 +161,7 @@ func ImportXLSX(x string) map[string]int {
 }
 
 func Compare(x map[string]int, y map[string]int) {
+	fmt.Println("Comparing")
 	file := excelize.NewFile()
 
 	headers := []string{
@@ -138,8 +187,10 @@ func Compare(x map[string]int, y map[string]int) {
 
 	for i, row := range data {
 		dataRow := i + 2
+		fmt.Println(i, "Row:", row)
 		for j, col := range row {
 			file.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+j)), dataRow), col)
+			fmt.Println(j, "Col:", col)
 		}
 	}
 
