@@ -51,6 +51,10 @@ func (a *App) Dialog() string {
 	return result
 }
 
+func (a *App) ExcelChoice(file1 string, file2 string) {
+	Compare(ImportXLSX(file1), ImportXLSX(file2))
+	return
+}
 func ImportXLSX(x string) map[string]int {
 	m := make(map[string]int)
 	headSkip := 1
@@ -84,6 +88,7 @@ func ImportXLSX(x string) map[string]int {
 		skip++
 
 	}
+
 	return m
 }
 

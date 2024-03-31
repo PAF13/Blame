@@ -1,14 +1,16 @@
 <script>
 	import { page } from '$app/stores';
-	import logo from '$lib/images/svelte-logo.svg';
-	import github from '$lib/images/github.svg';
+	import { goto } from '$app/navigation';
+	function Goto(){
+		goto('/stueckliste')
+	}
 </script>
 
 <header>
 	<nav class="navbar4">
 		<ul>
 		  <li aria-current={$page.url.pathname === '/' ? 'page' : undefined}><a href="/">Home</a></li>
-		  <li aria-current={$page.url.pathname === '/stueckliste' ? 'page' : undefined}><a href="/stueckliste">stueckliste</a></li>
+		  <li aria-current={$page.url.pathname === '/stueckliste' ? 'page' : undefined}><a href="/stueckliste">Stueckliste</a></li>
 		  <li aria-current={$page.url.pathname === '/verbindungsliste' ? 'page' : undefined}><a href="/verbindungsliste">verbindungsliste</a></li>
 		  <li aria-current={$page.url.pathname === '/filewatcher' ? 'page' : undefined}><a href="/filewatcher">filewatcher</a></li>
 		</ul>
@@ -21,39 +23,11 @@
 		justify-content: space-between;
 	}
 
-	.corner {
-		width: 3em;
-		height: 3em;
-	}
-
-	.corner a {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 100%;
-		height: 100%;
-	}
-
-	.corner img {
-		width: 2em;
-		height: 2em;
-		object-fit: contain;
-	}
-
 	nav {
 		display: flex;
 		justify-content: center;
 		--background: rgba(255, 255, 255, 0.7);
-	}
-
-	svg {
-		width: 2em;
-		height: 3em;
-		display: block;
-	}
-
-	path {
-		fill: var(--background);
+		width: 100%;
 	}
 
 	ul {
@@ -61,6 +35,7 @@
 		padding: 0;
 		margin: 0;
 		height: 3em;
+
 		display: flex;
 		justify-content: center;
 		align-items: center;
