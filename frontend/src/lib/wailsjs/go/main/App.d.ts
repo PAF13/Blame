@@ -7,6 +7,8 @@ export function ExcelChoice(arg1:string,arg2:string):Promise<void>;
 
 export function Greet(arg1:string):Promise<string>;
 
+export function ListTrees():Promise<void>;
+
 export function Message(arg1:string):Promise<string>;
 
 export function Test(arg1:string):Promise<string>;

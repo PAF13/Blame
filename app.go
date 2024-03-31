@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
+	"os"
 	"strconv"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -51,9 +53,18 @@ func (a *App) Dialog() string {
 	return result
 }
 
+func (a *App) ListTrees() {
+	entries, err := os.ReadDir("./")
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, e := range entries {
+		fmt.Println(e.Name())
+	}
+}
+
 func (a *App) ExcelChoice(file1 string, file2 string) {
 	Compare(ImportXLSX(file1), ImportXLSX(file2))
-	return
 }
 func ImportXLSX(x string) map[string]int {
 	m := make(map[string]int)

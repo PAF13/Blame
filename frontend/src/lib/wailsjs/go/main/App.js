@@ -14,6 +14,10 @@ export function Greet(arg1) {
   return window['go']['main']['App']['Greet'](arg1);
 }
 
+export function ListTrees() {
+  return window['go']['main']['App']['ListTrees']();
+}
+
 export function Message(arg1) {
   return window['go']['main']['App']['Message'](arg1);
 }
