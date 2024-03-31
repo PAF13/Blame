@@ -1,18 +1,28 @@
 <script>
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
-	function Goto(){
-		goto('/stueckliste')
+
+	function GotoHome() {
+		goto('/stueckliste');
+	}
+	function GotoStuecklsite() {
+		goto('/stueckliste');
+	}
+	function GotoVerbindungliste(){
+		goto('/stueckliste');
+	}
+	function GotoFilewatcher(){
+		goto('/stueckliste');
 	}
 </script>
 
 <header>
 	<nav class="navbar4">
 		<ul>
-		  <li aria-current={$page.url.pathname === '/' ? 'page' : undefined}><a href="/">Home</a></li>
-		  <li aria-current={$page.url.pathname === '/stueckliste' ? 'page' : undefined}><a href="/stueckliste">Stueckliste</a></li>
-		  <li aria-current={$page.url.pathname === '/verbindungsliste' ? 'page' : undefined}><a href="/verbindungsliste">verbindungsliste</a></li>
-		  <li aria-current={$page.url.pathname === '/filewatcher' ? 'page' : undefined}><a href="/filewatcher">filewatcher</a></li>
+		  <li class="new" on:click{GotoHome} aria-current={$page.url.pathname === '/' ? 'page' : undefined}><a href="/">Home</a></li>
+		  <li class="new" aria-current={$page.url.pathname === '/stueckliste' ? 'page' : undefined}><a href="/stueckliste">Stueckliste</a></li>
+		  <li class="new" aria-current={$page.url.pathname === '/verbindungsliste' ? 'page' : undefined}><a href="/verbindungsliste">verbindungsliste</a></li>
+		  <li class="new" aria-current={$page.url.pathname === '/filewatcher' ? 'page' : undefined}><a href="/filewatcher">filewatcher</a></li>
 		</ul>
 	  </nav>
 </header>
@@ -61,7 +71,7 @@
 		border-top: var(--size) solid var(--color-theme-1);
 	}
 
-	nav a {
+	a {
 		display: flex;
 		height: 100%;
 		align-items: center;
@@ -73,6 +83,7 @@
 		letter-spacing: 0.1em;
 		text-decoration: none;
 		transition: color 0.2s linear;
+		cursor: pointer;
 	}
 
 	a:hover {

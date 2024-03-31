@@ -46,11 +46,16 @@ func (a *App) Message(file1 string) string {
 	return result
 }
 
-func (a *App) Dialog() string {
-	result, _ := runtime.OpenFileDialog(a.ctx, runtime.OpenDialogOptions{
-		Title: "Question",
+func (a *App) Dialog() {
+	fmt.Println("Dialog start")
+	result, err := runtime.OpenFileDialog(a.ctx, runtime.OpenDialogOptions{
+		Title:            "Question",
+		DefaultDirectory: "\\\\ME-Datenbank-1\\Database\\Schnittstelle",
 	})
-	return result
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(result)
 }
 
 func (a *App) ListTrees() {
