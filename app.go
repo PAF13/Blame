@@ -109,7 +109,7 @@ func LoadStueckliste(x string) map[string][]string {
 		//loading map with data as string
 		if skip > headSkip {
 			stuecklisteMap[row[6]] = row
-			fmt.Println(stuecklisteMap[row[6]])
+			//fmt.Println(stuecklisteMap[row[6]])
 		}
 		skip++
 
@@ -117,53 +117,10 @@ func LoadStueckliste(x string) map[string][]string {
 
 	return stuecklisteMap
 }
-func CompareStueckliste(x map[string][]string, y map[string][]string) {
-}
-
-func ImportXLSX(x string) map[string]int {
-	fmt.Println("Now Reading: ", x)
-	m := make(map[string]int)
-	headSkip := 1
-	skip := 0
-	//open file
-	f, err := excelize.OpenFile(x)
-	if err != nil {
-		fmt.Println(err)
-	}
-	defer func() {
-		// Close the spreadsheet.
-		if err := f.Close(); err != nil {
-			fmt.Println(err)
-		}
-	}()
-
-	fmt.Println(f.GetSheetList()[0])
-
-	//read rows in sheet
-	rows, err := f.GetRows(f.GetSheetList()[0])
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	//convert rows into string int
-	for _, row := range rows {
-		if skip > headSkip {
-			//fmt.Print(row[6], "\t")
-			//fmt.Println(row[7], "\t")
-			rowint, _ := strconv.Atoi(row[7])
-			m[row[6]] = rowint
-		}
-		skip++
-
-	}
-
-	return m
-}
-
-func Compare(x map[string]int, y map[string]int) {
+func CompareStueckliste(old map[string][]string, new map[string][]string) {
 	fmt.Println("Comparing")
 	file := excelize.NewFile()
-
+	fmt.Println("Setting header")
 	headers := []string{
 		"Artikelnummer",
 		"»»» Stücklisten/Sets «««",
@@ -175,50 +132,76 @@ func Compare(x map[string]int, y map[string]int) {
 		"SL-Pos.Menge",
 		"Löschen",
 	}
+	headers2 := []string{
+		"Stücklisten-Kopfartikel, dieser muß schon in T8 angelegt sein.",
+		"»»» Stücklisten/Sets «««",
+		"1=JA",
+		"0=Kopf ohne Positionen, 1=Pos. ohne Preise, 2=Pos mit Preisen",
+		"A, B, L ,R",
+		"GANZ WICHTIG: durchgehend nummerieren, sonst werden keine neuen Positionen angefügt",
+		"Artikelnummer des zugehörigen Artikels",
+		"Stücklisten-menge",
+		"Hersteller",
+		"Typnummer",
+		"Artikelnummer",
+		"Artikel: Bezeichnung",
+	}
+	fmt.Println("writing header")
 	for i, header := range headers {
 		file.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+i)), 1), header)
 	}
-
-	data := [][]interface{}{
-		{1, "John", 30},
-		{2, "Alex", 20},
-		{3, "Bob", 40},
+	for i, header := range headers2 {
+		file.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+i)), 2), header)
 	}
+	line := 3
+	//K is name v is data set
+	fmt.Println("Comparing lists")
+	for newValue, _ := range new {
+		_, Match := old[newValue]
+		if Match && new[newValue][7] != old[newValue][7] {
+			for i := 6; i < len(new[newValue]); i++ {
+				if i == 7 {
+					mengeOld, _ := strconv.Atoi(old[newValue][i])
+					mengeNew, _ := strconv.Atoi(new[newValue][i])
+					file.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+i)), line), mengeNew-mengeOld)
+				} else {
+					file.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+i)), line), new[newValue][i])
+				}
+			}
 
-	for i, row := range data {
-		dataRow := i + 2
-		fmt.Println(i, "Row:", row)
-		for j, col := range row {
-			file.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+j)), dataRow), col)
-			fmt.Println(j, "Col:", col)
+			line++
+		} else if Match == false {
+			for i := 6; i < len(new[newValue]); i++ {
+				if i == 7 {
+					mengeNew, _ := strconv.Atoi(new[newValue][i])
+					file.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+i)), line), mengeNew)
+				} else {
+					file.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+i)), line), new[newValue][i])
+				}
+			}
+			delete(new, newValue)
+			line++
 		}
+		delete(old, newValue)
+
+	}
+	for newValue, _ := range old {
+		fmt.Println("map: ", old[newValue])
+		for i := 6; i < len(old[newValue]); i++ {
+			if i == 7 {
+				mengeNew, _ := strconv.Atoi(old[newValue][i])
+				file.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+i)), line), mengeNew*-1)
+			} else {
+				file.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+i)), line), old[newValue][i])
+			}
+
+		}
+		line++
+		delete(old, newValue)
 	}
 
 	if err := file.SaveAs("\\\\ME-Datenbank-1\\Database\\Schnittstelle\\Stueckliste.xlsx"); err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 	}
 
-	listDif := make(map[string]int)
-	for k, v := range y {
-		_, ok := x[k]
-		if ok {
-			//add changed items
-			if v != x[k] {
-				listDif[k] = v - x[k]
-				//fmt.Println("Dif |", k, ":", listDif[k])
-				delete(x, k)
-			}
-
-		} else {
-			//add new items
-			listDif[k] = v
-		}
-		delete(y, k)
-	}
-	for k, v := range x {
-
-		listDif[k] = v * -1
-		//fmt.Println("Dif |", k, ":", listDif[k])
-		delete(x, k)
-	}
 }
