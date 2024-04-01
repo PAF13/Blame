@@ -19,7 +19,7 @@
 <header>
 	<nav class="navbar4">
 		<ul>
-		  <li class="new" on:click{GotoHome} aria-current={$page.url.pathname === '/' ? 'page' : undefined}><a href="/">Home</a></li>
+		  <li class="new" aria-current={$page.url.pathname === '/' ? 'page' : undefined}><a href="/">Home</a></li>
 		  <li class="new" aria-current={$page.url.pathname === '/stueckliste' ? 'page' : undefined}><a href="/stueckliste">Stueckliste</a></li>
 		  <li class="new" aria-current={$page.url.pathname === '/verbindungsliste' ? 'page' : undefined}><a href="/verbindungsliste">verbindungsliste</a></li>
 		  <li class="new" aria-current={$page.url.pathname === '/filewatcher' ? 'page' : undefined}><a href="/filewatcher">filewatcher</a></li>

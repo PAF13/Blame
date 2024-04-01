@@ -13,5 +13,4 @@
 
 <div class="text-column">
 	<h1>File Watcher</h1>
-	<button on:click={Goto}>Neues Projekt</button>
 </div>

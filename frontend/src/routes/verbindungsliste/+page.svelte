@@ -4,6 +4,7 @@
 </svelte:head>
 <script>
 	import { Dialog, LoadCSV } from "$lib/wailsjs/go/main/App";
+	import { Label, Input, Button, InputAddon, ButtonGroup, Checkbox } from 'flowbite-svelte';
 	let list1 = "";
 	let list1Last = "replace";
 
@@ -26,13 +27,22 @@
 		}
 	}
 </script>
-<div class="text-column">
-	<h1>Verbindungsliste</h1>
-	<h6>Current: {list1}</h6>
-	<button on:click={dialog1}>Stückliste alt</button>
-	<h3> </h3>
-	<div>
-		<button on:click={reset}>reset</button>
-		<button on:click={compare}>vergleich</button>
-	</div>
+
+<h1>Verbindungsliste</h1>
+
+<div class="pt-8">
+<Label for="input-addon" class="mb-2">Current: {list1}</Label>
+<ButtonGroup class="w-full">
+	<Button color="dark" on:click={dialog1}>importieren</Button>
+	<Input id="input-addon" type="email" placeholder="elonmusk" />
+	
+</ButtonGroup>
 </div>
+<div class="pt-8">
+<ButtonGroup class="w-full">
+	<Button color="dark" on:click={reset}>Reset</Button>
+	<Button color="dark" on:click={compare}>Compare</Button>
+	
+</ButtonGroup>
+</div>
+

@@ -72,7 +72,19 @@ func (a *App) ListTrees() {
 func (a *App) LoadCSV(x string) {
 }
 
-func (a *App) NewProject(x string) {
+func (a *App) NewProject(Jahr string, Kunde string, Projektname string) {
+	Projektpfad := "\\\\ME-Datenbank-1\\Projektdaten " + Jahr + "\\" + Kunde + "\\"
+	err := os.Mkdir(Projektpfad+Projektname, os.ModePerm)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(Projektpfad + Projektname)
+	Projektinfodatei, err := os.Create(Projektpfad + Projektname + "\\" + ".Blame")
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(Projektinfodatei)
+	Projektinfodatei.Close()
 }
 
 // stücklistevergleich

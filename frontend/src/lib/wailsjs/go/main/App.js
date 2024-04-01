@@ -26,6 +26,10 @@ export function Message(arg1) {
   return window['go']['main']['App']['Message'](arg1);
 }
 
+export function NewProject(arg1, arg2, arg3) {
+  return window['go']['main']['App']['NewProject'](arg1, arg2, arg3);
+}
+
 export function Test(arg1) {
   return window['go']['main']['App']['Test'](arg1);
 }

@@ -4,9 +4,12 @@
 </svelte:head>
 <script>
 	import { Dialog, ExcelChoice } from "$lib/wailsjs/go/main/App";
+	import { Label, Input, Button, InputAddon, ButtonGroup, Checkbox } from 'flowbite-svelte';
 	let list1 = "";
+	let list1Switch = "";
 	let list1Last = "replace";
 	let list2 = "";
+	let list2Switch = "";
 	let list2Last = "replace";
 
 
@@ -33,16 +36,35 @@
 			ExcelChoice(list1,list2);
 		}
 	}
+
+	function switchList(){
+		list1Switch = list1;
+		list2Switch = list2;
+		list2 = list1Switch;
+		list1 = list2Switch;
+	}
 </script>
-<div class="text-column">
-	<h1>Stückliste</h1>
-	<h6>Current: {list1}</h6>
-	<button on:click={dialog1}>Stückliste alt</button>
-	<h6>Current: {list2}</h6>
-	<button on:click={dialog2}>Stückliste neu</button>
-	<h3> </h3>
-	<div>
-		<button on:click={reset}>reset</button>
-		<button on:click={compare}>vergleich</button>
-	</div>
+
+<h1>Stückliste</h1>
+<div class="pt-8">
+<Label for="input-addon" class="mb-2">Alte Stückliste</Label>
+<ButtonGroup class="w-full">
+	<Button color="dark" on:click={dialog1}>importieren</Button>
+	<Input id="input-addon" type="text" value={list1} placeholder="Dateipfad" />
+</ButtonGroup>
 </div>
+<div class="pt-8">
+<Label for="input-addon" class="mb-2">Neue Stückliste</Label>
+<ButtonGroup class="w-full">
+	<Button color="dark" on:click={dialog2}>importieren</Button>
+	<Input id="input-addon" type="text" value={list2} placeholder="Dateipfad" />
+	
+</ButtonGroup>
+</div>
+
+<div class="pt-8">
+	<Button color="dark" on:click={switchList}>Tauschen</Button>
+	<Button color="dark" on:click={reset}>Reset</Button>
+	<Button color="dark" on:click={compare}>Compare</Button>
+</div>
+
