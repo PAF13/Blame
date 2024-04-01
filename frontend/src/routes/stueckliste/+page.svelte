@@ -36,9 +36,9 @@
 </script>
 <div class="text-column">
 	<h1>Stückliste</h1>
-	<h3>Current: {list1}</h3>
+	<h6>Current: {list1}</h6>
 	<button on:click={dialog1}>Stückliste alt</button>
-	<h3>Current: {list2}</h3>
+	<h6>Current: {list2}</h6>
 	<button on:click={dialog2}>Stückliste neu</button>
 	<h3> </h3>
 	<div>

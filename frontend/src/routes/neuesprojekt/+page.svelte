@@ -4,9 +4,10 @@
 </svelte:head>
 <script>
 	import { ListTrees } from "$lib/wailsjs/go/main/App";
-	let projektbeschreibung = '';
-	let projektnummer = '';
-	let jahr = '';
+	let projektbeschreibung = "";
+	let projektnummer = "";
+	let jahr = "";
+	let kunde = "";
 </script>
 
 <div class="text-column">
@@ -15,6 +16,8 @@
 	<input bind:value={projektnummer} placeholder="enter your projektnummer" />
 	<h3>Projektbeschreibung</h3>
 	<input bind:value={projektbeschreibung} placeholder="enter your projektbeschreibung" />
+	<h3>Kunde</h3>
+	<input bind:value={kunde} placeholder="enter your Kunde" />
 	<h3>Jahr</h3>
 	<input bind:value={jahr} placeholder="enter your jahr" />
 	<button>List</button>

@@ -69,11 +69,17 @@ func (a *App) ListTrees() {
 	}
 }
 
+func (a *App) LoadCSV(x string) {
+}
+
+func (a *App) NewProject(x string) {
+}
+
+// stücklistevergleich
 func (a *App) ExcelChoice(file1 string, file2 string) {
 	fmt.Println("Stueckliste Compare: Recieving Stücklisten")
 	CompareStueckliste(LoadStueckliste(file1), LoadStueckliste(file2))
 	fmt.Println("Stueckliste Compare: Stücklisten recieved")
-
 }
 func LoadStueckliste(x string) map[string][]string {
 	fmt.Println("Stueckliste Compare: Creating map for:", x)
@@ -112,15 +118,11 @@ func LoadStueckliste(x string) map[string][]string {
 			//fmt.Println(stuecklisteMap[row[6]])
 		}
 		skip++
-
 	}
-
 	return stuecklisteMap
 }
 func CompareStueckliste(old map[string][]string, new map[string][]string) {
-	fmt.Println("Comparing")
 	file := excelize.NewFile()
-	fmt.Println("Setting header")
 	headers := []string{
 		"Artikelnummer",
 		"»»» Stücklisten/Sets «««",
@@ -146,7 +148,6 @@ func CompareStueckliste(old map[string][]string, new map[string][]string) {
 		"Artikelnummer",
 		"Artikel: Bezeichnung",
 	}
-	fmt.Println("writing header")
 	for i, header := range headers {
 		file.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+i)), 1), header)
 	}
@@ -154,8 +155,6 @@ func CompareStueckliste(old map[string][]string, new map[string][]string) {
 		file.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+i)), 2), header)
 	}
 	line := 3
-	//K is name v is data set
-	fmt.Println("Comparing lists")
 	for newValue, _ := range new {
 		_, Match := old[newValue]
 		if Match && new[newValue][7] != old[newValue][7] {
@@ -168,7 +167,6 @@ func CompareStueckliste(old map[string][]string, new map[string][]string) {
 					file.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+i)), line), new[newValue][i])
 				}
 			}
-
 			line++
 		} else if Match == false {
 			for i := 6; i < len(new[newValue]); i++ {
@@ -186,7 +184,6 @@ func CompareStueckliste(old map[string][]string, new map[string][]string) {
 
 	}
 	for newValue, _ := range old {
-		fmt.Println("map: ", old[newValue])
 		for i := 6; i < len(old[newValue]); i++ {
 			if i == 7 {
 				mengeNew, _ := strconv.Atoi(old[newValue][i])
@@ -203,5 +200,4 @@ func CompareStueckliste(old map[string][]string, new map[string][]string) {
 	if err := file.SaveAs("\\\\ME-Datenbank-1\\Database\\Schnittstelle\\Stueckliste.xlsx"); err != nil {
 		fmt.Println(err)
 	}
-
 }

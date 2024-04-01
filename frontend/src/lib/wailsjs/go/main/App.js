@@ -18,6 +18,10 @@ export function ListTrees() {
   return window['go']['main']['App']['ListTrees']();
 }
 
+export function LoadCSV(arg1) {
+  return window['go']['main']['App']['LoadCSV'](arg1);
+}
+
 export function Message(arg1) {
   return window['go']['main']['App']['Message'](arg1);
 }
