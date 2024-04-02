@@ -31,18 +31,15 @@
 <h1>Verbindungsliste</h1>
 
 <div class="pt-8">
-<Label for="input-addon" class="mb-2">Current: {list1}</Label>
+<Label for="input-addon" class="mb-2">Verbindungsliste</Label>
 <ButtonGroup class="w-full">
 	<Button color="dark" on:click={dialog1}>importieren</Button>
-	<Input id="input-addon" type="email" placeholder="elonmusk" />
+	<Input id="input-addon" type="email" value={list1} placeholder="Dateipfad"/>
 	
 </ButtonGroup>
 </div>
 <div class="pt-8">
-<ButtonGroup class="w-full">
 	<Button color="dark" on:click={reset}>Reset</Button>
 	<Button color="dark" on:click={compare}>Compare</Button>
-	
-</ButtonGroup>
 </div>
 
