@@ -87,7 +87,7 @@ func CompareStueckliste(old map[string][]string, new map[string][]string) {
 		file.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+i)), 2), header)
 	}
 	line := 3
-	for newValue, _ := range new {
+	for newValue := range new {
 		_, Match := old[newValue]
 		if Match && new[newValue][7] != old[newValue][7] {
 			for i := 6; i < len(new[newValue]); i++ {
@@ -100,7 +100,7 @@ func CompareStueckliste(old map[string][]string, new map[string][]string) {
 				}
 			}
 			line++
-		} else if Match == false {
+		} else if !Match {
 			for i := 6; i < len(new[newValue]); i++ {
 				if i == 7 {
 					mengeNew, _ := strconv.Atoi(new[newValue][i])
@@ -115,7 +115,7 @@ func CompareStueckliste(old map[string][]string, new map[string][]string) {
 		delete(old, newValue)
 
 	}
-	for newValue, _ := range old {
+	for newValue := range old {
 		for i := 6; i < len(old[newValue]); i++ {
 			if i == 7 {
 				mengeNew, _ := strconv.Atoi(old[newValue][i])

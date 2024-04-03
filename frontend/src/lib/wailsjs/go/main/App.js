@@ -33,3 +33,7 @@ export function NewProject(arg1, arg2, arg3) {
 export function Test(arg1) {
   return window['go']['main']['App']['Test'](arg1);
 }
+
+export function Verbindungsliste(arg1) {
+  return window['go']['main']['App']['Verbindungsliste'](arg1);
+}
