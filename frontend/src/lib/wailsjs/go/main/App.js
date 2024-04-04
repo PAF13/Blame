@@ -34,6 +34,6 @@ export function Test(arg1) {
   return window['go']['main']['App']['Test'](arg1);
 }
 
-export function Verbindungsliste(arg1) {
-  return window['go']['main']['App']['Verbindungsliste'](arg1);
+export function VerbindungCorrection() {
+  return window['go']['main']['App']['VerbindungCorrection']();
 }
