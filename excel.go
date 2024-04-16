@@ -13,6 +13,11 @@ func (a *App) ExcelChoice(file1 string, file2 string) {
 	CompareStueckliste(LoadStueckliste(file1), LoadStueckliste(file2))
 	fmt.Println("Stueckliste Compare: Stücklisten recieved")
 }
+
+func (a *App) Beistellung(file1 string, file2 string) {
+
+}
+
 func LoadStueckliste(x string) map[string][]string {
 	fmt.Println("Stueckliste Compare: Creating map for:", x)
 	//creating map of list

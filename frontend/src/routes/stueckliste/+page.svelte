@@ -3,7 +3,7 @@
 	<meta name="description" content="About this app" />
 </svelte:head>
 <script>
-	import { Dialog, ExcelChoice } from "$lib/wailsjs/go/main/App";
+	import { Dialog, ExcelChoice, Beistellung } from "$lib/wailsjs/go/main/App";
 	import { Label, Input, Button, InputAddon, ButtonGroup, Checkbox } from 'flowbite-svelte';
 	let list1 = "";
 	let list1Switch = "";
@@ -36,6 +36,11 @@
 			ExcelChoice(list1,list2);
 		}
 	}
+	function beistellung(){
+		if (list1 && list2 != "loading..") {
+			Beistellung(list1,list2);
+		}
+	}
 
 	function switchList(){
 		list1Switch = list1;
@@ -65,6 +70,7 @@
 <div class="pt-8">
 	<Button color="dark" on:click={switchList}>Tauschen</Button>
 	<Button color="dark" on:click={reset}>Reset</Button>
-	<Button color="dark" on:click={compare}>Compare</Button>
+	<Button color="dark" on:click={compare}>Differenz</Button>
+	<Button color="dark" on:click={beistellung}>Beistellung</Button>
 </div>
 
