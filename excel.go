@@ -14,7 +14,9 @@ func (a *App) ExcelChoice(file1 string, file2 string) {
 	fmt.Println("Stueckliste Compare: Stücklisten recieved")
 }
 
-func (a *App) Beistellung(file1 string, file2 string) {
+func (a *App) ImportStueckliste(file1 string, file2 string) (map[string][]string, map[string][]string) {
+
+	return LoadStueckliste(file1), LoadStueckliste(file2)
 
 }
 
