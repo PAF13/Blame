@@ -2,8 +2,6 @@ package main
 
 import (
 	"fmt"
-	"strconv"
-	"strings"
 )
 
 func STDerrhandler(err error) {
@@ -23,7 +21,7 @@ func safeStringArrayPull(r []string, n int) string {
 	return ""
 }
 
-func safeIntConvert(r []string, n int) int {
+/*func safeIntConvert(r []string, n int) int {
 	if len(r) > n {
 		if r[n] == "" {
 			return 0
@@ -34,3 +32,4 @@ func safeIntConvert(r []string, n int) int {
 	}
 	return 0
 }
+*/

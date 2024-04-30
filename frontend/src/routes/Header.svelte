@@ -1,18 +1,32 @@
 <script>
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
+	import { BlameStartup } from "$lib/wailsjs/go/main/App";
+	import { Button, Modal } from 'flowbite-svelte';
+	import { beforeUpdate } from 'svelte';
+	import { ExclamationCircleOutline } from 'flowbite-svelte-icons';
 
-	function GotoHome() {
-		goto('/stueckliste');
+	let startup = Boolean(false);
+	let init = Boolean(false);
+	let defaultModal = Boolean(false);
+	let dis = Boolean(false);
+	let test = Boolean(false);
+	let modalText = "Loading assets...";
+	if (init == false) {
+		defaultModal = true;
+		BlameStartup().then((result) => (startup = result));
+		init = true;
+
 	}
-	function GotoStuecklsite() {
-		goto('/stueckliste');
+
+
+	$:if (startup == true) {
+		modalText = "Done Loading :)";
+		setTimeout(modulo, 10000);
+		function modulo() {
+			defaultModal = false
 	}
-	function GotoVerbindungliste(){
-		goto('/stueckliste');
-	}
-	function GotoFilewatcher(){
-		goto('/stueckliste');
+		
 	}
 </script>
 
@@ -25,10 +39,18 @@
 		  <li class="new" aria-current={$page.url.pathname === '/filewatcher' ? 'page' : undefined}><a href="/filewatcher">filewatcher</a></li>
 		  <li class="new" aria-current={$page.url.pathname === '/cleaner' ? 'page' : undefined}><a href="/cleaner">Cleaner</a></li>
 		  <li class="new" aria-current={$page.url.pathname === '/test' ? 'page' : undefined}><a href="/test">Test</a></li>
+		  <li class="new" aria-current={$page.url.pathname === '/debugger' ? 'page' : undefined}><a href="/debugger">Debugger</a></li>
 		</ul>
 	  </nav>
 </header>
 
+  <Modal id="loading" bind:open={defaultModal} size="xs" autoclose bind:dismissable={dis}>
+	<div class="text-center">
+	  <ExclamationCircleOutline class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" />
+	  <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">{modalText}</h3>
+
+	</div>
+  </Modal>
 <style>
 	header {
 		display: flex;
