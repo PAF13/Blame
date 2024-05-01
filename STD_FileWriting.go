@@ -316,11 +316,7 @@ func STD_Write_Stueckliste(pfad string, Lagerbestand []*Artikel) {
 		colNum := 0
 
 		lineWriter(file, "Sheet1", &colNum, &rowNum, value.ERP)
-<<<<<<< HEAD
 		lineWriter(file, "Sheet1", &colNum, &rowNum, fmt.Sprintf("%.2f", value.Stueckzahl))
-=======
-		lineWriter(file, "Sheet1", &colNum, &rowNum, fmt.Sprintf("%f", value.Stueckzahl))
->>>>>>> 8b7053196449b14bdeb5c090fc340e06037bb70a
 		lineWriter(file, "Sheet1", &colNum, &rowNum, value.Hersteller)
 		lineWriter(file, "Sheet1", &colNum, &rowNum, value.Bestellnummer)
 		lineWriter(file, "Sheet1", &colNum, &rowNum, value.ArtikelnummerEplan)
@@ -328,11 +324,7 @@ func STD_Write_Stueckliste(pfad string, Lagerbestand []*Artikel) {
 		lineWriter(file, "Sheet1", &colNum, &rowNum, value.Warengruppe)
 		lineWriter(file, "Sheet1", &colNum, &rowNum, value.Quelle)
 		lineWriter(file, "Sheet1", &colNum, &rowNum, value.Stand)
-<<<<<<< HEAD
 		lineWriter(file, "Sheet1", &colNum, &rowNum, value.Beistellung)
-=======
-		lineWriter(file, "Sheet1", &colNum, &rowNum, "")
->>>>>>> 8b7053196449b14bdeb5c090fc340e06037bb70a
 		lineWriter(file, "Sheet1", &colNum, &rowNum, value.Aufstellungsort+value.Ortskennzeichen)
 		rowNum++
 	}

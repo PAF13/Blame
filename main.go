@@ -4,6 +4,7 @@ import (
 	"embed"
 
 	"github.com/wailsapp/wails/v2"
+	"github.com/wailsapp/wails/v2/pkg/logger"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 )
@@ -14,12 +15,16 @@ var assets embed.FS
 func main() {
 	// Create an instance of the app structure
 	app := NewApp()
+	myLog := logger.NewFileLogger("LOG.txt")
 
 	// Create application with options
 	err := wails.Run(&options.App{
-		Title:  "BlameV2",
-		Width:  1024,
-		Height: 768,
+		Title:     "Blame",
+		Width:     1024,
+		Height:    768,
+		MinWidth:  400,
+		MinHeight: 400,
+		Logger:    myLog,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},
