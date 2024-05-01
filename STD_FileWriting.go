@@ -316,7 +316,7 @@ func STD_Write_Stueckliste(pfad string, Lagerbestand []*Artikel) {
 		colNum := 0
 
 		lineWriter(file, "Sheet1", &colNum, &rowNum, value.ERP)
-		lineWriter(file, "Sheet1", &colNum, &rowNum, fmt.Sprintf("%f", value.Stueckzahl))
+		lineWriter(file, "Sheet1", &colNum, &rowNum, fmt.Sprintf("%.2f", value.Stueckzahl))
 		lineWriter(file, "Sheet1", &colNum, &rowNum, value.Hersteller)
 		lineWriter(file, "Sheet1", &colNum, &rowNum, value.Bestellnummer)
 		lineWriter(file, "Sheet1", &colNum, &rowNum, value.ArtikelnummerEplan)

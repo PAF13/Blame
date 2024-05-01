@@ -20,7 +20,18 @@ func (a *App) BlameStartup() bool {
 
 	STD_Read_Lagerbestand(stueckliste_Topix, "\\\\ME-Datenbank-1\\Database\\Schnittstelle\\Topix_Artikel20240430.xlsx", &lagerbestand_Siteca, "Siteca")
 	STD_Write_Stueckliste("Liste_Siteca.xlsx", lagerbestand_Siteca)
-
+	/*for _, value := range lagerbestand_Siteca {
+		if strings.Contains(value.Hersteller, "RIT") {
+			fmt.Printf("ERP: %-20s", value.ERP)
+			fmt.Printf("Stückzahl: %-10.2f", value.Stueckzahl)
+			fmt.Printf("Bestellnummer: %-20s", value.Bestellnummer)
+			fmt.Printf("Hersteller: %-20s", value.Hersteller)
+			fmt.Printf("Bestellnr_L1: %-20s", value.Bestellnr_L1)
+			fmt.Printf("Herstellertyp: %-20s", value.Herstellertyp)
+			fmt.Printf("Beistellung: %-20s", value.Beistellung)
+			fmt.Printf("\n")
+		}
+	}*/
 	for _, b := range lagerbestand_Siteca {
 		lagerbestand_Siteca_Map[b.Bestellnummer] = b
 	}
@@ -31,16 +42,6 @@ func (a *App) BlameStartup() bool {
 	STD_Write_Stueckliste("Liste_Kroenert_Clean.xlsx", lagerbestand_Kroenert)
 
 	STD_Read_Lagerbestand(stueckliste_projekt, "\\\\ME-Datenbank-1\\Database\\Schnittstelle\\8000772_Stückliste.xlsx", &Stueckliste, "KNT_Stückliste")
-	for _, value := range Stueckliste {
-		fmt.Printf("ERP: %-40s", value.ERP)
-		fmt.Printf("Artikelnummer: %-50s", value.ArtikelnummerEplan)
-		fmt.Printf("Bestellnummer: %-40s", value.Bestellnummer)
-		fmt.Printf("Hersteller: %-40s", value.Hersteller)
-		fmt.Printf("Stückzahl: %-30f", value.Stueckzahl)
-		fmt.Printf("Typ: %-40s", value.Typ)
-		fmt.Printf("Beistellung: %-40s", value.Beistellung)
-		fmt.Printf("\n")
-	}
 	STD_Write_Stueckliste("Liste_Stueckliste.xlsx", Stueckliste)
 	STD_Clean_Lagerbestand(Stueckliste)
 	STD_Write_Stueckliste("Liste_Stueckliste_Clean.xlsx", Stueckliste)
