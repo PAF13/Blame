@@ -29,12 +29,71 @@ type Stuckliste_ImportTemplate struct {
 	Warengruppe                int //
 	Beistellung                int
 	Ort                        int
+	Herstellertyp              int //
+	HerstellerEplan            int //
+	Bestellnr_L1               int //
+
 }
 
-func ReadStueckliste(stuecklisteCells Stuckliste_ImportTemplate, stuecklistepfad string, lagerbestand map[string]*Artikel, quelle string) map[string]*Artikel {
+var stueckliste_Topix = Stuckliste_ImportTemplate{
+	Aufstellungsort:    300,
+	Ortskennzeichen:    300,
+	ERP:                2,
+	Bestellnummer:      72,
+	Hersteller:         6,
+	ArtikelnummerEplan: 187,
+	Beschreibung:       24,
+	Stueckzahl:         50,
+	Einheit:            12,
+	FirstValue:         3,
+	Warengruppe:        300,
+	Beistellung:        300,
+	Ort:                300,
+	Herstellertyp:      188,
+	HerstellerEplan:    300,
+	Bestellnr_L1:       272,
+}
+var stueckliste_Kroenert = Stuckliste_ImportTemplate{
+	Aufstellungsort:    300,
+	Ortskennzeichen:    300,
+	ERP:                1,
+	Bestellnummer:      13,
+	Hersteller:         20,
+	ArtikelnummerEplan: 20,
+	Beschreibung:       9,
+	Stueckzahl:         3,
+	Einheit:            20,
+	FirstValue:         4,
+	Warengruppe:        20,
+	Beistellung:        12,
+	Ort:                3,
+	Herstellertyp:      300,
+	HerstellerEplan:    300,
+	Bestellnr_L1:       300,
+}
+var stueckliste_projekt = Stuckliste_ImportTemplate{
+	Aufstellungsort:    2,
+	Ortskennzeichen:    3,
+	ERP:                7,
+	Bestellnummer:      9,
+	Hersteller:         11,
+	ArtikelnummerEplan: 20,
+	Beschreibung:       10,
+	Stueckzahl:         5,
+	Einheit:            20,
+	FirstValue:         7,
+	Warengruppe:        20,
+	Beistellung:        12,
+	Ort:                20,
+	Herstellertyp:      300,
+	HerstellerEplan:    300,
+	Bestellnr_L1:       300,
+}
+
+func STD_Read_Lagerbestand(stuecklisteCells Stuckliste_ImportTemplate, stuecklistepfad string, lagerbestand *[]*Artikel, quelle string) {
 	headSkip := stuecklisteCells.FirstValue
 	skip := 0
-	//opening spreadsheet
+
 	fmt.Println("Opening: " + stuecklistepfad)
 	spreadsheet, err := excelize.OpenFile(stuecklistepfad)
 	if err != nil {
@@ -45,55 +104,41 @@ func ReadStueckliste(stuecklisteCells Stuckliste_ImportTemplate, stuecklistepfad
 	if err != nil {
 		fmt.Println(err)
 	}
-	//reading rows
+
 	for _, row := range rows {
-		//loading map with data as string
-		if skip > headSkip {
-			setLager(lagerbestand, row, stuecklisteCells, quelle)
+		if skip >= headSkip {
+			STD_Set_Lagerbestand(lagerbestand, row, stuecklisteCells, quelle)
 		}
 		skip++
 	}
+
 	if err := spreadsheet.Close(); err != nil {
 		fmt.Println(err)
 	}
-	return lagerbestand
 }
 
-func setLager(lagerbestand map[string]*Artikel, row []string, stuecklisteCells Stuckliste_ImportTemplate, quelle string) {
-	var source string
-	var stueckzahl float64
-	var bestellnummer string
-	source = quelle
-	menge, _ := strconv.ParseFloat(safeStringArrayPull(row, stuecklisteCells.Stueckzahl), 32)
+func STD_Set_Lagerbestand(lagerbestand *[]*Artikel, row []string, stuecklisteCells Stuckliste_ImportTemplate, quelle string) {
+	Stueckzahl, _ := strconv.ParseFloat(safeStringArrayPull(row, stuecklisteCells.Stueckzahl), 32)
 
-	_, ok := lagerbestand[safeStringArrayPull(row, stuecklisteCells.Bestellnummer)]
+	ort := safeStringArrayPull(row, stuecklisteCells.Aufstellungsort) + safeStringArrayPull(row, stuecklisteCells.Ortskennzeichen)
 
-	if ok {
-		stueckzahl = lagerbestand[safeStringArrayPull(row, stuecklisteCells.Bestellnummer)].Stueckzahl + menge
-	} else {
-		stueckzahl = menge
-	}
-
-	if safeStringArrayPull(row, stuecklisteCells.Bestellnummer) != "" {
-		bestellnummer = safeStringArrayPull(row, stuecklisteCells.Bestellnummer)
-	} else {
-		bestellnummer = "Leer"
-	}
-
-	lagerbestand[safeStringArrayPull(row, stuecklisteCells.Bestellnummer)] = &Artikel{
+	*lagerbestand = append(*lagerbestand, &Artikel{
 		ERP:                safeStringArrayPull(row, stuecklisteCells.ERP),
-		Bestellnummer:      bestellnummer,
+		Bestellnummer:      safeStringArrayPull(row, stuecklisteCells.Bestellnummer),
 		ArtikelnummerEplan: safeStringArrayPull(row, stuecklisteCells.ArtikelnummerEplan),
 		Hersteller:         safeStringArrayPull(row, stuecklisteCells.Hersteller),
 		Beschreibung:       safeStringArrayPull(row, stuecklisteCells.Beschreibung),
-		Stueckzahl:         stueckzahl,
+		Stueckzahl:         Stueckzahl,
 		Einheit:            safeStringArrayPull(row, stuecklisteCells.Einheit),
 		Warengruppe:        safeStringArrayPull(row, stuecklisteCells.Warengruppe),
-		Quelle:             source,
+		Quelle:             quelle,
 		Beistellung:        safeStringArrayPull(row, stuecklisteCells.Beistellung),
-		Ort:                safeStringArrayPull(row, stuecklisteCells.Ort),
+		Ort:                ort,
 		Aufstellungsort:    safeStringArrayPull(row, stuecklisteCells.Aufstellungsort),
 		Ortskennzeichen:    safeStringArrayPull(row, stuecklisteCells.Ortskennzeichen),
-	}
+		Herstellertyp:      safeStringArrayPull(row, stuecklisteCells.Herstellertyp),
+		HerstellerEplan:    safeStringArrayPull(row, stuecklisteCells.HerstellerEplan),
+		Bestellnr_L1:       safeStringArrayPull(row, stuecklisteCells.Bestellnr_L1),
+	})
 
 }

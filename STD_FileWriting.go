@@ -6,6 +6,57 @@ import (
 	"github.com/xuri/excelize/v2"
 )
 
+func Write_Lager(pfad string, ListeRaw *[]*Artikel) {
+	file_Lagerbestand_Kroenert := excelize.NewFile()
+
+	row_Lagerbestand_Kroenert := 3
+
+	headers := []string{
+		pfad,
+	}
+	headers2 := []string{
+		"ERP",
+		"Menge",
+		"Hersteller",
+		"Bestellnummer",
+		"Eplannummmer",
+		"Beschreibung",
+		"Warengruppe",
+		"Quelle",
+		"Stand",
+		"Bereitsteller",
+		"Ort",
+	}
+	for i, header := range headers {
+		file_Lagerbestand_Kroenert.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+i)), 1), header)
+	}
+	for i, header := range headers2 {
+		file_Lagerbestand_Kroenert.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+i)), 2), header)
+	}
+
+	for _, artikelListe := range *ListeRaw {
+
+		file_Lagerbestand_Kroenert.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+0)), row_Lagerbestand_Kroenert), artikelListe.ERP)
+		file_Lagerbestand_Kroenert.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+1)), row_Lagerbestand_Kroenert), artikelListe.Stueckzahl)
+		file_Lagerbestand_Kroenert.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+2)), row_Lagerbestand_Kroenert), artikelListe.Hersteller)
+		file_Lagerbestand_Kroenert.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+3)), row_Lagerbestand_Kroenert), artikelListe.Bestellnummer)
+		file_Lagerbestand_Kroenert.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+4)), row_Lagerbestand_Kroenert), artikelListe.ArtikelnummerEplan)
+		file_Lagerbestand_Kroenert.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+5)), row_Lagerbestand_Kroenert), artikelListe.Beschreibung)
+		file_Lagerbestand_Kroenert.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+6)), row_Lagerbestand_Kroenert), artikelListe.Warengruppe)
+		file_Lagerbestand_Kroenert.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+7)), row_Lagerbestand_Kroenert), artikelListe.Quelle)
+		file_Lagerbestand_Kroenert.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+8)), row_Lagerbestand_Kroenert), artikelListe.Stand)
+		file_Lagerbestand_Kroenert.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+9)), row_Lagerbestand_Kroenert), artikelListe.Beistellung)
+		file_Lagerbestand_Kroenert.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+10)), row_Lagerbestand_Kroenert), artikelListe.Aufstellungsort+artikelListe.Ortskennzeichen)
+		row_Lagerbestand_Kroenert++
+
+	}
+
+	if err := file_Lagerbestand_Kroenert.SaveAs("\\\\ME-Datenbank-1\\Database\\Schnittstelle\\BlameOutput\\" + pfad); err != nil {
+		fmt.Println(err)
+	}
+
+}
+
 func Write_Lager2(pfad string, ListeRaw map[string]*Artikel) {
 	file_Lagerbestand_Kroenert := excelize.NewFile()
 
@@ -47,6 +98,58 @@ func Write_Lager2(pfad string, ListeRaw map[string]*Artikel) {
 		file_Lagerbestand_Kroenert.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+9)), row_Lagerbestand_Kroenert), ListeRaw[name].Beistellung)
 		file_Lagerbestand_Kroenert.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+10)), row_Lagerbestand_Kroenert), ListeRaw[name].Aufstellungsort+ListeRaw[name].Ortskennzeichen)
 		row_Lagerbestand_Kroenert++
+
+	}
+
+	if err := file_Lagerbestand_Kroenert.SaveAs("\\\\ME-Datenbank-1\\Database\\Schnittstelle\\BlameOutput\\" + pfad); err != nil {
+		fmt.Println(err)
+	}
+
+}
+
+func Write_Lager3(pfad string, ListeRaw map[string]map[string]*Artikel) {
+	file_Lagerbestand_Kroenert := excelize.NewFile()
+
+	row_Lagerbestand_Kroenert := 3
+
+	headers := []string{
+		pfad,
+	}
+	headers2 := []string{
+		"ERP",
+		"Menge",
+		"Hersteller",
+		"Bestellnummer",
+		"Eplannummmer",
+		"Beschreibung",
+		"Warengruppe",
+		"Quelle",
+		"Stand",
+		"Bereitsteller",
+		"Ort",
+	}
+	for i, header := range headers {
+		file_Lagerbestand_Kroenert.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+i)), 1), header)
+	}
+	for i, header := range headers2 {
+		file_Lagerbestand_Kroenert.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+i)), 2), header)
+	}
+
+	for _, arti := range ListeRaw {
+		for _, ann := range arti {
+			file_Lagerbestand_Kroenert.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+0)), row_Lagerbestand_Kroenert), ann.ERP)
+			file_Lagerbestand_Kroenert.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+1)), row_Lagerbestand_Kroenert), ann.Stueckzahl)
+			file_Lagerbestand_Kroenert.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+2)), row_Lagerbestand_Kroenert), ann.Hersteller)
+			file_Lagerbestand_Kroenert.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+3)), row_Lagerbestand_Kroenert), ann.Bestellnummer)
+			file_Lagerbestand_Kroenert.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+4)), row_Lagerbestand_Kroenert), ann.ArtikelnummerEplan)
+			file_Lagerbestand_Kroenert.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+5)), row_Lagerbestand_Kroenert), ann.Beschreibung)
+			file_Lagerbestand_Kroenert.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+6)), row_Lagerbestand_Kroenert), ann.Warengruppe)
+			file_Lagerbestand_Kroenert.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+7)), row_Lagerbestand_Kroenert), ann.Quelle)
+			file_Lagerbestand_Kroenert.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+8)), row_Lagerbestand_Kroenert), ann.Stand)
+			file_Lagerbestand_Kroenert.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+9)), row_Lagerbestand_Kroenert), ann.Beistellung)
+			file_Lagerbestand_Kroenert.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+10)), row_Lagerbestand_Kroenert), ann.Aufstellungsort+ann.Ortskennzeichen)
+			row_Lagerbestand_Kroenert++
+		}
 
 	}
 
@@ -122,6 +225,7 @@ func sortDatatoFile(bestell map[string]*Artikel, stueckliste_Projekt map[string]
 
 func Stueckliste(pfad string, liste map[string]*Artikel) {
 	file := excelize.NewFile()
+	//P_file := file
 	headers := []string{
 		"Artikelnummer",
 		"»»» Stücklisten/Sets «««",
@@ -154,17 +258,75 @@ func Stueckliste(pfad string, liste map[string]*Artikel) {
 		file.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+i)), 2), header)
 	}
 
-	line := 3
+	rowNum := 3
 	for _, value := range liste {
-		file.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+6)), line), value.ERP)
-		file.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+7)), line), value.Stueckzahl)
-		file.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+8)), line), value.Hersteller)
-		file.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+9)), line), value.Typ)
-		file.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+10)), line), value.Bestellnummer)
-		//file.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+11)), line), value.Note)
-		file.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+12)), line), value.Aufstellungsort+value.Ortskennzeichen)
-		line++
+		colNum := 6
 
+		lineWriter(file, "Sheet1", &colNum, &rowNum, value.ERP)
+		lineWriter(file, "Sheet1", &colNum, &rowNum, fmt.Sprintf("%f", value.Stueckzahl))
+		lineWriter(file, "Sheet1", &colNum, &rowNum, value.Hersteller)
+		lineWriter(file, "Sheet1", &colNum, &rowNum, value.Typ)
+		lineWriter(file, "Sheet1", &colNum, &rowNum, value.Bestellnummer)
+		lineWriter(file, "Sheet1", &colNum, &rowNum, "")
+		lineWriter(file, "Sheet1", &colNum, &rowNum, value.Aufstellungsort+value.Ortskennzeichen)
+		lineWriter(file, "Sheet1", &colNum, &rowNum, value.Herstellertyp)
+		lineWriter(file, "Sheet1", &colNum, &rowNum, value.HerstellerEplan)
+		lineWriter(file, "Sheet1", &colNum, &rowNum, value.Bestellnr_L1)
+		rowNum++
+
+	}
+
+	if err := file.SaveAs("\\\\ME-Datenbank-1\\Database\\Schnittstelle\\BlameOutput\\" + pfad); err != nil {
+		fmt.Println(err)
+	}
+}
+
+func lineWriter(file *excelize.File, sheet string, colNum *int, rowNum *int, val string) {
+	file.SetCellValue(sheet, fmt.Sprintf("%s%d", string(rune(65+*colNum)), *rowNum), val)
+	*colNum++
+
+}
+func STD_Write_Stueckliste(pfad string, Lagerbestand []*Artikel) {
+	file := excelize.NewFile()
+	headers := []string{
+		pfad,
+	}
+	headers2 := []string{
+		"ERP",
+		"Menge",
+		"Hersteller",
+		"Bestellnummer",
+		"Eplannummmer",
+		"Beschreibung",
+		"Warengruppe",
+		"Quelle",
+		"Stand",
+		"Bereitsteller",
+		"Ort",
+	}
+	for i, header := range headers {
+		file.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+i)), 1), header)
+	}
+	for i, header := range headers2 {
+		file.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+i)), 2), header)
+	}
+
+	rowNum := 3
+	for _, value := range Lagerbestand {
+		colNum := 0
+
+		lineWriter(file, "Sheet1", &colNum, &rowNum, value.ERP)
+		lineWriter(file, "Sheet1", &colNum, &rowNum, fmt.Sprintf("%f", value.Stueckzahl))
+		lineWriter(file, "Sheet1", &colNum, &rowNum, value.Hersteller)
+		lineWriter(file, "Sheet1", &colNum, &rowNum, value.Bestellnummer)
+		lineWriter(file, "Sheet1", &colNum, &rowNum, value.ArtikelnummerEplan)
+		lineWriter(file, "Sheet1", &colNum, &rowNum, value.Beschreibung)
+		lineWriter(file, "Sheet1", &colNum, &rowNum, value.Warengruppe)
+		lineWriter(file, "Sheet1", &colNum, &rowNum, value.Quelle)
+		lineWriter(file, "Sheet1", &colNum, &rowNum, value.Stand)
+		lineWriter(file, "Sheet1", &colNum, &rowNum, value.Beistellung)
+		lineWriter(file, "Sheet1", &colNum, &rowNum, value.Aufstellungsort+value.Ortskennzeichen)
+		rowNum++
 	}
 
 	if err := file.SaveAs("\\\\ME-Datenbank-1\\Database\\Schnittstelle\\BlameOutput\\" + pfad); err != nil {
