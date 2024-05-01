@@ -7,6 +7,7 @@ import (
 
 func STD_Clean_Lagerbestand(lagerbestand []*Artikel) {
 	for num, artikel := range lagerbestand {
+<<<<<<< HEAD
 		if artikel.Bestellnummer != "" {
 			vorhanden := false
 
@@ -32,6 +33,28 @@ func STD_Clean_Lagerbestand(lagerbestand []*Artikel) {
 				lagerbestand[num].STD_Clean_Lagerbestand_Update(erp)
 			}
 		}
+=======
+		vorhanden := false
+
+		erp := artikel.ERP
+		_, ok := lagerbestand_Siteca_Map[artikel.Bestellnummer]
+		for _, ArtikelStamm1 := range lagerbestand_Siteca_Map {
+			if ok {
+
+				erp = lagerbestand_Siteca_Map[artikel.Bestellnummer].ERP
+				vorhanden = true
+			} else if strings.Contains(ArtikelStamm1.Bestellnr_L1, artikel.Bestellnummer) {
+				erp = ArtikelStamm1.ERP
+				vorhanden = true
+			} else if strings.Contains(ArtikelStamm1.Herstellertyp, artikel.Bestellnummer) {
+				erp = ArtikelStamm1.ERP
+				vorhanden = true
+			}
+		}
+		if vorhanden {
+			lagerbestand[num].STD_Clean_Lagerbestand_Update(erp)
+		}
+>>>>>>> 8b7053196449b14bdeb5c090fc340e06037bb70a
 	}
 }
 func (lagerbestand *Artikel) STD_Clean_Lagerbestand_Update(erp string) {
