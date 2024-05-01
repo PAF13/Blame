@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "svelte-sheets": "^1.0.0"
+  }
+}

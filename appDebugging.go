@@ -7,10 +7,10 @@ import (
 func (a *App) Lagerbestand(lager string) {
 	fmt.Println("Lagerbestand")
 	if lager == "kreonert" {
-		printLagerbestand(lagerbestand_Kroenert)
+
 	}
 	if lager == "siteca" {
-		printLagerbestand(lagerbestand_Siteca)
+
 	}
 	fmt.Println("Fertig")
 }
