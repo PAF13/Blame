@@ -13,6 +13,9 @@
 	let list2Last = "replace";
 	let list22 = Boolean(true);
 
+	let startup = Boolean(false);
+	let defaultModal = Boolean(false);
+
 	function dialog1(){
 		if(list1 != "loading..." && list2 != "loading..."){
 			list1 = "loading..."
@@ -28,7 +31,7 @@
 		}
 	}
 	function compare(){
-		if (list1  != "loading..." && list2 != "loading...") {
+		if (list1  != "loading..." || list2 != "loading...") {
 			ExcelChoice(list1,list2);
 		}
 	}
@@ -52,6 +55,7 @@
 		list22 = false
 	
 }
+
 </script>
 <h1>Stückliste</h1>
 <h2>list1:       {list1}</h2>
@@ -69,12 +73,12 @@
 </div>
 <div class="pt-8">
 <ButtonGroup>
-	<Button color="dark" on:click={reset}>Reset</Button>
-	<Button color="dark" on:click={switchList}>Tauschen</Button>
+	<Button color="dark" disabled={defaultModal} on:click={reset}>Reset</Button>
+	<Button color="dark" disabled={defaultModal} on:click={switchList}>Tauschen</Button>
 </ButtonGroup>
 <ButtonGroup>
-	<Button color="dark" on:click={compare}>Differenz</Button>	
-	<Button color="dark" on:click={compare}>Beistellung</Button>
-	<Button color="dark" on:click={compare}>Clean</Button>
+	<Button color="dark" disabled={defaultModal} on:click={compare}>Differenz</Button>	
+	<Button color="dark" disabled={defaultModal} on:click={compare}>Beistellung</Button>
+	<Button color="dark" disabled={defaultModal} on:click={compare}>Clean</Button>
 </ButtonGroup>
 </div>

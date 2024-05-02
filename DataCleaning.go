@@ -220,3 +220,19 @@ func Sitecavergleich2(artikelstammdaten map[string]*Artikel, liste map[string]*A
 		}
 	}
 }
+
+func STD_Sum(list *[]*Artikel, listsum *[]*Artikel, listmap map[string]*Artikel) {
+	for _, b := range *list {
+		_, ok := listmap[b.Ort+b.Bestellnummer]
+
+		if ok {
+			listmap[b.Ort+b.Bestellnummer].STD_Stueckliste_Update(b.Stueckzahl)
+		} else {
+			listmap[b.Ort+b.Bestellnummer] = b
+		}
+	}
+
+	for _, b := range listmap {
+		*listsum = append(*listsum, b)
+	}
+}

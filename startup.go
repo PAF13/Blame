@@ -18,7 +18,7 @@ func (a *App) BlameStartup() bool {
 
 	fmt.Println("Loading...")
 
-	STD_Read_Lagerbestand(stueckliste_Topix, "\\\\ME-Datenbank-1\\Database\\Schnittstelle\\Topix_Artikel20240430.xlsx", &lagerbestand_Siteca, "Siteca")
+	STD_Read_Lagerbestand(stueckliste_Topix, "\\\\ME-Datenbank-1\\Database\\Schnittstelle\\Topix_Artikel20240502.xlsx", &lagerbestand_Siteca, "Siteca")
 	STD_Write_Stueckliste("Liste_Siteca.xlsx", lagerbestand_Siteca)
 	/*for _, value := range lagerbestand_Siteca {
 		if strings.Contains(value.Hersteller, "RIT") {
@@ -46,19 +46,7 @@ func (a *App) BlameStartup() bool {
 	STD_Clean_Lagerbestand(Stueckliste)
 	STD_Write_Stueckliste("Liste_Stueckliste_Clean.xlsx", Stueckliste)
 
-	for _, b := range Stueckliste {
-		_, ok := Stueckliste_Map[b.Ort+b.Bestellnummer]
-
-		if ok {
-			Stueckliste_Map[b.Ort+b.Bestellnummer].STD_Stueckliste_Update(b.Stueckzahl)
-		} else {
-			Stueckliste_Map[b.Ort+b.Bestellnummer] = b
-		}
-	}
-
-	for _, b := range Stueckliste_Map {
-		Stueckliste2 = append(Stueckliste2, b)
-	}
+	STD_Sum(&Stueckliste, &Stueckliste2, Stueckliste_Map)
 
 	STD_Write_Stueckliste("Liste_Stueckliste_Clean_Sum.xlsx", Stueckliste2)
 

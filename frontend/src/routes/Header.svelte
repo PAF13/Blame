@@ -22,7 +22,7 @@
 
 	$:if (startup == true) {
 		modalText = "Done Loading :)";
-		setTimeout(modulo, 10000);
+		setTimeout(modulo, 2000);
 		function modulo() {
 			defaultModal = false
 	}
