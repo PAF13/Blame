@@ -11,37 +11,33 @@
 	let list2 = "";
 	let list2Switch = "";
 	let list2Last = "replace";
-
-
+	let list22 = Boolean(true);
 
 	function dialog1(){
-		if(list1 != list1Last){
+		if(list1 != "loading..." && list2 != "loading..."){
 			list1 = "loading..."
-			list1Last = "loading..."
+			
 			Dialog().then((result) => (list1 = result));
 		}
 	}
 	function dialog2(){
-		if(list2 != list2Last){
+		if(list2 != "loading..." && list1 != "loading..."){
 			list2 = "loading..."
-			list2Last = "loading..."
+
 			Dialog().then((result) => (list2 = result));
 		}
-	}
-	function reset(){
-		list1 = "";
-		list2 = "";
 	}
 	function compare(){
 		if (list1 && list2 != "loading..") {
 			ExcelChoice(list1,list2);
 		}
 	}
-	function beistellung(){
-		if (list1 && list2 != "loading..") {
-
-		}
+	function reset(){
+		list1 = "";
+		list2 = "";
 	}
+
+
 
 	function switchList(){
 		list1Switch = list1;
@@ -49,29 +45,36 @@
 		list2 = list1Switch;
 		list1 = list2Switch;
 	}
-</script>
 
+
+
+	$:if (list1 != "") {
+		list22 = false
+	
+}
+</script>
 <h1>Stückliste</h1>
+<h2>list1:       {list1}</h2>
+
+<h2>list2:       {list2}</h2>
+
+<h2>list22:      {list22}</h2>
 <div class="pt-8">
-<Label for="input-addon" class="mb-2">Alte Stückliste</Label>
 <ButtonGroup class="w-full">
 	<Button color="dark" on:click={dialog1}>importieren</Button>
-	<Input id="input-addon" type="text" value={list1} placeholder="Dateipfad" />
+	<Input id="input-addon" type="text" value={list1} placeholder="Alte Stückliste" />
+	<Button color="dark" on:click={dialog2} disabled={list22}>importieren</Button>
+	<Input id="input-addon" type="text" value={list2} placeholder="Neue Stückliste" />
 </ButtonGroup>
 </div>
 <div class="pt-8">
-<Label for="input-addon" class="mb-2">Neue Stückliste</Label>
-<ButtonGroup class="w-full">
-	<Button color="dark" on:click={dialog2}>importieren</Button>
-	<Input id="input-addon" type="text" value={list2} placeholder="Dateipfad" />
-	
-</ButtonGroup>
-</div>
-
-<div class="pt-8">
-	<Button color="dark" on:click={switchList}>Tauschen</Button>
+<ButtonGroup>
 	<Button color="dark" on:click={reset}>Reset</Button>
-	<Button color="dark" on:click={compare}>Differenz</Button>
-	<Button color="dark" on:click={beistellung}>Beistellung</Button>
+	<Button color="dark" on:click={switchList}>Tauschen</Button>
+</ButtonGroup>
+<ButtonGroup>
+	<Button color="dark" on:click={compare}>Differenz</Button>	
+	<Button color="dark" on:click={compare}>Beistellung</Button>
+	<Button color="dark" on:click={compare}>Clean</Button>
+</ButtonGroup>
 </div>
-
