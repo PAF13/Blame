@@ -7,7 +7,6 @@ toolchain go1.22.1
 require (
 	github.com/wailsapp/wails/v2 v2.8.0
 	github.com/xuri/excelize/v2 v2.8.1
-	golang.org/x/text v0.14.0
 )
 
 require (
@@ -42,6 +41,7 @@ require (
 	golang.org/x/exp v0.0.0-20230522175609-2e198f4a06a1 // indirect
 	golang.org/x/net v0.21.0 // indirect
 	golang.org/x/sys v0.17.0 // indirect
+	golang.org/x/text v0.14.0 // indirect
 )
 
 // replace github.com/wailsapp/wails/v2 v2.8.0 => C:\Users\administrator.ME0\go\pkg\mod

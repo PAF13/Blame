@@ -58,8 +58,8 @@ export function Test(arg1) {
   return window['go']['main']['App']['Test'](arg1);
 }
 
-export function VerbindungCorrection() {
-  return window['go']['main']['App']['VerbindungCorrection']();
+export function VerbindungRead() {
+  return window['go']['main']['App']['VerbindungRead']();
 }
 
 export function XMLTest() {

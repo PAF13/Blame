@@ -3,7 +3,7 @@
 	<meta name="description" content="About this app" />
 </svelte:head>
 <script>
-	import { Dialog, ExcelChoice,  ImportStueckliste, StuecklisteSum } from "$lib/wailsjs/go/main/App";
+	import { Dialog, ExcelChoice,  ImportStueckliste, StuecklisteSum, VerbindungRead } from "$lib/wailsjs/go/main/App";
 	import { Label, Input, Button, InputAddon, ButtonGroup, Checkbox } from 'flowbite-svelte';
 	let list1 = "";
 	let list1Switch = "";
@@ -37,6 +37,11 @@
 		if (list1  != "loading..." || list2 != "loading...") {
 			StuecklisteSum(list1);
 		}
+	}
+
+	function compare3(){
+			VerbindungRead();
+
 	}
 	function reset(){
 		list1 = "";
@@ -82,6 +87,6 @@
 <ButtonGroup>
 	<Button color="dark" disabled={defaultModal} on:click={compare}>Differenz</Button>	
 	<Button color="dark" disabled={defaultModal} on:click={compare2}>Stueckliste Sum</Button>
-	<Button color="dark" disabled={defaultModal} on:click={compare}>Clean</Button>
+	<Button color="dark" disabled={defaultModal} on:click={compare3}>verbindungsliste</Button>
 </ButtonGroup>
 </div>
