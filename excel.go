@@ -8,7 +8,7 @@ import (
 )
 
 // stücklistevergleich
-func (a *App) ExcelChoice(file1 string, file2 string) {
+func (a *App) ExcelChoice1(file1 string, file2 string) {
 	fmt.Println("Stueckliste Compare: Recieving Stücklisten")
 	CompareStueckliste(LoadStueckliste(file1), LoadStueckliste(file2))
 	fmt.Println("Stueckliste Compare: Stücklisten recieved")

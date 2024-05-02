@@ -9,6 +9,8 @@ export function Dialog():Promise<string>;
 
 export function ExcelChoice(arg1:string,arg2:string):Promise<void>;
 
+export function ExcelChoice1(arg1:string,arg2:string):Promise<void>;
+
 export function Greet(arg1:string):Promise<string>;
 
 export function ImportStueckliste(arg1:string,arg2:string):Promise<{[key: string]: Array<string>}|{[key: string]: Array<string>}>;
