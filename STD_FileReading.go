@@ -143,6 +143,7 @@ func STD_Set_Lagerbestand(lagerbestand *[]*Artikel, row []string, stuecklisteCel
 		Herstellertyp:      safeStringArrayPull(row, stuecklisteCells.Herstellertyp),
 		HerstellerEplan:    safeStringArrayPull(row, stuecklisteCells.HerstellerEplan),
 		Bestellnr_L1:       safeStringArrayPull(row, stuecklisteCells.Bestellnr_L1),
+		Bezeichnung:        safeStringArrayPull(row, stuecklisteCells.Bezeichnung),
 	})
 
 }

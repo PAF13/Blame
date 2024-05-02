@@ -18,15 +18,15 @@ func STD_Clean_Lagerbestand(lagerbestand []*Artikel) {
 					erp = ezERP.ERP
 					vorhanden = true
 					break
-				} else if strings.Contains(ArtikelStamm1.Bestellnr_L1, artikel.Bestellnummer) {
+				} else if strings.Contains(strings.ToLower(ArtikelStamm1.Bestellnr_L1), strings.ToLower(artikel.Bestellnummer)) {
 					erp = ArtikelStamm1.ERP
 					vorhanden = true
 					break
-				} else if strings.Contains(ArtikelStamm1.Herstellertyp, artikel.Bestellnummer) {
+				} else if strings.Contains(strings.ToLower(ArtikelStamm1.Herstellertyp), strings.ToLower(artikel.Bestellnummer)) {
 					erp = ArtikelStamm1.ERP
 					vorhanden = true
 					break
-				} else if strings.Contains(ArtikelStamm1.Bezeichnung, artikel.Bestellnummer) {
+				} else if strings.Contains(strings.ToLower(ArtikelStamm1.Bezeichnung), strings.ToLower(artikel.Bestellnummer)) {
 					erp = ArtikelStamm1.ERP
 					vorhanden = true
 					break
