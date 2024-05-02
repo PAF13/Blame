@@ -32,6 +32,7 @@ type Stuckliste_ImportTemplate struct {
 	Herstellertyp              int //
 	HerstellerEplan            int //
 	Bestellnr_L1               int //
+	Bezeichnung                int //
 
 }
 
@@ -52,6 +53,7 @@ var stueckliste_Topix = Stuckliste_ImportTemplate{
 	Herstellertyp:      188,
 	HerstellerEplan:    300,
 	Bestellnr_L1:       272,
+	Bezeichnung:        11,
 }
 var stueckliste_Kroenert = Stuckliste_ImportTemplate{
 	Aufstellungsort:    300,
@@ -70,6 +72,7 @@ var stueckliste_Kroenert = Stuckliste_ImportTemplate{
 	Herstellertyp:      300,
 	HerstellerEplan:    300,
 	Bestellnr_L1:       300,
+	Bezeichnung:        300,
 }
 var stueckliste_projekt = Stuckliste_ImportTemplate{
 	Aufstellungsort:    2,
@@ -88,6 +91,7 @@ var stueckliste_projekt = Stuckliste_ImportTemplate{
 	Herstellertyp:      300,
 	HerstellerEplan:    300,
 	Bestellnr_L1:       300,
+	Bezeichnung:        300,
 }
 
 func STD_Read_Lagerbestand(stuecklisteCells Stuckliste_ImportTemplate, stuecklistepfad string, lagerbestand *[]*Artikel, quelle string) {

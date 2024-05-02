@@ -26,6 +26,10 @@ func STD_Clean_Lagerbestand(lagerbestand []*Artikel) {
 					erp = ArtikelStamm1.ERP
 					vorhanden = true
 					break
+				} else if strings.Contains(ArtikelStamm1.Bezeichnung, artikel.Bestellnummer) {
+					erp = ArtikelStamm1.ERP
+					vorhanden = true
+					break
 				}
 			}
 			if vorhanden {

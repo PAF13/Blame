@@ -29,6 +29,7 @@ type Artikel struct {
 	Herstellertyp              string //
 	HerstellerEplan            string //
 	Bestellnr_L1               string //
+	Bezeichnung                string //
 }
 
 func (a *App) Dailyvergleich() {
