@@ -28,7 +28,7 @@
 		}
 	}
 	function compare(){
-		if (list1 && list2 != "loading..") {
+		if (list1  != "loading..." && list2 != "loading...") {
 			ExcelChoice(list1,list2);
 		}
 	}
