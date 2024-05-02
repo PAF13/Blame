@@ -17,12 +17,13 @@ func (a *App) Lagerbestand(lager string) {
 
 func printLagerbestand(lager map[string]*Artikel) {
 	for _, value := range lager {
-		fmt.Printf("ERP: %-40s", value.ERP)
-		fmt.Printf("Artikelnummer: %-50s", value.ArtikelnummerEplan)
-		fmt.Printf("Bestellnummer: %-40s", value.Bestellnummer)
-		fmt.Printf("Hersteller: %-40s", value.Hersteller)
-		fmt.Printf("Stückzahl: %-30f", value.Stueckzahl)
-		fmt.Printf("Typ: %-40s", value.Typ)
+		fmt.Printf("ERP: %-20s", value.ERP)
+		fmt.Printf("Stückzahl: %-10.2f", value.Stueckzahl)
+		fmt.Printf("Bestellnummer: %-25s", value.Bestellnummer)
+		fmt.Printf("Hersteller: %-30s", value.Hersteller)
+		fmt.Printf("Bestellnr_L1: %-20s", value.Bestellnr_L1)
+		fmt.Printf("Herstellertyp: %-20s", value.Herstellertyp)
+		fmt.Printf("Beistellung: %-20s", value.Beistellung)
 		fmt.Printf("\n")
 	}
 }

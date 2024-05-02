@@ -47,6 +47,15 @@ func (lagerbestand *Artikel) STD_Clean_Lagerbestand_Update(erp string) {
 func (lagerbestand *Artikel) STD_Stueckliste_Update(stueckzahl float64) {
 	lagerbestand.Stueckzahl = lagerbestand.Stueckzahl + stueckzahl
 }
+
+func (lagerbestand *Artikel) STD_Stueckliste_Update2(stueckzahl1 float64, stueckzahl2 float64) {
+	lagerbestand.Stueckzahl = stueckzahl2 - stueckzahl1
+}
+
+func (lagerbestand *Artikel) STD_Stueckliste_Update3(stueckzahl float64) {
+	lagerbestand.Stueckzahl = stueckzahl * -1
+}
+
 func Sitecavergleich(artikelstammdaten map[string]*Artikel, liste map[string]*Artikel) {
 	for artikel, row := range liste {
 		stammnum, ok := artikelstammdaten[artikel]

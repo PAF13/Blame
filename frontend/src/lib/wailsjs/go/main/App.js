@@ -50,6 +50,10 @@ export function NewProject(arg1, arg2, arg3) {
   return window['go']['main']['App']['NewProject'](arg1, arg2, arg3);
 }
 
+export function StuecklisteSum(arg1) {
+  return window['go']['main']['App']['StuecklisteSum'](arg1);
+}
+
 export function Test(arg1) {
   return window['go']['main']['App']['Test'](arg1);
 }
