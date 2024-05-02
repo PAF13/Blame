@@ -56,9 +56,9 @@ func (a *App) StuecklisteSum(file string) {
 	Stueckliste_Map := make(map[string]*Artikel)
 
 	STD_Read_Lagerbestand(stueckliste_projekt, file, &Stueckliste, "")
-	STD_Write_Stueckliste("Liste_Stueckliste.xlsx", Stueckliste)
+	//STD_Write_Stueckliste("Liste_Stueckliste.xlsx", Stueckliste)
 	STD_Clean_Lagerbestand(Stueckliste)
-	STD_Write_Stueckliste("Liste_Stueckliste_Clean.xlsx", Stueckliste)
+	//STD_Write_Stueckliste("Liste_Stueckliste_Clean.xlsx", Stueckliste)
 
 	STD_Sum(&Stueckliste, &Stueckliste2, Stueckliste_Map)
 

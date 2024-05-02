@@ -7,15 +7,15 @@ import (
 func (a *App) Lagerbestand(lager string) {
 	fmt.Println("Lagerbestand")
 	if lager == "kreonert" {
-
+		printLagerbestand(lagerbestand_Kroenert)
 	}
 	if lager == "siteca" {
-
+		printLagerbestand(lagerbestand_Siteca)
 	}
 	fmt.Println("Fertig")
 }
 
-func printLagerbestand(lager map[string]*Artikel) {
+func printLagerbestand(lager []*Artikel) {
 	for _, value := range lager {
 		fmt.Printf("ERP: %-20s", value.ERP)
 		fmt.Printf("Stückzahl: %-10.2f", value.Stueckzahl)

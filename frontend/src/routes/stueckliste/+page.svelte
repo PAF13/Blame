@@ -7,10 +7,8 @@
 	import { Label, Input, Button, InputAddon, ButtonGroup, Checkbox } from 'flowbite-svelte';
 	let list1 = "";
 	let list1Switch = "";
-	let list1Last = "replace";
 	let list2 = "";
 	let list2Switch = "";
-	let list2Last = "replace";
 	let list22 = Boolean(true);
 
 	let startup = Boolean(false);
@@ -83,7 +81,7 @@
 </ButtonGroup>
 <ButtonGroup>
 	<Button color="dark" disabled={defaultModal} on:click={compare}>Differenz</Button>	
-	<Button color="dark" disabled={defaultModal} on:click={compare2}>Stückliste Sum</Button>
+	<Button color="dark" disabled={defaultModal} on:click={compare2}>Stueckliste Sum</Button>
 	<Button color="dark" disabled={defaultModal} on:click={compare}>Clean</Button>
 </ButtonGroup>
 </div>
