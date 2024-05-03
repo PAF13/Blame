@@ -9,31 +9,23 @@ func STD_Clean_Lagerbestand(lagerbestand []*Artikel) {
 	for num, artikel := range lagerbestand {
 		if artikel.Bestellnummer != "" {
 			vorhanden := false
-
-			erp := artikel.ERP
-			ezERP, ok := lagerbestand_Siteca_Map[artikel.Bestellnummer]
-			for _, ArtikelStamm1 := range lagerbestand_Siteca {
-
-				if ok {
-					erp = ezERP.ERP
-					vorhanden = true
-					break
-				} else if strings.Contains(strings.ToLower(ArtikelStamm1.Bestellnr_L1), strings.ToLower(artikel.Bestellnummer)) {
-					erp = ArtikelStamm1.ERP
-					vorhanden = true
-					break
-				} else if strings.Contains(strings.ToLower(ArtikelStamm1.Herstellertyp), strings.ToLower(artikel.Bestellnummer)) {
-					erp = ArtikelStamm1.ERP
-					vorhanden = true
-					break
-				} else if strings.Contains(strings.ToLower(ArtikelStamm1.Bezeichnung), strings.ToLower(artikel.Bestellnummer)) {
-					erp = ArtikelStamm1.ERP
-					vorhanden = true
-					break
+			artikelnum, ok := lagerbestand_Siteca_Map[artikel.Bestellnummer]
+			erpNum := ""
+			if !ok {
+				for _, ArtikelStamm := range lagerbestand_Siteca {
+					if strings.Contains(strings.ToLower(ArtikelStamm.Bestellnummer), strings.ToLower(artikel.Bestellnummer)) {
+						erpNum = ArtikelStamm.ERP
+						vorhanden = true
+						break
+					}
 				}
+			} else {
+				erpNum = artikelnum.ERP
+				vorhanden = true
 			}
+
 			if vorhanden {
-				lagerbestand[num].STD_Clean_Lagerbestand_Update(erp)
+				lagerbestand[num].STD_Clean_Lagerbestand_Update(erpNum)
 			}
 		}
 	}

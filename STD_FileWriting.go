@@ -316,7 +316,7 @@ func STD_Write_Stueckliste(pfad string, Lagerbestand []*Artikel) {
 		colNum := 0
 
 		lineWriter(file, "Sheet1", &colNum, &rowNum, value.ERP)
-		lineWriter(file, "Sheet1", &colNum, &rowNum, fmt.Sprintf("%.2f", value.Stueckzahl))
+		lineWriter(file, "Sheet1", &colNum, &rowNum, fmt.Sprintf("%.0f", value.Stueckzahl))
 		lineWriter(file, "Sheet1", &colNum, &rowNum, value.Hersteller)
 		lineWriter(file, "Sheet1", &colNum, &rowNum, value.Bestellnummer)
 		lineWriter(file, "Sheet1", &colNum, &rowNum, value.ArtikelnummerEplan)
@@ -329,6 +329,49 @@ func STD_Write_Stueckliste(pfad string, Lagerbestand []*Artikel) {
 		rowNum++
 	}
 
+	if err := file.SaveAs("\\\\ME-Datenbank-1\\Database\\Schnittstelle\\BlameOutput\\" + pfad); err != nil {
+		fmt.Println(err)
+	}
+}
+
+func STD_Write_Stueckliste2(pfad string, Lagerbestand []*Artikel, ort string) {
+	file := excelize.NewFile()
+
+	rowNum := 1
+
+	for _, value := range Lagerbestand {
+		colNum := 0
+		fmt.Printf("ERP: %-20s", value.ERP)
+		fmt.Printf("Stückzahl: %-10.2f", value.Stueckzahl)
+		fmt.Printf("Bestellnummer: %-25s", value.Bestellnummer)
+		fmt.Printf("Ort: %-20s", value.Ort)
+		fmt.Printf("\n")
+
+		if value.Quelle != "Siteca" {
+			lineWriter(file, "Sheet1", &colNum, &rowNum, value.Hersteller)
+			lineWriter(file, "Sheet1", &colNum, &rowNum, value.Bestellnummer)
+		} else {
+			lineWriter(file, "Sheet1", &colNum, &rowNum, "")
+			lineWriter(file, "Sheet1", &colNum, &rowNum, "")
+		}
+
+		lineWriter(file, "Sheet1", &colNum, &rowNum, "1")
+		lineWriter(file, "Sheet1", &colNum, &rowNum, "2")
+		lineWriter(file, "Sheet1", &colNum, &rowNum, "ABLR")
+		lineWriter(file, "Sheet1", &colNum, &rowNum, fmt.Sprintf("%d", rowNum))
+
+		if value.Quelle != "Siteca" {
+			lineWriter(file, "Sheet1", &colNum, &rowNum, "")
+		} else {
+			lineWriter(file, "Sheet1", &colNum, &rowNum, value.ERP)
+		}
+
+		lineWriter(file, "Sheet1", &colNum, &rowNum, fmt.Sprintf("%.0f", value.Stueckzahl))
+		//lineWriter(file, "Sheet1", &colNum, &rowNum, value.Bestellnummer)
+		rowNum++
+	}
+
+	fmt.Println("Finished writing: " + pfad)
 	if err := file.SaveAs("\\\\ME-Datenbank-1\\Database\\Schnittstelle\\BlameOutput\\" + pfad); err != nil {
 		fmt.Println(err)
 	}

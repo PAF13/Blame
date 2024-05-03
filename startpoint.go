@@ -55,14 +55,35 @@ func (a *App) StuecklisteSum(file string) {
 	Stueckliste2 := []*Artikel{}
 	Stueckliste_Map := make(map[string]*Artikel)
 
-	STD_Read_Lagerbestand(stueckliste_projekt, file, &Stueckliste, "")
-	//STD_Write_Stueckliste("Liste_Stueckliste.xlsx", Stueckliste)
+	fmt.Println("Loading list")
+	STD_Read_Lagerbestand(stueckliste_projekt, file, &Stueckliste, "KROENERT")
+	fmt.Println("Writing list")
+	STD_Write_Stueckliste("!1Stueckliste.xlsx", Stueckliste)
+	fmt.Println("Cleaning list")
 	STD_Clean_Lagerbestand(Stueckliste)
-	//STD_Write_Stueckliste("Liste_Stueckliste_Clean.xlsx", Stueckliste)
-
+	fmt.Println("Writing clean list")
+	STD_Write_Stueckliste("!2Stueckliste_Clean.xlsx", Stueckliste)
+	fmt.Println("Merging list")
 	STD_Sum(&Stueckliste, &Stueckliste2, Stueckliste_Map)
+	fmt.Println("Writing merged list")
+	STD_Write_Stueckliste("!3Stuecklist_Sum.xlsx", Stueckliste2)
+	ort_map := make(map[string]string)
 
-	STD_Write_Stueckliste("Stueckliste_Sum.xlsx", Stueckliste2)
+	for _, b := range Stueckliste2 {
+		ort_map[b.Aufstellungsort+b.Ortskennzeichen] = b.Aufstellungsort + b.Ortskennzeichen
 
+	}
+
+	for _, b := range ort_map {
+		StuecklisteDif2 := []*Artikel{}
+		for _, value := range Stueckliste2 {
+			if b == value.Aufstellungsort+value.Ortskennzeichen && value.Beistellung == "SITECA" {
+				StuecklisteDif2 = append(StuecklisteDif2, value)
+			}
+		}
+		if len(StuecklisteDif2) > 0 {
+			STD_Write_Stueckliste2("Stueckliste_"+b+"_Topix.xlsx", StuecklisteDif2, b)
+		}
+	}
 	fmt.Println("StuecklisteSum finished")
 }
