@@ -5,44 +5,8 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"runtime"
 )
-
-type EplanLabelling struct {
-	XMLName  xml.Name `xml:"EplanLabelling"`
-	Id       string   `xml:"source_id,attr"`
-	Document Document `xml:"Document"`
-}
-type Document struct {
-	XMLName xml.Name `xml:"Document"`
-	Id      string   `xml:"source_id,attr"`
-	Page    Page     `xml:"Page"`
-}
-type Page struct {
-	XMLName xml.Name `xml:"Page"`
-	Id      string   `xml:"source_id,attr"`
-	Lines   []Line   `xml:"Line"`
-}
-
-type Line struct {
-	XMLName xml.Name `xml:"Line"`
-	Id      string   `xml:"source_id,attr"`
-	Labels  []Label  `xml:"Label"`
-}
-type Label struct {
-	XMLName    xml.Name   `xml:"Label"`
-	Id         string     `xml:"source_id,attr"`
-	Properties []Property `xml:"Property"`
-}
-
-type Property struct {
-	XMLName       xml.Name `xml:"Property"`
-	PropertyName  string   `xml:"PropertyName"`
-	PropertyValue string   `xml:"PropertyValue"`
-}
-type VerbindungProperty struct {
-	PropertyName  string
-	PropertyValue string
-}
 
 /*
 Name des Zielanschlusses (vollständig)
@@ -64,10 +28,10 @@ Symbolname
 Symbolvariante
 */
 
-func (a *App) VerbindungRead() {
+func (a *App) VerbindungRead(pfad string) {
 
 	// Open our xmlFile
-	xmlFile, err := os.Open("\\\\ME-Datenbank-1\\Database\\Schnittstelle\\EPlanOutput\\EPlan_Klemmen.xml")
+	xmlFile, err := os.Open(pfad)
 	// if we os.Open returns an error then handle it
 	if err != nil {
 		fmt.Println(err)
@@ -82,6 +46,7 @@ func (a *App) VerbindungRead() {
 
 	// we initialize our Users array
 	var eplanLabelling EplanLabelling
+	teilArray := make(map[string]*Betriebsmittel)
 	// we unmarshal our byteArray which contains our
 	// xmlFiles content into 'users' which we defined above
 	xml.Unmarshal(byteValue, &eplanLabelling)
@@ -89,16 +54,47 @@ func (a *App) VerbindungRead() {
 	// print out the user Type, their name, and their facebook url
 	// as just an example
 	for a := 0; a < len(eplanLabelling.Document.Page.Lines); a++ {
-		for b := 0; b < len(eplanLabelling.Document.Page.Lines[a].Labels); b++ {
-			fmt.Printf("Id: %-20s", eplanLabelling.Document.Page.Lines[a].Labels[b].Id)
+		line := eplanLabelling.Document.Page.Lines[a]
+		for b := 0; b < len(line.Labels); b++ {
+			label := eplanLabelling.Document.Page.Lines[a].Labels[b]
+			fmt.Printf("Id: %-20s", line.Labels[b].Id)
+			fmt.Printf("BMK: %-50s", line.Labels[b].Properties[1].PropertyValue)
 			fmt.Printf("\n")
-			for c := 0; c < len(eplanLabelling.Document.Page.Lines[a].Labels[b].Properties); c++ {
-				fmt.Printf("Property Name: %-50s", eplanLabelling.Document.Page.Lines[a].Labels[b].Properties[c].PropertyName)
-				fmt.Printf("Property Value: %-50s", eplanLabelling.Document.Page.Lines[a].Labels[b].Properties[c].PropertyValue)
-				fmt.Printf("\n")
-			}
+			teilArray[label.Properties[1].PropertyValue] = &Betriebsmittel{}
+			teilArray[label.Properties[1].PropertyValue].SetBetriebsmittel(&line.Labels[b])
 		}
 	}
 
 	fmt.Println("Verbindungsliste Fertig")
+}
+
+func (b *Betriebsmittel) SetBetriebsmittel(L *Label) {
+	for c := 0; c < len(L.Properties); c++ {
+		switch os := runtime.GOOS; os {
+		case "BMK (identifizierend)":
+			b.BMKVollständig = L.Properties[c].PropertyValue
+		case "Funktionale Zuordnung":
+			b.FunktionaleZuordnung = L.Properties[c].PropertyValue
+		case "Funktionskennzeichen":
+			b.Funktionskennzeichen = L.Properties[c].PropertyValue
+		case "Aufstellungsort":
+			b.Aufstellungsort = L.Properties[c].PropertyValue
+		case "Ortskennzeichen":
+			b.Ortskennzeichen = L.Properties[c].PropertyValue
+		//case "linux":
+		//Dokumentenart = L.Properties[C].PropertyValue
+		//case "linux":
+		//BenutzerdefinierteStruktur = L.Properties[C].PropertyValue
+		//case "linux":
+		//Anlagennummer = L.Properties[C].PropertyValue
+		case "linux":
+			b.BMK = L.Properties[c].PropertyValue
+		//case "Artikelnummer":
+		//b.Artikel = append(b.Artikel, L.Properties[c].PropertyValue)
+		default:
+			fmt.Printf("Property Name: %-50s", L.Properties[c].PropertyName)
+			fmt.Printf("Property Value: %-50s", L.Properties[c].PropertyValue)
+			fmt.Printf("\n")
+		}
+	}
 }

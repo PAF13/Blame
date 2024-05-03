@@ -7,21 +7,6 @@ import (
 	"os"
 )
 
-// XML parsing
-type PartManager struct {
-	XMLName xml.Name `xml:"partsmanagement"`
-	Parts   []Part   `xml:"part"`
-}
-
-type Part struct {
-	Artikelnummer string `xml:"P_ARTICLE_PARTNR,attr"`       //PXC.1088136
-	ERP           string `xml:"P_ARTICLE_ERPNR,attr"`        //1005928
-	Bestellnummer string `xml:"P_ARTICLE_ORDERNR,attr"`      //1088136
-	Hersteller    string `xml:"P_ARTICLE_MANUFACTURER,attr"` //PXC
-	Typ           string `xml:"P_ARTICLE_TYPENR,attr"`       //AXL F LPSDO8/3 1F
-	Note          string `xml:"P_ARTICLE_NOTE,attr"`         //en_US@Motor circuit breaker, TeSys Deca, 3P, 1.6-2.5 A, thermal magnetic, screw clamp terminals
-}
-
 func (a *App) XMLTest() {
 	artikelstammdaten := make(map[string]*Part) // Key: Bestellnummer
 

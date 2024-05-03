@@ -40,7 +40,7 @@
 	}
 
 	function compare3(){
-			VerbindungRead();
+			VerbindungRead(list1);
 
 	}
 	function reset(){

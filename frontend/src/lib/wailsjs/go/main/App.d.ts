@@ -29,6 +29,6 @@ export function StuecklisteSum(arg1:string):Promise<void>;
 
 export function Test(arg1:string):Promise<string>;
 
-export function VerbindungRead():Promise<void>;
+export function VerbindungRead(arg1:string):Promise<void>;
 
 export function XMLTest():Promise<void>;
