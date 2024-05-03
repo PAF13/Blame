@@ -12,5 +12,15 @@
 </script>
 
 <div class="text-column">
-	<h1>File Watcher</h1>
-</div>
+		<div>
+		
+		  
+		</div>
+		<iframe
+		id="inlineFrameExample"
+		title="Inline Frame Example"
+		width="1000"
+		height="1000"
+		src="https://eview.eplan.com">
+	  </iframe>
+	</div>

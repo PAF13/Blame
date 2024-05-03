@@ -50,16 +50,14 @@
 
 
 
-	function switchList(){
-		list1Switch = list1;
-		list2Switch = list2;
-		list2 = list1Switch;
-		list1 = list2Switch;
-	}
+function switchList(){
+	list1Switch = list1;
+	list2Switch = list2;
+	list2 = list1Switch;
+	list1 = list2Switch;
+}
 
-
-
-	$:if (list1 != "") {
+$:if (list1 != "") {
 		list22 = false
 	
 }

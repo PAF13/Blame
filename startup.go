@@ -12,7 +12,7 @@ func (a *App) BlameStartup() bool {
 	lagerbestand_Siteca = []*Artikel{}
 	lagerbestand_Siteca_Map = make(map[string]*Artikel) // key: Bestellnummer
 	lagerbestand_Kroenert = []*Artikel{}
-	startUp := true
+	startUp := false
 	fmt.Println("Loading...")
 	if startUp {
 		STD_Read_Lagerbestand(stueckliste_Topix, "\\\\ME-Datenbank-1\\Database\\Schnittstelle\\Topix_Artikel20240502.xlsx", &lagerbestand_Siteca, "Siteca")

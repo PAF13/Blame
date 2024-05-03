@@ -3,7 +3,7 @@
 	<meta name="description" content="About this app" />
 </svelte:head>
 <script>
-	import { Dialog, VerbindungCorrection, Dailyvergleich } from "$lib/wailsjs/go/main/App";
+	import { Dialog, Dailyvergleich } from "$lib/wailsjs/go/main/App";
 	import { Label, Listgroup, ListgroupItem, ButtonGroup, Button, Input} from 'flowbite-svelte';
 	import {Dropdown, DropdownItem, Checkbox, Search } from 'flowbite-svelte';
   import { ChevronDownOutline, UserRemoveSolid } from 'flowbite-svelte-icons';
