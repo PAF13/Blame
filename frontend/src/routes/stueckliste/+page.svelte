@@ -9,6 +9,7 @@
   let searchTerm = ''
   const people = [{ name: 'All', checked: true }];
 
+
   $: filteredItems = people.filter((person) => person.name.toLowerCase().indexOf(searchTerm?.toLowerCase()) !== -1);
 
 	let pfad1 = "";
@@ -46,22 +47,17 @@
 
 		ii2 = BMK.length;
 		for (let i = 0; i < ii2; i++) {
-
 			people[0]["name"] = "All";
 			people[0]["checked"] = true;
 			people.push({ name: BMK[i], checked: false });
 			ii++
+			
 		}
 
 		}
 	}
 
-function setMap(){
-	const people2_Map =  new Map();
-	people2_Map.set("BMK",{name: "test",checked: false })
 
-	return people2_Map
-}
 	function reset(){
 		pfad1 = "";
 		pfad2 = "";
@@ -84,9 +80,8 @@ function switchList(){
 <h1>Stückliste</h1>
 <h1>BMK.length: {BMK.length}</h1>
 <h1>BMK length check: {ii2}</h1>
-<h1>BMK: {BMK}</h1>
+<h1>BMK2: {BMK}</h1>
 <h1>BMK2: {ii}</h1>
-
 <div class="pt-8">
 <ButtonGroup class="w-full">
 	<Button color="dark" on:click={dialog1}>importieren</Button>
