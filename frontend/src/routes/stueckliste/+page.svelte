@@ -4,87 +4,136 @@
 </svelte:head>
 <script>
 	import { Dialog, ExcelChoice,  ImportStueckliste, StuecklisteSum, VerbindungRead } from "$lib/wailsjs/go/main/App";
-	import { Label, Input, Button, InputAddon, ButtonGroup, Checkbox } from 'flowbite-svelte';
-	let list1 = "";
-	let list1Switch = "";
-	let list2 = "";
-	let list2Switch = "";
-	let list22 = Boolean(true);
+	import { Label, Input, Button, InputAddon, ButtonGroup, Checkbox,Avatar,Dropdown, DropdownItem, Search } from 'flowbite-svelte';
+	import { ChevronDownOutline, UserRemoveSolid } from 'flowbite-svelte-icons';
+  let searchTerm = ''
+  const people = [{ name: 'All', checked: true }];
 
-	let startup = Boolean(false);
+  $: filteredItems = people.filter((person) => person.name.toLowerCase().indexOf(searchTerm?.toLowerCase()) !== -1);
+
+	let pfad1 = "";
+	let pfad1Last = "";
+	let pfad1Switch = "";
+
+	let pfad1Loaded = Boolean(false);
+
+	let pfad2 = "";
+	let pfad2Last = "";
+	let pfad2Switch = "";
+	let pfad2Loaded = Boolean(false);
+
+
+	let pfad22 = Boolean(true);
 	let defaultModal = Boolean(false);
+	let ii = 0;
+	let ii2 = 0;
+	let BMK = new Array();
+	let BMK2 = new Array();
+
+
 
 	function dialog1(){
-		if(list1 != "loading..." && list2 != "loading..."){
-			list1 = "loading..."
-			
-			Dialog().then((result) => (list1 = result));
-		}
-	}
-	function dialog2(){
-		if(list2 != "loading..." && list1 != "loading..."){
-			list2 = "loading..."
-
-			Dialog().then((result) => (list2 = result));
-		}
-	}
-	function compare(){
-		if (list1  != "loading..." || list2 != "loading...") {
-			ExcelChoice(list1,list2);
-		}
-	}
-	function compare2(){
-		if (list1  != "loading..." || list2 != "loading...") {
-			StuecklisteSum(list1);
-		}
+		Dialog().then((result) => (pfad1 = result));
+		pfad2Loaded = true;
 	}
 
-	function compare3(){
-			VerbindungRead(list1);
+	function load1(){
+		if(pfad1 != ""){
+			if(pfad1 != pfad1Last){
+				StuecklisteSum(pfad1).then((result) => (BMK = result));
+				pfad1Last = pfad1;
+			}
 
+		ii2 = BMK.length;
+		for (let i = 0; i < ii2; i++) {
+
+			people[0]["name"] = "All";
+			people[0]["checked"] = true;
+			people.push({ name: BMK[i], checked: false });
+			ii++
+		}
+
+		}
 	}
+
+function setMap(){
+	const people2_Map =  new Map();
+	people2_Map.set("BMK",{name: "test",checked: false })
+
+	return people2_Map
+}
 	function reset(){
-		list1 = "";
-		list2 = "";
+		pfad1 = "";
+		pfad2 = "";
+		pfad1Loaded = false;
+		pfad2Loaded = false;
 	}
 
 
 
 function switchList(){
-	list1Switch = list1;
-	list2Switch = list2;
-	list2 = list1Switch;
-	list1 = list2Switch;
-}
-
-$:if (list1 != "") {
-		list22 = false
-	
+	pfad1Switch = pfad1;
+	pfad2Switch = pfad2;
+	pfad2 = pfad1Switch;
+	pfad1 = pfad2Switch;
 }
 
 </script>
+
+
 <h1>Stückliste</h1>
-<h2>list1:       {list1}</h2>
+<h1>BMK.length: {BMK.length}</h1>
+<h1>BMK length check: {ii2}</h1>
+<h1>BMK: {BMK}</h1>
+<h1>BMK2: {ii}</h1>
 
-<h2>list2:       {list2}</h2>
-
-<h2>list22:      {list22}</h2>
 <div class="pt-8">
 <ButtonGroup class="w-full">
 	<Button color="dark" on:click={dialog1}>importieren</Button>
-	<Input id="input-addon" type="text" value={list1} placeholder="Alte Stückliste" />
-	<Button color="dark" on:click={dialog2} disabled={list22}>importieren</Button>
-	<Input id="input-addon" type="text" value={list2} placeholder="Neue Stückliste" />
+	<Button color="dark" on:click={load1}>Laden</Button>
+	<Input 		
+		id="input-addon" 
+		type="text" 
+		value={pfad1} 
+		placeholder="Alte Stückliste" 
+		color='green'/>
+
+</ButtonGroup>
+<ButtonGroup class="w-full">
+	<Button color="dark" disabled={pfad22}>importieren</Button>
+	<Button color="dark" disabled={pfad22}>Laden</Button>
+	<Input id="input-addon" type="text" value={pfad2} placeholder="Neue Stückliste" color='green' disabled={pfad22}/>
 </ButtonGroup>
 </div>
+<div>
+	<Button color="dark" >Dropdown search<ChevronDownOutline class="w-6 h-6 ms-2 text-white dark:text-white" /></Button>
+	<Dropdown class="overflow-y-auto px-3 pb-3 text-sm h-44">
+		<div slot="header" class="p-3">
+		  <Search size="md" bind:value={searchTerm}/>
+		</div>
+		{#each filteredItems as person (person.name)}
+		  <DropdownItem class="flex items-center text-base font-semibold gap-2">
+			<Checkbox bind:checked={person.checked}>{person.name}</Checkbox>
+			</DropdownItem>
+		{/each}
+	  </Dropdown>
+</div>
+
+
+<div class="pt-8">
+	<ButtonGroup>
+		<Button color="dark" disabled={defaultModal} on:click={reset}>Reset</Button>
+		<Button color="dark" disabled={defaultModal} on:click={switchList}>Tauschen</Button>
+	</ButtonGroup>
+	</div>
 <div class="pt-8">
 <ButtonGroup>
 	<Button color="dark" disabled={defaultModal} on:click={reset}>Reset</Button>
 	<Button color="dark" disabled={defaultModal} on:click={switchList}>Tauschen</Button>
 </ButtonGroup>
 <ButtonGroup>
-	<Button color="dark" disabled={defaultModal} on:click={compare}>Differenz</Button>	
-	<Button color="dark" disabled={defaultModal} on:click={compare2}>Stueckliste Sum</Button>
-	<Button color="dark" disabled={defaultModal} on:click={compare3}>verbindungsliste</Button>
+	<Button color="dark" disabled={defaultModal}>Differenz</Button>	
+	<Button color="dark" disabled={defaultModal} >Stueckliste Sum</Button>
+	<Button color="dark" disabled={defaultModal}>verbindungsliste</Button>
 </ButtonGroup>
 </div>

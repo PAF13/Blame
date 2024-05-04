@@ -54,6 +54,10 @@ export function StuecklisteSum(arg1) {
   return window['go']['main']['App']['StuecklisteSum'](arg1);
 }
 
+export function StuecklisteSum2(arg1) {
+  return window['go']['main']['App']['StuecklisteSum2'](arg1);
+}
+
 export function Test(arg1) {
   return window['go']['main']['App']['Test'](arg1);
 }

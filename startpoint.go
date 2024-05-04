@@ -49,7 +49,41 @@ func (a *App) ExcelChoice(file1 string, file2 string) {
 	fmt.Println("Start Point Fertig")
 }
 
-func (a *App) StuecklisteSum(file string) {
+func (a *App) StuecklisteSum(file string)  []string{
+
+	Stueckliste := []*Artikel{}
+	Stueckliste2 := []*Artikel{}
+	Stueckliste_Map := make(map[string]*Artikel)
+	ort_map2 := []string{}
+
+	fmt.Println("Loading list")
+	STD_Read_Lagerbestand(stueckliste_projekt, file, &Stueckliste, "KROENERT")
+	fmt.Println("Writing list")
+	STD_Write_Stueckliste("!1Stueckliste.xlsx", Stueckliste)
+	fmt.Println("Cleaning list")
+	STD_Clean_Lagerbestand(Stueckliste)
+	fmt.Println("Writing clean list")
+	STD_Write_Stueckliste("!2Stueckliste_Clean.xlsx", Stueckliste)
+	fmt.Println("Merging list")
+	STD_Sum(&Stueckliste, &Stueckliste2, Stueckliste_Map)
+	fmt.Println("Writing merged list")
+	STD_Write_Stueckliste("!3Stuecklist_Sum.xlsx", Stueckliste2)
+	ort_map := make(map[string]string)
+
+	for _, b := range Stueckliste2 {
+		ort_map[b.Aufstellungsort+b.Ortskennzeichen] = b.Aufstellungsort + b.Ortskennzeichen
+
+	}
+
+	for _, b := range ort_map {
+		ort_map2 = append(ort_map2, b)
+
+	}
+	fmt.Println("StuecklisteSum finished")
+	return ort_map2
+}
+
+func (a *App) StuecklisteSum2(file string) {
 
 	Stueckliste := []*Artikel{}
 	Stueckliste2 := []*Artikel{}
