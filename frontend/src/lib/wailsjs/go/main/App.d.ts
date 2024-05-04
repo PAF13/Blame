@@ -27,7 +27,7 @@ export function NewProject(arg1:string,arg2:string,arg3:string):Promise<void>;
 
 export function StuecklisteSum(arg1:string):Promise<Array<string>>;
 
-export function StuecklisteSum2(arg1:string):Promise<void>;
+export function StuecklisteSum2(arg1:Array<string>):Promise<void>;
 
 export function Test(arg1:string):Promise<string>;
 
