@@ -1,0 +1,62 @@
+package main
+
+var stueckliste_Topix = Stuckliste_ImportTemplate{
+	Aufstellungsort:    300,
+	Ortskennzeichen:    300,
+	ERP:                2,
+	Bestellnummer:      72,
+	Hersteller:         6,
+	ArtikelnummerEplan: 187,
+	Beschreibung:       24,
+	Stueckzahl:         50,
+	Einheit:            12,
+	FirstValue:         3,
+	Warengruppe:        300,
+	Beistellung:        300,
+	Ort:                300,
+	Herstellertyp:      188,
+	HerstellerEplan:    300,
+	Bestellnr_L1:       272,
+	Bezeichnung:        11,
+}
+var stueckliste_Kroenert = Stuckliste_ImportTemplate{
+	Aufstellungsort:    300,
+	Ortskennzeichen:    300,
+	ERP:                1,
+	Bestellnummer:      13,
+	Hersteller:         20,
+	ArtikelnummerEplan: 20,
+	Beschreibung:       9,
+	Stueckzahl:         3,
+	Einheit:            20,
+	FirstValue:         4,
+	Warengruppe:        20,
+	Beistellung:        12,
+	Ort:                3,
+	Herstellertyp:      300,
+	HerstellerEplan:    300,
+	Bestellnr_L1:       300,
+	Bezeichnung:        300,
+}
+var stueckliste_projekt = Stuckliste_ImportTemplate{
+	Aufstellungsort:    2,
+	Ortskennzeichen:    3,
+	ERP:                7,
+	Bestellnummer:      9,
+	Hersteller:         11,
+	ArtikelnummerEplan: 20,
+	Beschreibung:       10,
+	Stueckzahl:         5,
+	Einheit:            20,
+	FirstValue:         7,
+	Warengruppe:        20,
+	Beistellung:        12,
+	Ort:                20,
+	Herstellertyp:      300,
+	HerstellerEplan:    300,
+	Bestellnr_L1:       300,
+	Bezeichnung:        300,
+}
+
+func INIT_SETTINGS() {
+}

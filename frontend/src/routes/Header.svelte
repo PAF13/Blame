@@ -36,7 +36,7 @@
 		  <li class="new" aria-current={$page.url.pathname === '/' ? 'page' : undefined}><a href="/">Home</a></li>
 		  <li class="new" aria-current={$page.url.pathname === '/stueckliste' ? 'page' : undefined}><a href="/stueckliste">Stueckliste</a></li>
 		  <li class="new" aria-current={$page.url.pathname === '/verbindungsliste' ? 'page' : undefined}><a href="/verbindungsliste">verbindungsliste</a></li>
-		  <li class="new" aria-current={$page.url.pathname === '/filewatcher' ? 'page' : undefined}><a href="/filewatcher">filewatcher</a></li>
+		  <li class="new" aria-current={$page.url.pathname === '/projekt' ? 'page' : undefined}><a href="/projekt">Projekt</a></li>
 		  <li class="new" aria-current={$page.url.pathname === '/cleaner' ? 'page' : undefined}><a href="/cleaner">Cleaner</a></li>
 		  <li class="new" aria-current={$page.url.pathname === '/test' ? 'page' : undefined}><a href="/test">Test</a></li>
 		  <li class="new" aria-current={$page.url.pathname === '/debugger' ? 'page' : undefined}><a href="/debugger">Debugger</a></li>

@@ -9,6 +9,13 @@ var lagerbestand_Kroenert = []*Artikel{}
 var lagerbestand_Siteca_Map = map[string]*Artikel{}
 
 func (a *App) BlameStartup() bool {
+	INIT_SETTINGS()
+	INIT_ARTIKELSTAMMDATEN()
+	return true
+}
+func INIT_ARTIKELSTAMMDATEN(){
+}
+func (a *App) BlameStartup2() bool {
 	lagerbestand_Siteca = []*Artikel{}
 	lagerbestand_Siteca_Map = make(map[string]*Artikel) // key: Bestellnummer
 	lagerbestand_Kroenert = []*Artikel{}
