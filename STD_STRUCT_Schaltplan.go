@@ -34,7 +34,7 @@ type Verbindung struct {
 	Bauteil                   [2]Bauteil
 	Name                      BMK
 	VerbindungZugehörigkeit   string
-	Verbindungsquerschnitt    string
+	Verbindungsquerschnitt    float64
 	Verbindungsfarbeundnummer string
 	VerbindungLänge           int
 	Netzname                  string

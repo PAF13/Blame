@@ -15,6 +15,8 @@ export function Greet(arg1:string):Promise<string>;
 
 export function ImportStueckliste(arg1:string,arg2:string):Promise<{[key: string]: Array<string>}|{[key: string]: Array<string>}>;
 
+export function Jsonwrite():Promise<void>;
+
 export function Lagerbestand(arg1:string):Promise<void>;
 
 export function ListTrees():Promise<void>;
@@ -31,6 +33,6 @@ export function StuecklisteSum2(arg1:Array<string>):Promise<void>;
 
 export function Test(arg1:string):Promise<string>;
 
-export function VerbindungRead(arg1:string):Promise<void>;
+export function VerbindungRead():Promise<void>;
 
 export function XMLTest():Promise<void>;

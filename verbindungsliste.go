@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"strconv"
+	"strings"
 )
 
 /*
@@ -28,6 +29,7 @@ Symbolname
 Symbolvariante
 */
 
+var verbindung_Clean []*Verbindung
 func (a *App) VerbindungRead() {
 
 	// Open our xmlFile
@@ -37,7 +39,7 @@ func (a *App) VerbindungRead() {
 		fmt.Println(err)
 	}
 
-	fmt.Println("Successfully Opened EPlan_Klemmen.xml")
+	fmt.Println("Successfully Opened EPlan_Verbindungsliste.xml")
 	// defer the closing of our xmlFile so that we can parse it later on
 	defer xmlFile.Close()
 
@@ -46,7 +48,8 @@ func (a *App) VerbindungRead() {
 
 	// we initialize our Users array
 	var eplanLabelling EplanLabelling
-	teilArray := make(map[string]*Verbindung)
+
+	verbindung := []*Verbindung{}
 	// we unmarshal our byteArray which contains our
 	// xmlFiles content into 'users' which we defined above
 	xml.Unmarshal(byteValue, &eplanLabelling)
@@ -55,25 +58,57 @@ func (a *App) VerbindungRead() {
 	// as just an example
 	for a := 0; a < len(eplanLabelling.Document.Page.Lines); a++ {
 		line := eplanLabelling.Document.Page.Lines[a]
+		ii := 0
 		for b := 0; b < len(line.Labels); b++ {
 			label := eplanLabelling.Document.Page.Lines[a].Labels[b]
-			
-			fmt.Printf("Id: %-20s", line.Labels[b].XMLName.Space)
+
+			verbindung = append(verbindung, SetBetriebsmittel(&line.Labels[b]))
 			fmt.Printf("Id: %-20s", line.Labels[b].Id)
+			fmt.Printf("#: %-20d", ii)
+			fmt.Printf("len: %-20d", len(verbindung))
+			fmt.Printf("Property Value: %-20s", label.Properties[1].PropertyValue)
 			fmt.Printf("\n")
-			teilArray[label.Properties[1].PropertyValue] = &Verbindung{}
-			teilArray[label.Properties[1].PropertyValue].SetBetriebsmittel(&line.Labels[b])
+		}
+	}
+	
+	verbindung_Clean = []*Verbindung{}
+
+	for _,b := range verbindung{
+		if rules(b){
+			verbindung_Clean = append(verbindung_Clean, b)
 		}
 	}
 
+	STD_Write_Verbindungsliste(verbindung_Clean)
 	fmt.Println("Verbindungsliste Fertig")
 }
-func (b *Verbindung) SetBetriebsmittel(L *Label) {
+
+func rules(verbindung *Verbindung) bool{
+	pass := true
+	//fehler := []string{}
+	
+	switch{
+	case verbindung.Bauteil[0].BMK.BMK == "" || verbindung.Bauteil[1].BMK.BMK == "" :
+		pass = false
+	case verbindung.Verbindungsquerschnitt > 6.0:
+		pass = false
+	case verbindung.Bauteil[0].BMK.Ortskennzeichen != "EC0" && verbindung.Bauteil[1].BMK.Ortskennzeichen != "EC0" :
+		pass = false
+	//case verbindung.VerbindungLänge < 300:
+	default:
+
+	}
+
+	return pass
+}
+
+func SetBetriebsmittel(L *Label) *Verbindung{
+	b := &Verbindung{}
+
 	count := [30]int{}
 	for _,prop := range L.Properties{
+		querschnitt, _ := strconv.ParseFloat(strings.Replace(prop.PropertyValue,",",".",1),32)
 		switch prop.PropertyName{		
-		case "ID":  
-			b.ID = prop.PropertyValue
 		case "Name des Zielanschlusses (vollständig)":
 			if count[0] == 0{
 				b.Bauteil[0].BMK.BMKVoll = prop.PropertyValue
@@ -194,15 +229,19 @@ func (b *Verbindung) SetBetriebsmittel(L *Label) {
 		case "Verbindung: Zugehörigkeit":                         			                            
 				b.VerbindungZugehörigkeit = prop.PropertyValue  
 		case "Verbindungsquerschnitt / -durchmesser":             
-				b.Verbindungsquerschnitt = prop.PropertyValue 
+				b.Verbindungsquerschnitt =  querschnitt
 		case "Verbindungsfarbe / -nummer":                        
 				b.Verbindungsfarbeundnummer = prop.PropertyValue
 		case "Verbindung: Länge (vollständig)": 
-				i, err := strconv.Atoi(prop.PropertyValue)
-				if err != nil {
-					fmt.Println(err)
-				}                 
-				b.VerbindungLänge = i
+		if prop.PropertyValue == ""{
+			b.VerbindungLänge = 0
+		}else {
+			i, err := strconv.Atoi(prop.PropertyValue)
+			if err != nil {
+				fmt.Println(err)
+			}                 
+			b.VerbindungLänge = i
+		}		
 		case "Netzname":                                         
 				b.Netzname = prop.PropertyValue 
 		case "Signalname":                                       
@@ -216,10 +255,10 @@ func (b *Verbindung) SetBetriebsmittel(L *Label) {
 		case "Netzindex":
 				b.Netzindex = prop.PropertyValue
 		default:
-			fmt.Printf("Property Name: %-50s", prop.PropertyName)
-			fmt.Printf("Property Value: %-50s", prop.PropertyValue)
+			fmt.Printf("Missing: %-50s", prop.PropertyName)
+			fmt.Printf("%-50s", prop.PropertyValue)
 			fmt.Printf("\n")
 		}
-	
 	}
+	return b
 }
