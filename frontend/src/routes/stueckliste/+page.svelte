@@ -107,7 +107,6 @@ function switchList(){
 		value={pfad1} 
 		placeholder="Alte Stückliste" 
 		color='green'/>
-
 </ButtonGroup>
 <ButtonGroup class="w-full">
 	<Button color="dark" disabled={pfad22}>importieren</Button>
