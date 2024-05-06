@@ -1,40 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"strconv"
-
-	"github.com/xuri/excelize/v2"
 )
 
 
 
-func STD_Read_Lagerbestand(stuecklisteCells Stuckliste_ImportTemplate, stuecklistepfad string, lagerbestand *[]*Artikel, quelle string) {
-	headSkip := stuecklisteCells.FirstValue
-	skip := 0
-
-	fmt.Println("Opening: " + stuecklistepfad)
-	spreadsheet, err := excelize.OpenFile(stuecklistepfad)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	rows, err := spreadsheet.GetRows(spreadsheet.GetSheetList()[0])
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	for _, row := range rows {
-		if skip >= headSkip {
-			STD_Set_Lagerbestand(lagerbestand, row, stuecklisteCells, quelle)
-		}
-		skip++
-	}
-
-	if err := spreadsheet.Close(); err != nil {
-		fmt.Println(err)
-	}
-}
 
 func STD_Set_Lagerbestand(lagerbestand *[]*Artikel, row []string, stuecklisteCells Stuckliste_ImportTemplate, quelle string) {
 	Stueckzahl, _ := strconv.ParseFloat(safeStringArrayPull(row, stuecklisteCells.Stueckzahl), 64)

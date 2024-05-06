@@ -100,8 +100,8 @@ func (lager2 BAUTEIL) STD_Read_Lagerbestand3(artikel []string, readNum ARTIKEL, 
 }
 
 func bestellnummerClean (x string) string{
-	//x = strings.ReplaceAll(x, " ", "")
-	//x = strings.ReplaceAll(x, "\t", "")
-	//x = strings.ReplaceAll(x, "\n", "")
+	x = strings.ReplaceAll(x, " ", "")
+	x = strings.ReplaceAll(x, "\t", "")
+	x = strings.ReplaceAll(x, "\n", "")
 	return x
 }
