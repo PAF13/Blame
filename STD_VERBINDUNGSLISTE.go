@@ -2,13 +2,9 @@ package main
 
 import (
 	"encoding/json"
-	"encoding/xml"
 	"fmt"
-	"io"
 	"log"
 	"os"
-	"strconv"
-	"strings"
 )
 var verbindung_Clean []*Verbindung
 func INIT_VERBINDUNGSLITE() {
@@ -24,32 +20,18 @@ func INIT_VERBINDUNGSLITE() {
 	defer xmlFile.Close()
 
 	// read our opened xmlFile as a byte array.
-	byteValue, _ := io.ReadAll(xmlFile)
+	//byteValue, _ := io.ReadAll(xmlFile)
 
 	// we initialize our Users array
-	var eplanLabelling EplanLabelling
+	//var eplanLabelling EplanLabelling
 
 	verbindung := []*Verbindung{}
 	// we unmarshal our byteArray which contains our
 	// xmlFiles content into 'users' which we defined above
-	xml.Unmarshal(byteValue, &eplanLabelling)
+	//xml.Unmarshal(byteValue, &eplanLabelling)
 	// we iterate through every user within our users array and
 	// print out the user Type, their name, and their facebook url
 	// as just an example
-	for a := 0; a < len(eplanLabelling.Document.Page.Lines); a++ {
-		line := eplanLabelling.Document.Page.Lines[a]
-		ii := 0
-		for b := 0; b < len(line.Labels); b++ {
-			label := eplanLabelling.Document.Page.Lines[a].Labels[b]
-
-			verbindung = append(verbindung, SetBetriebsmittel(&line.Labels[b]))
-			fmt.Printf("Id: %-20s", line.Labels[b].Id)
-			fmt.Printf("#: %-20d", ii)
-			fmt.Printf("len: %-20d", len(verbindung))
-			fmt.Printf("Property Value: %-20s", label.Properties[1].PropertyValue)
-			fmt.Printf("\n")
-		}
-	}
 
 	verbindung_Clean = []*Verbindung{}
 
@@ -93,7 +75,7 @@ func rules(verbindung *Verbindung) bool{
 
 	return pass
 }
-
+/*
 func SetBetriebsmittel(L *Label) *Verbindung{
 	b := &Verbindung{}
 
@@ -255,3 +237,4 @@ func SetBetriebsmittel(L *Label) *Verbindung{
 	}
 	return b
 }
+*/
