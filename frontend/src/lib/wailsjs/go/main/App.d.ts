@@ -5,6 +5,8 @@ export function AddProdukt():Promise<void>;
 
 export function BlameStartup():Promise<boolean>;
 
+export function BlameStartup2():Promise<boolean>;
+
 export function CurrentProject():Promise<void>;
 
 export function Dailyvergleich():Promise<void>;

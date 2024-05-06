@@ -10,6 +10,10 @@ export function BlameStartup() {
   return window['go']['main']['App']['BlameStartup']();
 }
 
+export function BlameStartup2() {
+  return window['go']['main']['App']['BlameStartup2']();
+}
+
 export function CurrentProject() {
   return window['go']['main']['App']['CurrentProject']();
 }
