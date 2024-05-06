@@ -7,15 +7,9 @@ export function BlameStartup():Promise<boolean>;
 
 export function CurrentProject():Promise<void>;
 
-export function Dailyvergleich():Promise<void>;
-
 export function Dialog():Promise<string>;
 
 export function Greet(arg1:string):Promise<string>;
-
-export function ImportStueckliste(arg1:string,arg2:string):Promise<{[key: string]: Array<string>}|{[key: string]: Array<string>}>;
-
-export function Jsonwrite():Promise<void>;
 
 export function Lagerbestand(arg1:string):Promise<void>;
 
@@ -30,7 +24,3 @@ export function NewProject(arg1:string,arg2:string,arg3:string):Promise<void>;
 export function NewProject2():Promise<void>;
 
 export function Test(arg1:string):Promise<string>;
-
-export function VerbindungRead():Promise<void>;
-
-export function XMLTest():Promise<void>;
