@@ -1,9 +1,8 @@
 package main
 
-type JSON_PARSING struct {
+type JSON_HEADER struct {
 	NAME    string
 	VERSION [3]int
-	BODY    PROJEKT
 }
 
 type BMK2 struct {
@@ -95,6 +94,7 @@ type PRODUKTE struct { //produkt info schaltschrank etc
 }
 
 type PROJEKT struct {
+	HEADER               JSON_HEADER
 	PROJEKT_NUMMER       string
 	PROJEKT_BESCHREIBUNG string
 	BAUJAHR              int
@@ -103,10 +103,46 @@ type PROJEKT struct {
 }
 
 type LAGER struct {
+	HEADER      JSON_HEADER
 	EIGENTUEMER string
 	LAGERORT    map[string]LAGERORT
 }
 type LAGERORT struct {
-	LAGERNAME string
-	BAUTEIL   map[string]BAUTEIL
+	LAGERNAME     string
+	ARTIKELANZAHL int
+	BAUTEIL       map[string]BAUTEIL
+}
+
+type EXTERN_READ_EXCEL struct {
+	HEADER            JSON_HEADER
+	KUNDE_EINSTELLUNG KUNDE_EINSTELLUNG
+}
+
+type KUNDE_EINSTELLUNG struct {
+	KUNDE_STUECKLISTE  KUNDE_STUECKLISTE
+	KUNDE_LAGERBESTAND KUNDE_LAGERBESTAND
+}
+type KUNDE_STUECKLISTE struct {
+	FIRST_VALUE int
+	ARTIKEL     ARTIKEL
+	KUNDE_BMK   KUNDE_BMK
+}
+
+type KUNDE_LAGERBESTAND struct {
+	LAGERORT    int
+	FIRST_VALUE int
+	ARTIKEL     ARTIKEL
+}
+type ARTIKEL struct {
+	UID                 int
+	ERP                 int
+	ERP_QUELLE          string
+	BESTELLNUMMER       int
+	ARTIKELNUMMER_EPLAN int
+	HERSTELLER          int
+	STEUCKZAHL          int
+	EINHEIT             int
+	BEISTELLUNG         int
+	BESCHREIBUNG        int
+	GELIEFERT           int
 }

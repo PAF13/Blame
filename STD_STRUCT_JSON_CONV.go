@@ -57,6 +57,7 @@ var stueckliste_projekt = Stuckliste_ImportTemplate{
 	Bestellnr_L1:       300,
 	Bezeichnung:        300,
 }
+var externalReadExcel map[string]EXTERN_READ_EXCEL
 
 type EINSTELLUNGEN struct {
 	ALLEMEIN_EINSTELLUNG ALLGEMEIN_EINSTELLUNG
@@ -106,32 +107,7 @@ type FOTOS struct {
 type PRUEFPROTOKOLL struct {
 	ROOT string
 }
-type KUNDE_EINSTELLUNG struct {
-	KUNDE_STUECKLISTE  KUNDE_STUECKLISTE
-	KUNDE_LAGERBESTAND KUNDE_LAGERBESTAND
-}
-type KUNDE_STUECKLISTE struct {
-	KUNDE_BMK   KUNDE_BMK
-	FIRST_VALUE int
-	ARTIKEL     ARTIKEL
-}
 
-type KUNDE_LAGERBESTAND struct {
-	LAGERORT    int
-	FIRST_VALUE int
-	ARTIKEL     ARTIKEL
-}
-type ARTIKEL struct {
-	ERP                 int
-	ERP_QUELLE          int
-	BESTELLNUMMER       int
-	ARTIKELNUMMER_EPLAN int
-	HERSTELLER          int
-	STEUCKZAHL          int
-	EINHEIT             int
-	BEISTELLUNG         int
-	GELIEFERT           int
-}
 type KUNDE_BMK struct {
 	BMK_VOLL                   int
 	BMK_ID                     int

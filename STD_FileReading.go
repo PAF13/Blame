@@ -37,7 +37,7 @@ func STD_Read_Lagerbestand(stuecklisteCells Stuckliste_ImportTemplate, stuecklis
 }
 
 func STD_Set_Lagerbestand(lagerbestand *[]*Artikel, row []string, stuecklisteCells Stuckliste_ImportTemplate, quelle string) {
-	Stueckzahl, _ := strconv.ParseFloat(safeStringArrayPull(row, stuecklisteCells.Stueckzahl), 32)
+	Stueckzahl, _ := strconv.ParseFloat(safeStringArrayPull(row, stuecklisteCells.Stueckzahl), 64)
 
 	ort := safeStringArrayPull(row, stuecklisteCells.Aufstellungsort) + safeStringArrayPull(row, stuecklisteCells.Ortskennzeichen)
 

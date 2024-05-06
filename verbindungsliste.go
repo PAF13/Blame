@@ -107,7 +107,8 @@ func SetBetriebsmittel(L *Label) *Verbindung{
 
 	count := [30]int{}
 	for _,prop := range L.Properties{
-		querschnitt, _ := strconv.ParseFloat(strings.Replace(prop.PropertyValue,",",".",1),32)
+		//strings.Replace(prop.PropertyValue,",",".",1)
+		querschnitt, _ := strconv.ParseFloat(strings.Replace(prop.PropertyValue,",",".",1),64)
 		switch prop.PropertyName{		
 		case "Name des Zielanschlusses (vollständig)":
 			if count[0] == 0{

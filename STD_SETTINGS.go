@@ -49,141 +49,6 @@ func INIT_SETTINGS() {
 			ROOT: "C:\\Dev\\Blame\\frontend\\src\\api",
 		},
 	}
-	einstellungen.KUNDE_EINSTELLUNG = map[string]KUNDE_EINSTELLUNG{}
-	einstellungen.KUNDE_EINSTELLUNG["KNT"] = KUNDE_EINSTELLUNG{
-		KUNDE_STUECKLISTE: KUNDE_STUECKLISTE{
-			KUNDE_BMK: KUNDE_BMK{
-				BMK_VOLL:                   9999,
-				BMK_ID:                     9999,
-				FUNKTIONALEZUORDNUNG:       0,
-				FUNKTIONSKENNZEICHEN:       1,
-				AUFSTELLUNGSORT:            2,
-				ORTSKENNZEICHEN:            3,
-				BMK:                        4,
-				DOKUMENTENART:              9999,
-				BENUTZERDEFINIERTESTRUKTUR: 9999,
-				ANLAGENNUMMER:              9999,
-				KENNBUCHSTABE:              9999,
-			},
-			FIRST_VALUE: 9999,
-			ARTIKEL: ARTIKEL{
-				ERP:                 7,
-				ERP_QUELLE:          9999,
-				BESTELLNUMMER:       9,
-				ARTIKELNUMMER_EPLAN: 9999,
-				HERSTELLER:          11,
-				STEUCKZAHL:          5,
-				EINHEIT:             9999,
-				BEISTELLUNG:         12,
-				GELIEFERT:           9999,
-			},
-		},
-		KUNDE_LAGERBESTAND: KUNDE_LAGERBESTAND{
-			LAGERORT: 9999,
-			FIRST_VALUE: 9999,
-			ARTIKEL: ARTIKEL{
-				ERP:                 9999,
-				ERP_QUELLE:          9999,
-				BESTELLNUMMER:       9999,
-				ARTIKELNUMMER_EPLAN: 9999,
-				HERSTELLER:          9999,
-				STEUCKZAHL:          9999,
-				EINHEIT:             9999,
-				BEISTELLUNG:         9999,
-				GELIEFERT:           9999,
-			},
-		},
-	}
-
-	einstellungen.KUNDE_EINSTELLUNG["TIG"] = KUNDE_EINSTELLUNG{
-		KUNDE_STUECKLISTE: KUNDE_STUECKLISTE{
-			KUNDE_BMK: KUNDE_BMK{
-				BMK_VOLL:                   9999,
-				BMK_ID:                     9999,
-				FUNKTIONALEZUORDNUNG:       9999,
-				FUNKTIONSKENNZEICHEN:       9999,
-				AUFSTELLUNGSORT:            9999,
-				ORTSKENNZEICHEN:            9999,
-				BMK:                        9999,
-				DOKUMENTENART:              9999,
-				BENUTZERDEFINIERTESTRUKTUR: 9999,
-				ANLAGENNUMMER:              9999,
-				KENNBUCHSTABE:              9999,
-			},
-			FIRST_VALUE: 9999,
-			ARTIKEL: ARTIKEL{
-				ERP:                 9999,
-				ERP_QUELLE:          9999,
-				BESTELLNUMMER:       9999,
-				ARTIKELNUMMER_EPLAN: 9999,
-				HERSTELLER:          9999,
-				STEUCKZAHL:          9999,
-				EINHEIT:             9999,
-				BEISTELLUNG:         9999,
-				GELIEFERT:           9999,
-			},
-		},
-		KUNDE_LAGERBESTAND: KUNDE_LAGERBESTAND{
-			LAGERORT: 9999,
-			FIRST_VALUE: 9999,
-			ARTIKEL: ARTIKEL{
-				ERP:                 9999,
-				ERP_QUELLE:          9999,
-				BESTELLNUMMER:       9999,
-				ARTIKELNUMMER_EPLAN: 9999,
-				HERSTELLER:          9999,
-				STEUCKZAHL:          9999,
-				EINHEIT:             9999,
-				BEISTELLUNG:         9999,
-				GELIEFERT:           9999,
-			},
-		},
-	}
-
-	einstellungen.KUNDE_EINSTELLUNG["SITECA"] = KUNDE_EINSTELLUNG{
-		KUNDE_STUECKLISTE: KUNDE_STUECKLISTE{
-			KUNDE_BMK: KUNDE_BMK{
-				BMK_VOLL:                   9999,
-				BMK_ID:                     9999,
-				FUNKTIONALEZUORDNUNG:       9999,
-				FUNKTIONSKENNZEICHEN:       9999,
-				AUFSTELLUNGSORT:            9999,
-				ORTSKENNZEICHEN:            9999,
-				BMK:                        9999,
-				DOKUMENTENART:              9999,
-				BENUTZERDEFINIERTESTRUKTUR: 9999,
-				ANLAGENNUMMER:              9999,
-				KENNBUCHSTABE:              9999,
-			},
-			FIRST_VALUE: 3,
-			ARTIKEL: ARTIKEL{
-				ERP:                 2,
-				ERP_QUELLE:          9999,
-				BESTELLNUMMER:       72,
-				ARTIKELNUMMER_EPLAN: 187,
-				HERSTELLER:          6,
-				STEUCKZAHL:          50,
-				EINHEIT:             12,
-				BEISTELLUNG:         9999,
-				GELIEFERT:           9999,
-			},
-		},
-		KUNDE_LAGERBESTAND: KUNDE_LAGERBESTAND{
-			LAGERORT: 9999,
-			FIRST_VALUE: 9999,
-			ARTIKEL: ARTIKEL{
-				ERP:                 9999,
-				ERP_QUELLE:          9999,
-				BESTELLNUMMER:       9999,
-				ARTIKELNUMMER_EPLAN: 9999,
-				HERSTELLER:          9999,
-				STEUCKZAHL:          9999,
-				EINHEIT:             9999,
-				BEISTELLUNG:         9999,
-				GELIEFERT:           9999,
-			},
-		},
-	}
 
 	b2, err := json.MarshalIndent(einstellungen, "", "    ")
 	if err != nil {
@@ -192,6 +57,124 @@ func INIT_SETTINGS() {
 
 	fmt.Println(string(b2))
 	err = os.WriteFile("\\\\ME-Datenbank-1\\Database\\Schnittstelle\\Test_Project\\.blame_Einstellung.json", b2, 0644)
+	if err != nil {
+		log.Println(err)
+	}
+
+	externalReadExcel = map[string]EXTERN_READ_EXCEL{}
+
+	externalReadExcel["SITECA"] = EXTERN_READ_EXCEL{
+		HEADER: JSON_HEADER{},
+		KUNDE_EINSTELLUNG: KUNDE_EINSTELLUNG{
+			KUNDE_STUECKLISTE: KUNDE_STUECKLISTE{
+				KUNDE_BMK: KUNDE_BMK{
+					BMK_VOLL: 9999,
+                    BMK_ID: 9999,
+                    FUNKTIONALEZUORDNUNG: 9999,
+                    FUNKTIONSKENNZEICHEN: 9999,
+                    AUFSTELLUNGSORT: 9999,
+                    ORTSKENNZEICHEN: 9999,
+                    BMK: 9999,
+                    DOKUMENTENART: 9999,
+                    BENUTZERDEFINIERTESTRUKTUR: 9999,
+                    ANLAGENNUMMER: 9999,
+                    KENNBUCHSTABE: 9999,
+				},
+				FIRST_VALUE: 9999,
+				ARTIKEL: ARTIKEL{
+					ERP: 9999,
+					ERP_QUELLE:"SITECA" ,
+					BESTELLNUMMER: 9999,
+					ARTIKELNUMMER_EPLAN: 9999,
+					HERSTELLER: 9999,
+					STEUCKZAHL: 9999,
+					EINHEIT: 9999,
+					BEISTELLUNG: 9999,
+					GELIEFERT: 9999,
+					BESCHREIBUNG: 9999,
+				},
+			},
+			KUNDE_LAGERBESTAND: KUNDE_LAGERBESTAND{
+				LAGERORT: 9999,
+				FIRST_VALUE: 3,
+				ARTIKEL: ARTIKEL{
+					UID: 1,
+					ERP: 2,
+					ERP_QUELLE:"SITECA" ,
+					BESTELLNUMMER: 72,
+					ARTIKELNUMMER_EPLAN: 187,
+					HERSTELLER: 6,
+					STEUCKZAHL: 50,
+					EINHEIT: 12,
+					BEISTELLUNG: 9999,
+					GELIEFERT: 9999,
+					BESCHREIBUNG: 24,
+				},
+			},
+		},
+		
+	}
+
+	externalReadExcel["KNT"] = EXTERN_READ_EXCEL{
+		HEADER: JSON_HEADER{},
+		KUNDE_EINSTELLUNG: KUNDE_EINSTELLUNG{
+			KUNDE_STUECKLISTE: KUNDE_STUECKLISTE{
+				KUNDE_BMK: KUNDE_BMK{
+					BMK_VOLL: 9999,
+                    BMK_ID: 9999,
+                    FUNKTIONALEZUORDNUNG: 9999,
+                    FUNKTIONSKENNZEICHEN: 9999,
+                    AUFSTELLUNGSORT: 9999,
+                    ORTSKENNZEICHEN: 9999,
+                    BMK: 9999,
+                    DOKUMENTENART: 9999,
+                    BENUTZERDEFINIERTESTRUKTUR: 9999,
+                    ANLAGENNUMMER: 9999,
+                    KENNBUCHSTABE: 9999,
+				},
+				FIRST_VALUE: 9999,
+				ARTIKEL: ARTIKEL{
+					UID: 9999,
+					ERP: 9999,
+					ERP_QUELLE:"KNT" ,
+					BESTELLNUMMER: 9999,
+					ARTIKELNUMMER_EPLAN: 9999,
+					HERSTELLER: 9999,
+					STEUCKZAHL: 9999,
+					EINHEIT: 9999,
+					BEISTELLUNG: 9999,
+					GELIEFERT: 9999,
+					BESCHREIBUNG: 9999,
+				},
+			},
+			KUNDE_LAGERBESTAND: KUNDE_LAGERBESTAND{
+				LAGERORT: 0,
+				FIRST_VALUE: 4,
+				ARTIKEL: ARTIKEL{
+					UID: 13,
+					ERP: 1,
+					ERP_QUELLE:"KNT" ,
+					BESTELLNUMMER: 13,
+					ARTIKELNUMMER_EPLAN: 9999,
+					HERSTELLER: 20,
+					STEUCKZAHL: 3,
+					EINHEIT: 9999,
+					BEISTELLUNG: 9999,
+					GELIEFERT: 9999,
+					BESCHREIBUNG: 9,
+				},
+			},
+		},
+		
+	}
+
+	externalReadExcel_BYTE, err := json.MarshalIndent(externalReadExcel, "", "    ")
+	if err != nil {
+		log.Println(err)
+	}
+
+	fmt.Println(string(b2))
+	err = os.WriteFile("\\\\ME-Datenbank-1\\Database\\Schnittstelle\\Test_Project\\.blame_Kunde_Einstellung.json", externalReadExcel_BYTE, 0644)
 	if err != nil {
 		log.Println(err)
 	}

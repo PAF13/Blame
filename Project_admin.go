@@ -7,19 +7,15 @@ import (
 	"os"
 )
 
-var currentProject *JSON_PARSING
+var currentProject *PROJEKT
 var schranknum int
 func (a *App) NewProject2() {
 	schranknum = 0
-	currentProject = &JSON_PARSING{
-		NAME: "projekt",
-		VERSION: [3]int{0,0,1},
-		BODY: PROJEKT{
+	currentProject = &PROJEKT{
 			PROJEKT_NUMMER: "8000772",
 			PROJEKT_BESCHREIBUNG: "Polifilm",
 			BAUJAHR: 2024,
 			AKTIV: true,
-		},
 	}
 
 	b2, err := json.MarshalIndent(currentProject, "", "    ")
@@ -36,8 +32,8 @@ func (a *App) NewProject2() {
 }
 
 func (a *App) CurrentProject() {
-	fmt.Println("Current Project: " + currentProject.BODY.PROJEKT_NUMMER+ "_"+currentProject.BODY.PROJEKT_BESCHREIBUNG)
-	for _,b := range  currentProject.BODY.PRODUKTE{
+	fmt.Println("Current Project: " + currentProject.PROJEKT_NUMMER+ "_"+currentProject.PROJEKT_BESCHREIBUNG)
+	for _,b := range  currentProject.PRODUKTE{
 		log.Println("Schrank BMK:" + b.BMK.BMK_VOLL)
 	}
 }
@@ -46,8 +42,8 @@ func (a *App) AddProdukt() {
 	currentProject.addProdukt2()
 }
 
-func (a *JSON_PARSING) addProdukt2() {
-	a.BODY.PRODUKTE = append(a.BODY.PRODUKTE, PRODUKTE{
+func (a *PROJEKT) addProdukt2() {
+	a.PRODUKTE = append(a.PRODUKTE, PRODUKTE{
 		BMK: BMK2{
 			BMK_VOLL: "+EC" + fmt.Sprintf("%d", schranknum),
 		},
