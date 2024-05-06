@@ -18,8 +18,9 @@ func INIT_ARTIKELSTAMMDATEN() {
 func STD_Read_Lagerbestand2(pfad string, kunde string) {
 	lager := LAGER{
 		EIGENTUEMER: kunde,
-		LAGERORT: map[string]LAGERORT{},
+		LAGERORT: make(map[string]LAGERORT),
 	}
+	
 	fmt.Println("Opening: " + pfad)
 	spreadsheet, err := excelize.OpenFile(pfad)
 	if err != nil {
@@ -49,22 +50,28 @@ func STD_Read_Lagerbestand2(pfad string, kunde string) {
 	}
 }
 func (lager *LAGER) STD_Read_Lagerbestand3(artikel []string, kunde string){
-	lager.LAGERORT[kunde] = LAGERORT{
-		LAGERNAME: "Lager1",
+	_,ok := lager.LAGERORT[kunde]
+	if !ok{
+		lager.LAGERORT[kunde] =  LAGERORT{
+			LAGERNAME: "Lager1",
+			BAUTEIL: make(map[string]BAUTEIL),
+		}
 	}
-	stueckzahl,err := strconv.ParseFloat(safeStringArrayPull(artikel,50),32)
+	if safeStringArrayPull(artikel,72) != ""{
+		stueckzahl,err := strconv.ParseFloat(safeStringArrayPull(artikel,50),32)
 	if err != nil {
 		log.Println(err)
 	}
-	lager.LAGERORT[kunde].BAUTEIL[safeStringArrayPull(artikel,72)] = BAUTEIL{
-		ERP: safeStringArrayPull(artikel,2),
-		ERP_QUELLE: kunde,
-		BESTELLNUMMER: safeStringArrayPull(artikel,72),
-		HERSTELLER: safeStringArrayPull(artikel,6),
-		ARTIKELNUMMER_EPLAN: safeStringArrayPull(artikel,187),
-		BESCHREIBUNG: safeStringArrayPull(artikel,24),
-		STEUCKZAHL: stueckzahl,
-		EINHEIT: safeStringArrayPull(artikel,12),
-		
-	}
+		lager.LAGERORT[kunde].BAUTEIL[safeStringArrayPull(artikel,72)] = BAUTEIL{
+			BMK: BMK2{},
+			ERP: safeStringArrayPull(artikel,2),
+			ERP_QUELLE: kunde,
+			BESTELLNUMMER: safeStringArrayPull(artikel,72),
+			HERSTELLER: safeStringArrayPull(artikel,6),
+			ARTIKELNUMMER_EPLAN: safeStringArrayPull(artikel,187),
+			BESCHREIBUNG: safeStringArrayPull(artikel,24),
+			STEUCKZAHL: stueckzahl,
+			EINHEIT: safeStringArrayPull(artikel,12),
+		}
+	}	
 }
