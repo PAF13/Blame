@@ -3,7 +3,7 @@
 	<meta name="description" content="About this app" />
 </svelte:head>
 <script>
-	import { Dialog, ExcelChoice,  ImportStueckliste, StuecklisteSum, VerbindungRead ,StuecklisteSum2} from "$lib/wailsjs/go/main/App";
+	import { Dialog,ImportStueckliste, VerbindungRead} from "$lib/wailsjs/go/main/App";
 	import { Label, Input, Button, InputAddon, ButtonGroup, Checkbox,Avatar,Dropdown, DropdownItem, Search } from 'flowbite-svelte';
 	import { ChevronDownOutline, UserRemoveSolid } from 'flowbite-svelte-icons';
   let searchTerm = ''
@@ -39,14 +39,7 @@
 		pfad2Loaded = true;
 	}
 
-	function load1(){
-		if(pfad1 != ""){
-			if(pfad1 != pfad1Last){
-				StuecklisteSum(pfad1).then((result) => (BMK = result));
-				pfad1Last = pfad1;
-			}
-		}
-	}
+
 
 	$: {
 		if (BMK != BMK2) {
@@ -73,7 +66,6 @@
 			  }
 		});
 
-		StuecklisteSum2(people2)
 	}
 
 	function reset(){
@@ -100,7 +92,7 @@ function switchList(){
 <div class="pt-8">
 <ButtonGroup class="w-full">
 	<Button color="dark" on:click={dialog1}>importieren</Button>
-	<Button color="dark" on:click={load1}>Laden</Button>
+	<Button color="dark">Laden</Button>
 	<Input 		
 		id="input-addon" 
 		type="text" 

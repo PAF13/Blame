@@ -6,7 +6,7 @@
 <script>
 	import { Label, Input, Button, InputAddon, ButtonGroup, Checkbox } from 'flowbite-svelte';
 	import { Lagerbestand } from "$lib/wailsjs/go/main/App";
-	import { Dialog, ExcelChoice,  ImportStueckliste } from "$lib/wailsjs/go/main/App";
+	import { Dialog, ImportStueckliste } from "$lib/wailsjs/go/main/App";
 	let list1 = "";
 	let list1Switch = "";
 	let list1Last = "replace";
@@ -34,11 +34,7 @@
 		list1 = "";
 		list2 = "";
 	}
-	function compare(){
-		if (list1 && list2 != "loading..") {
-			ExcelChoice(list1,list2);
-		}
-	}
+
 	function beistellung(){
 		if (list1 && list2 != "loading..") {
 
@@ -95,7 +91,7 @@
 	<div class="pt-8">
 		<Button color="dark" on:click={switchList}>Tauschen</Button>
 		<Button color="dark" on:click={reset}>Reset</Button>
-		<Button color="dark" on:click={compare}>Differenz</Button>
+		<Button color="dark" >Differenz</Button>
 		<Button color="dark" on:click={beistellung}>Beistellung</Button>
 	</div>
 	

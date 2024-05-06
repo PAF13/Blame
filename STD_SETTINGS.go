@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"os"
 )
@@ -55,7 +54,7 @@ func INIT_SETTINGS() {
 		log.Println(err)
 	}
 
-	fmt.Println(string(b2))
+
 	err = os.WriteFile("\\\\ME-Datenbank-1\\Database\\Schnittstelle\\Test_Project\\.blame_Einstellung.json", b2, 0644)
 	if err != nil {
 		log.Println(err)
@@ -173,8 +172,8 @@ func INIT_SETTINGS() {
 		log.Println(err)
 	}
 
-	fmt.Println(string(b2))
-	err = os.WriteFile("\\\\ME-Datenbank-1\\Database\\Schnittstelle\\Test_Project\\.blame_Kunde_Einstellung.json", externalReadExcel_BYTE, 0644)
+	
+	err = os.WriteFile("\\\\ME-Datenbank-1\\Database\\Schnittstelle\\Test_Project\\blame_Kunde_Einstellung.json", externalReadExcel_BYTE, 0644)
 	if err != nil {
 		log.Println(err)
 	}

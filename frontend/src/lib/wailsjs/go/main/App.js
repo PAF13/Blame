@@ -10,10 +10,6 @@ export function BlameStartup() {
   return window['go']['main']['App']['BlameStartup']();
 }
 
-export function BlameStartup2() {
-  return window['go']['main']['App']['BlameStartup2']();
-}
-
 export function CurrentProject() {
   return window['go']['main']['App']['CurrentProject']();
 }
@@ -24,14 +20,6 @@ export function Dailyvergleich() {
 
 export function Dialog() {
   return window['go']['main']['App']['Dialog']();
-}
-
-export function ExcelChoice(arg1, arg2) {
-  return window['go']['main']['App']['ExcelChoice'](arg1, arg2);
-}
-
-export function ExcelChoice1(arg1, arg2) {
-  return window['go']['main']['App']['ExcelChoice1'](arg1, arg2);
 }
 
 export function Greet(arg1) {
@@ -68,14 +56,6 @@ export function NewProject(arg1, arg2, arg3) {
 
 export function NewProject2() {
   return window['go']['main']['App']['NewProject2']();
-}
-
-export function StuecklisteSum(arg1) {
-  return window['go']['main']['App']['StuecklisteSum'](arg1);
-}
-
-export function StuecklisteSum2(arg1) {
-  return window['go']['main']['App']['StuecklisteSum2'](arg1);
 }
 
 export function Test(arg1) {

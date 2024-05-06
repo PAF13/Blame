@@ -5,17 +5,11 @@ export function AddProdukt():Promise<void>;
 
 export function BlameStartup():Promise<boolean>;
 
-export function BlameStartup2():Promise<boolean>;
-
 export function CurrentProject():Promise<void>;
 
 export function Dailyvergleich():Promise<void>;
 
 export function Dialog():Promise<string>;
-
-export function ExcelChoice(arg1:string,arg2:string):Promise<void>;
-
-export function ExcelChoice1(arg1:string,arg2:string):Promise<void>;
 
 export function Greet(arg1:string):Promise<string>;
 
@@ -34,10 +28,6 @@ export function Message(arg1:string):Promise<string>;
 export function NewProject(arg1:string,arg2:string,arg3:string):Promise<void>;
 
 export function NewProject2():Promise<void>;
-
-export function StuecklisteSum(arg1:string):Promise<Array<string>>;
-
-export function StuecklisteSum2(arg1:Array<string>):Promise<void>;
 
 export function Test(arg1:string):Promise<string>;
 
