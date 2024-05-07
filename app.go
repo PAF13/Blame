@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-
-	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 // App struct
@@ -34,28 +32,7 @@ func (a *App) Test(file1 string) string {
 	return fmt.Sprintf("Hello %s, It's show time!", file1)
 }
 
-func (a *App) Message(file1 string) string {
-	result, _ := runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-		Type:          runtime.QuestionDialog,
-		Title:         "Question",
-		Message:       "Do you want to continue?",
-		DefaultButton: "No",
-	})
-	return result
-}
 
-func (a *App) Dialog() string {
-	fmt.Println("Dialog start")
-	result, err := runtime.OpenFileDialog(a.ctx, runtime.OpenDialogOptions{
-		Title:            "Question",
-		DefaultDirectory: "\\\\ME-Datenbank-1\\Database\\Schnittstelle",
-	})
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(result)
-	return result
-}
 
 func (a *App) ListTrees() {
 	entries, err := os.ReadDir("./")

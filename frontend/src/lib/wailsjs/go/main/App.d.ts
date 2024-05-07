@@ -7,20 +7,28 @@ export function BlameStartup():Promise<boolean>;
 
 export function CurrentProject():Promise<void>;
 
-export function Dialog():Promise<string>;
+export function ExportFile(arg1:Array<string>):Promise<void>;
 
 export function Greet(arg1:string):Promise<string>;
 
-export function Lagerbestand(arg1:string):Promise<void>;
+export function ImportFile(arg1:Array<string>):Promise<void>;
 
 export function ListTrees():Promise<void>;
 
 export function LoadCSV(arg1:string):Promise<void>;
 
-export function Message(arg1:string):Promise<string>;
+export function MessageDialog():Promise<string>;
 
 export function NewProject(arg1:string,arg2:string,arg3:string):Promise<void>;
 
 export function NewProject2():Promise<void>;
+
+export function OpenDirectoryDialog():Promise<string>;
+
+export function OpenFileDialog():Promise<string>;
+
+export function OpenMultipleFilesDialog():Promise<Array<string>>;
+
+export function SaveFileDialog():Promise<string>;
 
 export function Test(arg1:string):Promise<string>;

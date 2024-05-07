@@ -14,7 +14,6 @@ type Bauteil struct {
 }
 type BMK struct {
 	//BMK
-	BMKVoll              string
 	BMKID                string
 	BMK                  string
 	FunktionaleZuordnung string

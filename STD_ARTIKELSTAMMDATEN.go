@@ -1,16 +1,6 @@
 package main
 
-import (
-	"encoding/json"
-	"fmt"
-	"log"
-	"os"
-	"strconv"
-	"strings"
-
-	"github.com/xuri/excelize/v2"
-)
-
+/*
 func INIT_ARTIKELSTAMMDATEN() {
 
 	STD_Read_Lagerbestand2("\\\\ME-Datenbank-1\\Database\\Schnittstelle\\Topix_Artikel20240502.xlsx", "SITECA")
@@ -25,19 +15,19 @@ func STD_Read_Lagerbestand2(pfad string, kunde string) {
 		EIGENTUEMER: kunde,
 		LAGERORT: make(map[string]LAGERORT),
 	}
-	
+
 	spreadsheet, err := excelize.OpenFile(pfad)
 	if err != nil {
 		fmt.Println(err)
 	}
-	
+
 	rows, err := spreadsheet.GetRows(spreadsheet.GetSheetList()[0])
 	if err != nil {
 		fmt.Println(err)
 	}
 	if err := spreadsheet.Close(); err != nil {
 		log.Println(err)
-	}	
+	}
 	artikel_Success := 0
 	for num,row := range rows{
 		if externalReadExcel[kunde].KUNDE_EINSTELLUNG.KUNDE_LAGERBESTAND.FIRST_VALUE -1 < num {
@@ -55,18 +45,18 @@ func STD_Read_Lagerbestand2(pfad string, kunde string) {
 				artikel_Success++
 				lager.LAGERORT[safeStringArrayPull(row,lagerOrt.LAGERORT)].BAUTEIL[safeStringArrayPull(row,readNum.BESTELLNUMMER)] = lager.LAGERORT[safeStringArrayPull(row,lagerOrt.LAGERORT)].BAUTEIL[safeStringArrayPull(row,readNum.BESTELLNUMMER)].STD_Read_Lagerbestand3(row,readNum,kunde)
 
-				
+
 			}else{
 				log.Println("dup")
 				artikel_Success++
 				lager.LAGERORT[safeStringArrayPull(row,lagerOrt.LAGERORT)].BAUTEIL["[DUPLICATE " + fmt.Sprintf("%d",artikel_Success) + "]"+ safeStringArrayPull(row,readNum.BESTELLNUMMER)] = lager.LAGERORT[safeStringArrayPull(row,lagerOrt.LAGERORT)].BAUTEIL["[DUPLICATE " + fmt.Sprintf("%d",artikel_Success) + "]"+ safeStringArrayPull(row,readNum.BESTELLNUMMER)].STD_Read_Lagerbestand3(row,readNum,kunde)
 			}
-			
-			log.Println(artikel_Success)	
+
+			log.Println(artikel_Success)
 		}
-			
+
 	}
-	
+
 	json, err := json.MarshalIndent(lager, "", "    ")
 	if err != nil {
 		log.Println(err)
@@ -104,4 +94,4 @@ func bestellnummerClean (x string) string{
 	x = strings.ReplaceAll(x, "\t", "")
 	x = strings.ReplaceAll(x, "\n", "")
 	return x
-}
+}*/

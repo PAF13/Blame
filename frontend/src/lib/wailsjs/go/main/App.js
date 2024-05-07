@@ -14,16 +14,16 @@ export function CurrentProject() {
   return window['go']['main']['App']['CurrentProject']();
 }
 
-export function Dialog() {
-  return window['go']['main']['App']['Dialog']();
+export function ExportFile(arg1) {
+  return window['go']['main']['App']['ExportFile'](arg1);
 }
 
 export function Greet(arg1) {
   return window['go']['main']['App']['Greet'](arg1);
 }
 
-export function Lagerbestand(arg1) {
-  return window['go']['main']['App']['Lagerbestand'](arg1);
+export function ImportFile(arg1) {
+  return window['go']['main']['App']['ImportFile'](arg1);
 }
 
 export function ListTrees() {
@@ -34,8 +34,8 @@ export function LoadCSV(arg1) {
   return window['go']['main']['App']['LoadCSV'](arg1);
 }
 
-export function Message(arg1) {
-  return window['go']['main']['App']['Message'](arg1);
+export function MessageDialog() {
+  return window['go']['main']['App']['MessageDialog']();
 }
 
 export function NewProject(arg1, arg2, arg3) {
@@ -44,6 +44,22 @@ export function NewProject(arg1, arg2, arg3) {
 
 export function NewProject2() {
   return window['go']['main']['App']['NewProject2']();
+}
+
+export function OpenDirectoryDialog() {
+  return window['go']['main']['App']['OpenDirectoryDialog']();
+}
+
+export function OpenFileDialog() {
+  return window['go']['main']['App']['OpenFileDialog']();
+}
+
+export function OpenMultipleFilesDialog() {
+  return window['go']['main']['App']['OpenMultipleFilesDialog']();
+}
+
+export function SaveFileDialog() {
+  return window['go']['main']['App']['SaveFileDialog']();
 }
 
 export function Test(arg1) {

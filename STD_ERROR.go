@@ -11,16 +11,6 @@ func STDerrhandler(err error) {
 	}
 }
 
-func safeStringArrayPull(r []string, n int) string {
-	if len(r) > n {
-		if r[n] == "" {
-			return ""
-		}
-		return r[n]
-	}
-	return ""
-}
-
 /*func safeIntConvert(r []string, n int) int {
 	if len(r) > n {
 		if r[n] == "" {

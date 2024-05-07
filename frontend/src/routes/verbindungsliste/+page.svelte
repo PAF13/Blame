@@ -4,7 +4,7 @@
 </svelte:head>
 
 <script>
-	import { Dialog} from "$lib/wailsjs/go/main/App";
+	import { OpenFileDialog} from "$lib/wailsjs/go/main/App";
 	import { Label, Input, Button, InputAddon, ButtonGroup, Checkbox,Avatar,Dropdown, DropdownItem, Search } from 'flowbite-svelte';
 	import { ChevronDownOutline, UserRemoveSolid } from 'flowbite-svelte-icons';
 
@@ -28,7 +28,7 @@
 	let BMK2 = new Array();
 
 	function dialog1(){
-		Dialog().then((result) => (pfad1 = result));
+		OpenFileDialog().then((result) => (pfad1 = result));
 		pfad2Loaded = true;
 	}
 

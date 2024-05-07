@@ -5,8 +5,7 @@
 
 <script>
 	import { Label, Input, Button, InputAddon, ButtonGroup, Checkbox } from 'flowbite-svelte';
-	import { Lagerbestand } from "$lib/wailsjs/go/main/App";
-	import { Dialog, ImportStueckliste } from "$lib/wailsjs/go/main/App";
+	import { OpenFileDialog } from "$lib/wailsjs/go/main/App";
 	let list1 = "";
 	let list1Switch = "";
 	let list1Last = "replace";
@@ -20,14 +19,14 @@
 		if(list1 != list1Last){
 			list1 = "loading..."
 			list1Last = "loading..."
-			Dialog().then((result) => (list1 = result));
+			OpenFileDialog().then((result) => (list1 = result));
 		}
 	}
 	function dialog2(){
 		if(list2 != list2Last){
 			list2 = "loading..."
 			list2Last = "loading..."
-			Dialog().then((result) => (list2 = result));
+			OpenFileDialog().then((result) => (list2 = result));
 		}
 	}
 	function reset(){
@@ -47,20 +46,15 @@
 		list2 = list1Switch;
 		list1 = list2Switch;
 	}
-	function lager_Siteca(){
-		Lagerbestand("siteca")
-	}
-	function lager_Kroenert(){
-		Lagerbestand("kreonert")
-	}
+
 </script>
 
 <div class="text-column">
 	<h1>Debugger</h1>
 	<br>
 	<ButtonGroup class="w-full">
-		<Button color="dark" on:click={lager_Siteca}>Print Lagerbestand Siteca</Button>
-		<Button color="dark" on:click={lager_Kroenert}>Print Lagerbestand Kroenert</Button>	
+		<Button color="dark">Print Lagerbestand Siteca</Button>
+		<Button color="dark" >Print Lagerbestand Kroenert</Button>	
 		<Button color="dark">importieren</Button>	
 		<Button color="dark">importieren</Button>			
 	</ButtonGroup>

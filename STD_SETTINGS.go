@@ -1,15 +1,6 @@
 package main
 
-import (
-	"encoding/json"
-	"log"
-	"os"
-)
-
-
-
-var einstellungen *EINSTELLUNGEN
-
+/*
 func INIT_SETTINGS() {
 	einstellungen = &EINSTELLUNGEN{}
 	einstellungen.ALLEMEIN_EINSTELLUNG = ALLGEMEIN_EINSTELLUNG{
@@ -111,7 +102,7 @@ func INIT_SETTINGS() {
 				},
 			},
 		},
-		
+
 	}
 
 	externalReadExcel["KNT"] = EXTERN_READ_EXCEL{
@@ -164,7 +155,7 @@ func INIT_SETTINGS() {
 				},
 			},
 		},
-		
+
 	}
 
 	externalReadExcel_BYTE, err := json.MarshalIndent(externalReadExcel, "", "    ")
@@ -172,9 +163,9 @@ func INIT_SETTINGS() {
 		log.Println(err)
 	}
 
-	
+
 	err = os.WriteFile("\\\\ME-Datenbank-1\\Database\\Schnittstelle\\Test_Project\\blame_Kunde_Einstellung.json", externalReadExcel_BYTE, 0644)
 	if err != nil {
 		log.Println(err)
 	}
-}
+}*/

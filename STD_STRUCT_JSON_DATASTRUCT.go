@@ -35,22 +35,6 @@ type KABLE struct {
 	VERBINDUNG []VERBINDUNG
 }
 
-type VERBINDUNG struct {
-	ID                       string //Internal ident number. possibly not needed
-	BAUTEIL                  [2]BAUTEIL
-	VERBINDUNGZUGEHOERIGKEIT string
-	QUERSCHNITT              string
-	FARBE_NUMMER             string
-	LAENGE                   string
-	NETZ_NAME                string
-	NETZ_INDEX               string
-	SIGNAL_NAME              string
-	POTENZIAL_NAME           string
-	POTENZIAL_TYP            string
-	POTENZIAL_WERT           string
-	FEHLER                   []string
-}
-
 type PRODUKTEINFO_KONSTRUKTION struct {
 	FREIGABE_KUNDE        string
 	FREIGABE_KONSTRUKTION string
@@ -102,11 +86,6 @@ type PROJEKT struct {
 	PRODUKTE             []PRODUKTE
 }
 
-type LAGER struct {
-	HEADER      JSON_HEADER
-	EIGENTUEMER string
-	LAGERORT    map[string]LAGERORT
-}
 type LAGERORT struct {
 	LAGERNAME     string
 	ARTIKELANZAHL int
@@ -133,7 +112,7 @@ type KUNDE_LAGERBESTAND struct {
 	FIRST_VALUE int
 	ARTIKEL     ARTIKEL
 }
-type ARTIKEL struct {
+type ARTIKEL2 struct {
 	UID                 int
 	ERP                 int
 	ERP_QUELLE          string

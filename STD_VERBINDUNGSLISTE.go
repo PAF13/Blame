@@ -1,11 +1,6 @@
 package main
 
-import (
-	"encoding/json"
-	"fmt"
-	"log"
-	"os"
-)
+/*
 var verbindung_Clean []*Verbindung
 func INIT_VERBINDUNGSLITE() {
 	// Open our xmlFile
@@ -60,7 +55,7 @@ func INIT_VERBINDUNGSLITE() {
 func rules(verbindung *Verbindung) bool{
 	pass := true
 	//fehler := []string{}
-	
+
 	switch{
 	case verbindung.Bauteil[0].BMK.BMK == "" || verbindung.Bauteil[1].BMK.BMK == "" :
 		pass = false
@@ -75,7 +70,7 @@ func rules(verbindung *Verbindung) bool{
 
 	return pass
 }
-/*
+
 func SetBetriebsmittel(L *Label) *Verbindung{
 	b := &Verbindung{}
 
@@ -83,15 +78,15 @@ func SetBetriebsmittel(L *Label) *Verbindung{
 	for _,prop := range L.Properties{
 		//strings.Replace(prop.PropertyValue,",",".",1)
 		querschnitt, _ := strconv.ParseFloat(strings.Replace(prop.PropertyValue,",",".",1),64)
-		switch prop.PropertyName{		
+		switch prop.PropertyName{
 		case "Name des Zielanschlusses (vollständig)":
 			if count[0] == 0{
 				b.Bauteil[0].BMK.BMKVoll = prop.PropertyValue
 			}else{
 				b.Bauteil[1].BMK.BMKVoll = prop.PropertyValue
-			}		
-			count[0]++	
-		case "BMK (identifizierend)":   
+			}
+			count[0]++
+		case "BMK (identifizierend)":
 			if count[1] == 0{
 				b.Bauteil[0].BMK.BMKID = prop.PropertyValue
 			}else if count[1] == 1{
@@ -99,133 +94,133 @@ func SetBetriebsmittel(L *Label) *Verbindung{
 			}else{
 				b.Name.BMKID = prop.PropertyValue
 			}
-			count[1]++	
-		case "Funktionale Zuordnung":                             
+			count[1]++
+		case "Funktionale Zuordnung":
 			if count[2] == 0{
 				b.Bauteil[0].BMK.FunktionaleZuordnung = prop.PropertyValue
 			}else{
 				b.Bauteil[1].BMK.FunktionaleZuordnung = prop.PropertyValue
 			}
-			count[2]++	  
-		case "Funktionskennzeichen":                              
+			count[2]++
+		case "Funktionskennzeichen":
 			if count[3] == 0{
 				b.Bauteil[0].BMK.Funktionskennzeichen = prop.PropertyValue
 			}else{
 				b.Bauteil[1].BMK.Funktionskennzeichen = prop.PropertyValue
-			}   
-			count[3]++	
-		case "Aufstellungsort":                                  
+			}
+			count[3]++
+		case "Aufstellungsort":
  			if count[4] == 0{
 				b.Bauteil[0].BMK.Aufstellungsort = prop.PropertyValue
 			}else{
 				b.Bauteil[1].BMK.Aufstellungsort = prop.PropertyValue
 			}
-			count[4]++	   
-		case "Ortskennzeichen":                                   
+			count[4]++
+		case "Ortskennzeichen":
  			if count[5] == 0{
 				b.Bauteil[0].BMK.Ortskennzeichen = prop.PropertyValue
 			}else{
 				b.Bauteil[1].BMK.Ortskennzeichen = prop.PropertyValue
-			}   
-			count[5]++	
+			}
+			count[5]++
 		case "BMK (identifizierend, ohne Projektstrukturen)":
  			if count[6] == 0{
 				b.Bauteil[0].BMK.BMK = prop.PropertyValue
 			}else{
 				b.Bauteil[1].BMK.BMK = prop.PropertyValue
-			} 
-			count[6]++	  
-		case "BMK: Kennbuchstabe":                                
+			}
+			count[6]++
+		case "BMK: Kennbuchstabe":
  			if count[7] == 0{
 				b.Bauteil[0].BMK.BMKKennbuchstabe = prop.PropertyValue
 			}else{
 				b.Bauteil[1].BMK.BMKKennbuchstabe = prop.PropertyValue
-			} 
-			count[7]++	  
-		case "Funktionstext":                                    
-				b.Bauteil[1].Funktionstext = prop.PropertyValue  
-		case "Technische Kenngrößen":                            
+			}
+			count[7]++
+		case "Funktionstext":
+				b.Bauteil[1].Funktionstext = prop.PropertyValue
+		case "Technische Kenngrößen":
  			if count[8] == 0{
 				b.Bauteil[0].TechnischeKenngrößen = prop.PropertyValue
 			}else{
-				
+
 				b.Bauteil[1].TechnischeKenngrößen = prop.PropertyValue
-			}  
-			count[8]++	 
-		case "Funktionsdefinition: Kategorie":                    
+			}
+			count[8]++
+		case "Funktionsdefinition: Kategorie":
  			if count[9] == 0{
 				b.Bauteil[0].FunktionsdefinitionKategorie  = prop.PropertyValue
 			}else{
 				b.Bauteil[1].FunktionsdefinitionKategorie = prop.PropertyValue
-			} 
-			count[9]++	  
-		case "Funktionsdefinition: Gruppe":                       
+			}
+			count[9]++
+		case "Funktionsdefinition: Gruppe":
  			if count[10] == 0{
 				b.Bauteil[0].FunktionsdefinitionGruppe = prop.PropertyValue
 			}else{
 				b.Bauteil[1].FunktionsdefinitionGruppe = prop.PropertyValue
-			} 
-			count[10]++	  
-		case "Funktionsdefinition: Beschreibung":                 
+			}
+			count[10]++
+		case "Funktionsdefinition: Beschreibung":
  			if count[11] == 0{
 				b.Bauteil[0].FunktionsdefinitionBeschreibung = prop.PropertyValue
 			}else{
 				b.Bauteil[1].FunktionsdefinitionBeschreibung = prop.PropertyValue
-			} 
-			count[11]++	  
-		case "Anschlussbezeichnung der Funktion":                 
+			}
+			count[11]++
+		case "Anschlussbezeichnung der Funktion":
  			if count[12] == 0{
 				b.Bauteil[0].AnschlussbezeichnungderFunktion = prop.PropertyValue
 			}else{
 				b.Bauteil[1].AnschlussbezeichnungderFunktion = prop.PropertyValue
-			} 
-			count[12]++	  
-		case "Funktionsdefinition":                               
+			}
+			count[12]++
+		case "Funktionsdefinition":
  			if count[13] == 0{
 				b.Bauteil[0].Funktionsdefinition = prop.PropertyValue
 			}else{
 				b.Bauteil[1].Funktionsdefinition = prop.PropertyValue
-			}   
-			count[13]++	
-		case "Symbolname":                                        
+			}
+			count[13]++
+		case "Symbolname":
  			if count[14] == 0{
 				b.Bauteil[0].Symbolname = prop.PropertyValue
 			}else{
 				b.Bauteil[1].Symbolname = prop.PropertyValue
-			}   
-			count[14]++	
-		case "Symbolvariante":                                    			                          
+			}
+			count[14]++
+		case "Symbolvariante":
  			if count[15] == 0{
 				b.Bauteil[0].Symbolvariante  = prop.PropertyValue
 			}else{
 				b.Bauteil[1].Symbolvariante = prop.PropertyValue
-			}   
-			count[15]++	
-		case "Verbindung: Zugehörigkeit":                         			                            
-				b.VerbindungZugehörigkeit = prop.PropertyValue  
-		case "Verbindungsquerschnitt / -durchmesser":             
+			}
+			count[15]++
+		case "Verbindung: Zugehörigkeit":
+				b.VerbindungZugehörigkeit = prop.PropertyValue
+		case "Verbindungsquerschnitt / -durchmesser":
 				b.Verbindungsquerschnitt =  querschnitt
-		case "Verbindungsfarbe / -nummer":                        
+		case "Verbindungsfarbe / -nummer":
 				b.Verbindungsfarbeundnummer = prop.PropertyValue
-		case "Verbindung: Länge (vollständig)": 
+		case "Verbindung: Länge (vollständig)":
 		if prop.PropertyValue == ""{
 			b.VerbindungLänge = 0
 		}else {
 			i, err := strconv.Atoi(prop.PropertyValue)
 			if err != nil {
 				fmt.Println(err)
-			}                 
+			}
 			b.VerbindungLänge = i
-		}		
-		case "Netzname":                                         
-				b.Netzname = prop.PropertyValue 
-		case "Signalname":                                       
+		}
+		case "Netzname":
+				b.Netzname = prop.PropertyValue
+		case "Signalname":
 				b.Signalname = prop.PropertyValue
-		case "Potenzialname":                                     
+		case "Potenzialname":
 				b.Potenzialname = prop.PropertyValue
-		case "Potenzialtyp":                                      
+		case "Potenzialtyp":
 				b.Potenzialtyp = prop.PropertyValue
-		case "Potenzialwert":                                    
+		case "Potenzialwert":
 				b.Potenzialwert = prop.PropertyValue
 		case "Netzindex":
 				b.Netzindex = prop.PropertyValue

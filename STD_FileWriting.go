@@ -1,16 +1,6 @@
 package main
 
-import (
-	"encoding/csv"
-	"fmt"
-	"log"
-	"os"
-	"strconv"
-	"strings"
-
-	"github.com/xuri/excelize/v2"
-)
-
+/*
 func Write_Lager(pfad string, ListeRaw *[]*Artikel) {
 	file_Lagerbestand_Kroenert := excelize.NewFile()
 
@@ -413,7 +403,7 @@ func STD_Write_Verbindungsliste(bind []*Verbindung) {
 		"Source Z Pos",
 		"Destination Z Pos",
 		}
-	
+
         if err := w.Write(headers); err != nil {
             log.Fatalln("error writing record to file", err)
         }
@@ -423,21 +413,21 @@ func STD_Write_Verbindungsliste(bind []*Verbindung) {
 		}
 		for _,b := range bind{
 
-			verbindung[0] = b.Bauteil[0].BMK.BMKVoll
+			verbindung[0] = ""
 			verbindung[1] = ""
 			verbindung[2] = "3"
 			verbindung[3] = ""
-			verbindung[4] = b.Bauteil[1].BMK.BMKVoll
+			verbindung[4] = ""
 			verbindung[5] = ""
 			verbindung[6] = "3"
 			verbindung[7] = ""
 			verbindung[8] = strings.Replace(fmt.Sprintf("%.1f", b.Verbindungsquerschnitt),".",",",1)
 			verbindung[9] = b.Verbindungsfarbeundnummer
-			verbindung[10] = strconv.Itoa(b.VerbindungLänge) 
+			verbindung[10] = strconv.Itoa(b.VerbindungLänge)
 			if err := w.Write(verbindung); err != nil {
 				log.Fatalln("error writing record to file", err)
 			}
 		}
-		
-	
-}
+
+
+}*/

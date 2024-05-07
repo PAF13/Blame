@@ -1,7 +1,5 @@
 package main
 
-var externalReadExcel map[string]EXTERN_READ_EXCEL
-
 type EINSTELLUNGEN struct {
 	ALLEMEIN_EINSTELLUNG ALLGEMEIN_EINSTELLUNG
 	KUNDE_EINSTELLUNG    map[string]KUNDE_EINSTELLUNG
