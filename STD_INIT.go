@@ -13,7 +13,7 @@ func (a *App) BlameStartup() bool {
 	//INIT_ARTIKELSTAMMDATEN()
 	//INIT_VERBINDUNGSLITE()
 	//INIT_STUECKLISTE()
-	ImportXML()
+	ImportFile()
 	return true
 }
 

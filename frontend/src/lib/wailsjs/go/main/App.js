@@ -14,16 +14,8 @@ export function CurrentProject() {
   return window['go']['main']['App']['CurrentProject']();
 }
 
-export function ExportFile(arg1) {
-  return window['go']['main']['App']['ExportFile'](arg1);
-}
-
 export function Greet(arg1) {
   return window['go']['main']['App']['Greet'](arg1);
-}
-
-export function ImportFile(arg1) {
-  return window['go']['main']['App']['ImportFile'](arg1);
 }
 
 export function ListTrees() {

@@ -77,15 +77,6 @@ type PRODUKTE struct { //produkt info schaltschrank etc
 	DRAEHTE                []VERBINDUNG
 }
 
-type PROJEKT struct {
-	HEADER               JSON_HEADER
-	PROJEKT_NUMMER       string
-	PROJEKT_BESCHREIBUNG string
-	BAUJAHR              int
-	AKTIV                bool
-	PRODUKTE             []PRODUKTE
-}
-
 type LAGERORT struct {
 	LAGERNAME     string
 	ARTIKELANZAHL int

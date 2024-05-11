@@ -6,160 +6,268 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
-
-
-func (a *App) ImportFile(pfad []string) {
-	for _,b := range pfad{
-		ImportFileIntern(b)
-	}
-		
-}
-
-func ImportFileIntern(pfad string) {
-	fileType := ""
-
-		switch fileType{
-		case ".xml":
-			ImportXML()
-		case ".xlsx":
-			ImportExcel(pfad)
-		case ".json":
-			ImportJson(pfad)
-		default:
-
+/*
+	func STD_Write_Stueckliste(Lagerbestand *[]ARTIKEL) {
+		file := excelize.NewFile()
+		headers := []string{
+			"KNT Lager",
 		}
-}
-
-func (a *App) ExportFile(pfad []string) {
-	for _,b := range pfad{
-		ExportFileIntern(b)
-	}
-
-}
-func ExportFileIntern(pfad string) {
-	fileType := ""	
-		switch fileType{
-		case ".xml":
-			ExportXML(pfad)
-		case ".xlsx":
-			ExportExcel(pfad)
-		case ".json":
-			ExportJson(pfad)
-		default:
-
+		headers2 := []string{
+			"ERP",
+			"Menge",
+			"Hersteller",
+			"Bestellnummer",
+			"Mehrfach ERP",
+			"Beschreibung",
+			"Warengruppe",
+			"Quelle",
+			"Stand",
+			"Bereitsteller",
+			"Ort",
+		}
+		for i, header := range headers {
+			file.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+i)), 1), header)
+		}
+		for i, header := range headers2 {
+			file.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+i)), 2), header)
 		}
 
-}
-
-func  ImportXML() {
-// Open our xmlFile
-xmlFile, err := os.Open("\\\\ME-Datenbank-1\\Database\\Schnittstelle\\EPlanOutput\\EPlan_Verbindungsliste.xml")
-// if we os.Open returns an error then handle it
-if err != nil {
-	fmt.Println(err)
-}
-
-fmt.Println("Successfully Opened users.xml")
-// defer the closing of our xmlFile so that we can parse it later on
-defer xmlFile.Close()
-
-// read our opened xmlFile as a byte array.
-byteValue, _ := io.ReadAll(xmlFile)
-
-// we initialize our Users array
-var eplanAuswertungXML EplanAuswertungXML
-// we unmarshal our byteArray which contains our
-// xmlFiles content into 'users' which we defined above
-xml.Unmarshal(byteValue, &eplanAuswertungXML)
-
-// we iterate through every user within our users array and
-// print out the user Type, their name, and their facebook url
-// as just an example
-verbindung := []VERBINDUNG{}
-P_verbindung := &verbindung
-
-line := eplanAuswertungXML.Document.Page.Line
-for a,aa := range line {
-	fmt.Printf("PropertyValue: %-20s", line[a].SourceID)
-	*P_verbindung = append(*P_verbindung, VERBINDUNG{
-		UUID: line[a].SourceID,
-		Quelle: BETRIEBSMITELLKENNZEICHEN{},
-		Ziel: BETRIEBSMITELLKENNZEICHEN{},
-	})
-	fmt.Printf("\n")
-		for _,bb := range aa.Label.Property {
-			fmt.Printf("PropertyName: %-60s", bb.PropertyName)
-			fmt.Printf("PropertyValue: %-20s", bb.PropertyValue)
+		rowNum := 3
+		fmt.Println("starting excel")
+		for _, value := range *Lagerbestand {
+			fmt.Printf("Bestellnummer: %-50s", value.Bestellnummer)
+			fmt.Printf("ERP: %-50s", value.ERP)
+			fmt.Printf("länge: %-20d", len(value.Fehler))
 			fmt.Printf("\n")
+			colNum := 0
+			erp := ""
+			P_erp := &erp
+			if len(value.Fehler) > 0 {
+				for _, aa := range value.Fehler {
+					*P_erp = aa + " | " + *P_erp
+
+				}
+			} else {
+				*P_erp = value.ERP
+			}
+
+			lineWriter(file, "Sheet1", &colNum, &rowNum, erp)
+			//lineWriter(file, "Sheet1", &colNum, &rowNum, fmt.Sprintf("%.0f", value.Stueckzahl))
+			lineWriter(file, "Sheet1", &colNum, &rowNum, value.Stueckzahl)
+			lineWriter(file, "Sheet1", &colNum, &rowNum, value.Hersteller)
+			lineWriter(file, "Sheet1", &colNum, &rowNum, value.Bestellnummer)
+			lineWriter(file, "Sheet1", &colNum, &rowNum, fmt.Sprintf("%d", len(value.Fehler)))
+			lineWriter(file, "Sheet1", &colNum, &rowNum, value.Beschreibung)
+			lineWriter(file, "Sheet1", &colNum, &rowNum, "")
+			lineWriter(file, "Sheet1", &colNum, &rowNum, value.Quelle)
+			lineWriter(file, "Sheet1", &colNum, &rowNum, "")
+			lineWriter(file, "Sheet1", &colNum, &rowNum, "")
+			lineWriter(file, "Sheet1", &colNum, &rowNum, "")
+			rowNum++
+		}
+
+		if err := file.SaveAs("\\\\ME-Datenbank-1\\Database\\Schnittstelle\\Test_Project\\blame_KNTLager_Clean.xlsx"); err != nil {
+			fmt.Println(err)
 		}
 	}
+*/
 
-	content, err := json.MarshalIndent(verbindung, "", "\t")
+func importJson() {
+
+	SitecaFile, err := os.Open("\\\\ME-Datenbank-1\\Database\\Schnittstelle\\Test_Project\\blame_SITECALager.json")
+	// if we os.Open returns an error then handle it
 	if err != nil {
 		fmt.Println(err)
 	}
-	err = ioutil.WriteFile("\\\\ME-Datenbank-1\\Database\\Schnittstelle\\BlameOutput\\Blame_Test.json", content, 0644)
+	KNTFile, err := os.Open("\\\\ME-Datenbank-1\\Database\\Schnittstelle\\Test_Project\\blame_KNTLager.json")
+	// if we os.Open returns an error then handle it
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	defer KNTFile.Close()
+	defer SitecaFile.Close()
+
+	// read our opened xmlFile as a byte array.
+	byteSiteca, _ := ioutil.ReadAll(SitecaFile)
+	byteKNT, _ := ioutil.ReadAll(KNTFile)
+
+	// we initialize our Users array
+	Siteca := []ARTIKEL{}
+	KNT := []ARTIKEL{}
+	P_KNT := &KNT
+	// we unmarshal our byteArray which contains our
+	// jsonFile's content into 'users' which we defined above
+	json.Unmarshal(byteSiteca, &Siteca)
+	json.Unmarshal(byteKNT, &KNT)
+
+	// we iterate through every user within our users array and
+	// print out the user Type, their name, and their facebook url
+	// as just an example
+
+	for a, _ := range KNT {
+		(*P_KNT)[a].Fehler = []string{}
+		for _, bb := range Siteca {
+			if KNT[a].Bestellnummer != "" {
+				if KNT[a].Beschreibung != "" {
+					//if strings.EqualFold(strings.ToLower(bestellnummerClean2(KNT[a].Bestellnummer)),strings.ToLower(bestellnummerClean2(bb.Bestellnummer))){
+					if strings.ToLower(bestellnummerClean2(KNT[a].Bestellnummer)) == strings.ToLower(bestellnummerClean2(bb.Bestellnummer)) {
+						(*P_KNT)[a].Fehler = append((*P_KNT)[a].Fehler, bb.ERP)
+						(*P_KNT)[a].Quelle = "SITECA"
+						(*P_KNT)[a].Hersteller = bb.Hersteller
+						(*P_KNT)[a].Beschreibung = bb.Beschreibung
+						fmt.Printf("Bestellnummer KNT: %-50s", KNT[a].Bestellnummer)
+						fmt.Printf("Bestellnummer Siteca: %-50s", bb.Bestellnummer)
+						fmt.Printf("ERP: %-50s", bb.ERP)
+						fmt.Printf("länge: %-20d", len((*P_KNT)[a].Fehler))
+						fmt.Printf("\n")
+					}
+				}
+
+			}
+
+		}
+	}
+
+	content, err := json.MarshalIndent(*P_KNT, "", "\t")
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	err = ioutil.WriteFile("\\\\ME-Datenbank-1\\Database\\Schnittstelle\\Test_Project\\blame_KNTLager_Clean.json", content, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
+	//STD_Write_Stueckliste(P_KNT)
 }
 
-
-func  ImportExcel(pfad string) {
-
+func bestellnummerClean(x string) string {
+	x = strings.ReplaceAll(x, " ", "")
+	x = strings.ReplaceAll(x, "\t", "")
+	x = strings.ReplaceAll(x, "\n", "")
+	return x
 }
 
-func ImportJson(pfad string) {
-// Open our jsonFile
-jsonFile, err := os.Open("users.json")
-// if we os.Open returns an error then handle it
-if err != nil {
-	fmt.Println(err)
+func bestellnummerClean2(x string) string {
+	x = strings.ReplaceAll(x, " ", "")
+	x = strings.ReplaceAll(x, "\t", "")
+	x = strings.ReplaceAll(x, "\n", "")
+	x = strings.ReplaceAll(x, ".", "")
+	x = strings.ReplaceAll(x, "-", "")
+	x = strings.ReplaceAll(x, "+", "")
+	x = strings.ReplaceAll(x, "/", "")
+	x = strings.ReplaceAll(x, ",", "")
+	return x
 }
 
-fmt.Println("Successfully Opened users.json")
-// defer the closing of our jsonFile so that we can parse it later on
-defer jsonFile.Close()
+func (structType *EplanAuswertungXML) convertFile(byteValue []byte) {
+	verbindungsliste = map[string]VERBINDUNG{}
+	xml.Unmarshal(byteValue, &structType)
+	line := structType.Document.Page.Line
+	for a, aa := range line {
+		fmt.Printf("Source ID: %-50s", aa.Label.SourceID)
+		fmt.Printf("Anzahl: %-50d\n", a+1)
+		verbindung := VERBINDUNG{}
+		P_verbindung := &verbindung
+		for _, bb := range aa.Label.Property {
 
-// read our opened xmlFile as a byte array.
-byteValue, _ := io.ReadAll(jsonFile)
+			switch bb.PropertyName {
+			case "Name des Zielanschlusses (vollständig)":
+				if P_verbindung.Quelle.BMKVollständig != "" {
+					P_verbindung.Ziel.BMKVollständig = bb.PropertyValue
+				} else {
+					P_verbindung.Quelle.BMKVollständig = bb.PropertyValue
+				}
+			case "BMK (identifizierend)":
+				if P_verbindung.Quelle.BMKidentifizierung != "" {
+					P_verbindung.Ziel.BMKidentifizierung = bb.PropertyValue
+				} else {
+					P_verbindung.Quelle.BMKidentifizierung = bb.PropertyValue
+				}
+			case "Funktionale Zuordnung":
+				if P_verbindung.Quelle.FunktionaleZuordnung != "" {
+					P_verbindung.Ziel.FunktionaleZuordnung = bb.PropertyValue
+				} else {
+					P_verbindung.Quelle.FunktionaleZuordnung = bb.PropertyValue
+				}
+			case "Funktionskennzeichen":
+				if P_verbindung.Quelle.Funktionskennzeichen != "" {
+					P_verbindung.Ziel.Funktionskennzeichen = bb.PropertyValue
+				} else {
+					P_verbindung.Quelle.Funktionskennzeichen = bb.PropertyValue
+				}
+			case "Aufstellungsort":
+				if P_verbindung.Quelle.Aufstellungsort != "" {
+					P_verbindung.Ziel.Aufstellungsort = bb.PropertyValue
+				} else {
+					P_verbindung.Quelle.Aufstellungsort = bb.PropertyValue
+				}
+			case "Ortskennzeichen":
+				if P_verbindung.Quelle.Ortskennzeichen != "" {
+					P_verbindung.Ziel.Ortskennzeichen = bb.PropertyValue
+				} else {
+					P_verbindung.Quelle.Ortskennzeichen = bb.PropertyValue
+				}
+			case "BMK (identifizierend, ohne Projektstrukturen)":
+				if P_verbindung.Quelle.BMK != "" {
+					P_verbindung.Ziel.BMK = bb.PropertyValue
+				} else {
+					P_verbindung.Quelle.BMK = bb.PropertyValue
+				}
+			case "BMK: Kennbuchstabe":
+				if P_verbindung.Quelle.Kennbuchstabe != "" {
+					P_verbindung.Ziel.Kennbuchstabe = bb.PropertyValue
+				} else {
+					P_verbindung.Quelle.Kennbuchstabe = bb.PropertyValue
+				}
 
-// we initialize our Users array
-var users Settings
+			case "Verbindung: Zugehörigkeit":
+				P_verbindung.VerbindungZugehörigkeit = bb.PropertyValue
+			case "Verbindungsquerschnitt / -durchmesser":
+				P_verbindung.Verbindungsquerschnitt = bb.PropertyValue
+			case "Verbindungsfarbe / -nummer":
+				P_verbindung.Verbindungsfarbeundnummer = bb.PropertyValue
+			case "Verbindung: Länge (vollständig)":
+				P_verbindung.VerbindungLänge = bb.PropertyValue
+			case "Netzname":
+				P_verbindung.Netzname = bb.PropertyValue
+			case "Signalname":
+				P_verbindung.Signalname = bb.PropertyValue
+			case "Potenzialname":
+				P_verbindung.Potenzialname = bb.PropertyValue
+			case "Potenzialtyp":
+				P_verbindung.Potenzialtyp = bb.PropertyValue
+			case "Potenzialwert":
+				P_verbindung.Potenzialwert = bb.PropertyValue
+			case "Netzindex":
+				P_verbindung.Netzindex = bb.PropertyValue
+			default:
+				fmt.Printf("Missing | Name: %-50s", bb.PropertyName)
+				fmt.Printf("Value: %-50s", bb.PropertyValue)
+				fmt.Printf("\n")
+			}
 
-// we unmarshal our byteArray which contains our
-// jsonFile's content into 'users' which we defined above
-json.Unmarshal(byteValue, &users)
+		}
 
-// we iterate through every user within our users array and
-// print out the user Type, their name, and their facebook url
-// as just an example
-/*for i := 0; i < len(users.Users); i++ {
-	fmt.Println("User Type: " + users.Users[i].Type)
-	fmt.Println("User Age: " + strconv.Itoa(users.Users[i].Age))
-	fmt.Println("User Name: " + users.Users[i].Name)
-	fmt.Println("Facebook Url: " + users.Users[i].Social.Facebook)
-}*/
-}
+		verbindungsliste[aa.Label.SourceID] = *P_verbindung
+	}
 
-func  ExportXML(pfad string) {
-
-}
-
-func  ExportExcel(pfad string) {
-
-}
-
-func ExportJson(pfad string) {
-
+	content, err := json.MarshalIndent(verbindungsliste, "", "\t")
+	if err != nil {
+		fmt.Println(err)
+	}
+	err = ioutil.WriteFile("\\\\ME-Datenbank-1\\Database\\Schnittstelle\\Test_Project\\blame_verbindungsliste.json", content, 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func ValueRestrict(s string) error {
@@ -232,11 +340,11 @@ func (a *App) MessageDialog() string {
 	return result
 }
 
-//Generate UUID
+// Generate UUID
 func GenerateCryptoID() string {
-    bytes := make([]byte, 16)
-    if _, err := rand.Read(bytes); err != nil {
-        panic(err)
-    }
-    return hex.EncodeToString(bytes)
+	bytes := make([]byte, 16)
+	if _, err := rand.Read(bytes); err != nil {
+		panic(err)
+	}
+	return hex.EncodeToString(bytes)
 }

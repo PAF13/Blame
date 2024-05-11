@@ -42,7 +42,7 @@ type EplanAuswertungXML struct {
 }  
 
 // Settings was generated 2024-05-06 17:55:12 by https://xml-to-go.github.io/ in Ukraine.
-type Settings struct {
+type EplanSettingsXML struct {
 	XMLName xml.Name `xml:"Settings"`
 	Text    string   `xml:",chardata"`
 	Format  string   `xml:"format,attr"`

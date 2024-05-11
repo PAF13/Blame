@@ -7,11 +7,7 @@ export function BlameStartup():Promise<boolean>;
 
 export function CurrentProject():Promise<void>;
 
-export function ExportFile(arg1:Array<string>):Promise<void>;
-
 export function Greet(arg1:string):Promise<string>;
-
-export function ImportFile(arg1:Array<string>):Promise<void>;
 
 export function ListTrees():Promise<void>;
 
