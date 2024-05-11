@@ -175,25 +175,25 @@ func writeStueckliste(lagerbestand map[string][]ARTIKEL, quelle string, fileType
 	lineWriter(file2, "Sheet1", &colNum, &rowNum, "-")
 	file2.SetColWidth("Sheet1", "E", "E", 13)
 	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Bestellnummer")
-	file2.SetColWidth("Sheet1", "F", "F", 20)
-	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Menge")
-	file2.SetColWidth("Sheet1", "G", "G", 13)
+	file2.SetColWidth("Sheet1", "F", "F", 30)
 	lineWriter(file2, "Sheet1", &colNum, &rowNum, "ERP")
-	file2.SetColWidth("Sheet1", "H", "H", 13)
+	file2.SetColWidth("Sheet1", "G", "G", 13)
 	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Hersteller")
-	file2.SetColWidth("Sheet1", "I", "I", 13)
-	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Beschreibung")
-	file2.SetColWidth("Sheet1", "J", "J", 13)
-	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Quelle")
-	file2.SetColWidth("Sheet1", "K", "K", 13)
-	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Beisteller")
-	file2.SetColWidth("Sheet1", "L", "L", 13)
+	file2.SetColWidth("Sheet1", "H", "H", 20)
+	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Menge")
+	file2.SetColWidth("Sheet1", "I", "I", 10)
 	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Bestellung Moeller")
-	file2.SetColWidth("Sheet1", "M", "M", 13)
+	file2.SetColWidth("Sheet1", "J", "J", 20)
 	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Bestellung KNT")
-	file2.SetColWidth("Sheet1", "N", "N", 13)
+	file2.SetColWidth("Sheet1", "K", "K", 20)
 	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Bestellung Siteca")
-	file2.SetColWidth("Sheet1", "O", "O", 13)
+	file2.SetColWidth("Sheet1", "L", "L", 20)
+	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Beisteller")
+	file2.SetColWidth("Sheet1", "M", "M", 13)
+	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Quelle")
+	file2.SetColWidth("Sheet1", "N", "N", 13)
+	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Beschreibung")
+	file2.SetColWidth("Sheet1", "O", "O", 70)
 	rowNum++
 	for _, b := range lagerbestand {
 		for _, bb := range b {
@@ -202,20 +202,30 @@ func writeStueckliste(lagerbestand map[string][]ARTIKEL, quelle string, fileType
 			lineWriter(file2, "Sheet1", &colNum, &rowNum, bb.BMK.Funktionskennzeichen)
 			lineWriter(file2, "Sheet1", &colNum, &rowNum, bb.BMK.Aufstellungsort)
 			lineWriter(file2, "Sheet1", &colNum, &rowNum, bb.BMK.Ortskennzeichen)
-			lineWriter(file2, "Sheet1", &colNum, &rowNum, bb.BMK.BMK)
+			lineWriter(file2, "Sheet1", &colNum, &rowNum, "")
 			lineWriter(file2, "Sheet1", &colNum, &rowNum, bb.Bestellnummer)
-			lineWriter(file2, "Sheet1", &colNum, &rowNum, fmt.Sprintf("%.0f", bb.Stueckzahl))
 			lineWriter(file2, "Sheet1", &colNum, &rowNum, bb.ERP)
 			lineWriter(file2, "Sheet1", &colNum, &rowNum, bb.Hersteller)
-			lineWriter(file2, "Sheet1", &colNum, &rowNum, bb.Beschreibung)
-			lineWriter(file2, "Sheet1", &colNum, &rowNum, bb.Quelle)
-			lineWriter(file2, "Sheet1", &colNum, &rowNum, bb.Beistellung)
+			lineWriter(file2, "Sheet1", &colNum, &rowNum, fmt.Sprintf("%.0f", bb.Stueckzahl))
 			lineWriter(file2, "Sheet1", &colNum, &rowNum, fmt.Sprintf("%.0f", bb.Bestellung_Moeller))
 			lineWriter(file2, "Sheet1", &colNum, &rowNum, fmt.Sprintf("%.0f", bb.Bestellung_KNT))
 			lineWriter(file2, "Sheet1", &colNum, &rowNum, fmt.Sprintf("%.0f", bb.Bestellung_Siteca))
+			lineWriter(file2, "Sheet1", &colNum, &rowNum, bb.Beistellung)
+			lineWriter(file2, "Sheet1", &colNum, &rowNum, bb.Quelle)
+			lineWriter(file2, "Sheet1", &colNum, &rowNum, bb.Beschreibung)
 			rowNum++
 		}
 	}
+	disable := false
+	file2.AddTable("Sheet1", &excelize.Table{
+		Range:             "A1:O" + fmt.Sprintf("%d", rowNum),
+		Name:              "table",
+		StyleName:         "TableStyleMedium2",
+		ShowFirstColumn:   true,
+		ShowLastColumn:    true,
+		ShowRowStripes:    &disable,
+		ShowColumnStripes: true,
+	})
 
 	if err := file2.SaveAs(rootPfad + "Test_Project\\Blame_" + fileType + "_" + quelle + ".xlsx"); err != nil {
 		fmt.Println(err)
@@ -288,25 +298,37 @@ func loadFile() {
 	for a, b := range artikel_LISTE_CLEAN {
 		_, ok := artikel_SITECA[b.Bestellnummer]
 		stueckzahl := b.Stueckzahl
-		_, ok_KNT := artikel_KNT[b.Bestellnummer]
-		if ok_KNT {
-			for _, b2 := range artikel_KNT[b.Bestellnummer] {
-				if stueckzahl >= b2.Stueckzahl {
-					b.Bestellung_KNT = b.Bestellung_KNT + b2.Stueckzahl
-					stueckzahl = stueckzahl - b2.Stueckzahl
-				} else {
-					b.Bestellung_KNT = stueckzahl
-					stueckzahl = 0
+		if b.Beistellung == "SITECA" {
+			_, ok_KNT := artikel_KNT[b.Bestellnummer]
+			if ok_KNT {
+				for a2, b2 := range artikel_KNT[b.Bestellnummer] {
+					if stueckzahl >= b2.Stueckzahl {
+						b.Bestellung_KNT = b.Bestellung_KNT + b2.Stueckzahl
+						artikel_KNT[b.Bestellnummer][a2].Stueckzahl = 0
+						stueckzahl = stueckzahl - b2.Stueckzahl
+					} else {
+						b.Bestellung_KNT = stueckzahl
+						artikel_KNT[b.Bestellnummer][a2].Stueckzahl = artikel_KNT[b.Bestellnummer][a2].Stueckzahl - stueckzahl
+						stueckzahl = 0
+					}
 				}
 			}
+			b.Bestellung_Siteca = stueckzahl
 		}
-		b.Bestellung_Siteca = stueckzahl
 		if ok {
 			erpList := ""
-			for _, b := range artikel_SITECA[b.Bestellnummer] {
-				erpList = erpList + b.ERP + " | "
+			hersteller := ""
+			for _, bb := range artikel_SITECA[b.Bestellnummer] {
+				if len(artikel_SITECA[bb.Bestellnummer]) > 1 {
+					erpList = erpList + bb.ERP + " | "
+				} else {
+					erpList = bb.ERP
+				}
+				hersteller = bb.Hersteller
 			}
 			b.ERP = erpList
+			b.Quelle = "SITECA"
+			b.Hersteller = hersteller
 
 			artikel_LISTE_WRITE[a] = append(artikel_LISTE_WRITE[a], *b)
 		} else {
