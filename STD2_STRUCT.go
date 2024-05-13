@@ -122,6 +122,6 @@ type PROJEKT struct {
 	PROJEKT_BESCHREIBUNG string
 	BAUJAHR              int
 	AKTIV                bool
-	PRODUKTE             []PRODUKTE
-	Produktname          []string
+
+	Produktname []string
 }

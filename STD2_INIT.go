@@ -23,6 +23,8 @@ func (a *App) BlameStartup() bool {
 	rootPfadOutput = rootPfad + "BlameOutput\\"
 	rootPfadInput = rootPfad + "BlameInput\\"
 	rootPfadDatenbank = rootPfad + "BlameDatenbank\\"
+	fmt.Println(rootPfadInput)
+	fmt.Println(rootPfadDatenbank)
 	/*
 		lagerSiteca := "Topix_Artikel20240502"
 		lagerKNT := "Kopie von Lagerhueter_26_04_2024"
@@ -88,24 +90,4 @@ func (a *App) NewProject2() {
 	if err != nil {
 		log.Println(err)
 	}
-}
-
-func (a *App) CurrentProject() {
-	fmt.Println("Current Project: " + currentProject.PROJEKT_NUMMER + "_" + currentProject.PROJEKT_BESCHREIBUNG)
-	for _, b := range currentProject.PRODUKTE {
-		log.Println("Schrank BMK:" + b.BMK.BMK_VOLL)
-	}
-}
-
-func (a *App) AddProdukt() {
-	currentProject.addProdukt2()
-}
-
-func (a *PROJEKT) addProdukt2() {
-	a.PRODUKTE = append(a.PRODUKTE, PRODUKTE{
-		BMK: BMK2{
-			BMK_VOLL: "+EC" + fmt.Sprintf("%d", schranknum),
-		},
-	})
-	schranknum++
 }

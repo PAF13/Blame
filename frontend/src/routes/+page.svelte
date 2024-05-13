@@ -26,8 +26,9 @@
 
 <section>
 	
-<div class="box" >
+
 	<h1>Home</h1>
+</section>
 <TableSearch striped={true} placeholder="Search by maker name" hoverable={true} bind:inputValue={searchTerm}>
   <Tabs>
 	<TabItem open title="Konstruktion">
@@ -351,8 +352,8 @@
 	  </TabItem>
   </Tabs>
 </TableSearch>
-</div>
-</section>
+
+
 <style>
 	section {
 		display: flex;
@@ -365,7 +366,7 @@
 
 
 	.box {
-		padding: 1rem;
+		padding: 5rem;
 		height: 100%;
 	  width: 100%;
 	  top: 100px;

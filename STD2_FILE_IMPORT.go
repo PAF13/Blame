@@ -11,6 +11,27 @@ import (
 	"github.com/xuri/excelize/v2"
 )
 
+func (a *App) ReturnOrte() []string {
+	defer wg.Done()
+	jsonFile, err := os.Open("\\\\ME-Datenbank-1\\Database\\Schnittstelle\\BlameOutput\\Blame_Clean2_stueckliste.json")
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer jsonFile.Close()
+
+	byteValue_jsonFile, _ := ioutil.ReadAll(jsonFile)
+
+	artikel_jsonFile := ARTIKELLISTE{}
+
+	json.Unmarshal(byteValue_jsonFile, &artikel_jsonFile)
+	bmks := []string{}
+	for _, b := range artikel_jsonFile.BMK_Liste {
+		bmks = append(bmks, b)
+	}
+	fmt.Println(artikel_jsonFile.BMK_Liste)
+	fmt.Println(bmks)
+	return bmks
+}
 func ImportFile2(pfad string, kunde string, fileType string) {
 	defer wg.Done()
 
@@ -68,8 +89,9 @@ func loadFile2(fileType string) {
 	json.Unmarshal([]byte(byteValue), &excelFile)
 
 	artikelliste := ARTIKELLISTE{
-		Header:  excelFile.Header,
-		Artikel: map[string][]ARTIKEL{},
+		Header:    excelFile.Header,
+		BMK_Liste: map[string]string{},
+		Artikel:   map[string][]ARTIKEL{},
 	}
 
 	for _, newRow := range excelFile.Rows {
@@ -93,6 +115,7 @@ func loadFile2(fileType string) {
 					Aufstellungsort:      newRow[excelFile.Columns.Aufstellungsort],
 					Ortskennzeichen:      newRow[excelFile.Columns.Ortskennzeichen],
 					BMK:                  newRow[excelFile.Columns.BMK],
+					BMKVollständig:       newRow[excelFile.Columns.FunktionaleZuordnung] + newRow[excelFile.Columns.Funktionskennzeichen] + newRow[excelFile.Columns.Aufstellungsort] + newRow[excelFile.Columns.Ortskennzeichen],
 				},
 			})
 		}
@@ -211,7 +234,7 @@ func sumListe(fileType string) {
 		fmt.Println(err)
 	}
 
-	err = ioutil.WriteFile(rootPfadOutput+"Blame_Clean2_"+fileType+".json", content, 0644)
+	err = ioutil.WriteFile(rootPfadOutput+"Blame_Clean2_stueckliste.json", content, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}

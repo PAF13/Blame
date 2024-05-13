@@ -3,11 +3,7 @@ package main
 import (
 	"crypto/rand"
 	"encoding/hex"
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
 	"log"
-	"os"
 	"strings"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -79,75 +75,6 @@ import (
 	}
 */
 
-func importJson() {
-
-	SitecaFile, err := os.Open("\\\\ME-Datenbank-1\\Database\\Schnittstelle\\Test_Project\\blame_SITECALager.json")
-	// if we os.Open returns an error then handle it
-	if err != nil {
-		fmt.Println(err)
-	}
-	KNTFile, err := os.Open("\\\\ME-Datenbank-1\\Database\\Schnittstelle\\Test_Project\\blame_KNTLager.json")
-	// if we os.Open returns an error then handle it
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	defer KNTFile.Close()
-	defer SitecaFile.Close()
-
-	// read our opened xmlFile as a byte array.
-	byteSiteca, _ := ioutil.ReadAll(SitecaFile)
-	byteKNT, _ := ioutil.ReadAll(KNTFile)
-
-	// we initialize our Users array
-	Siteca := []ARTIKEL{}
-	KNT := []ARTIKEL{}
-	P_KNT := &KNT
-	// we unmarshal our byteArray which contains our
-	// jsonFile's content into 'users' which we defined above
-	json.Unmarshal(byteSiteca, &Siteca)
-	json.Unmarshal(byteKNT, &KNT)
-
-	// we iterate through every user within our users array and
-	// print out the user Type, their name, and their facebook url
-	// as just an example
-
-	for a, _ := range KNT {
-		(*P_KNT)[a].Fehler = []string{}
-		for _, bb := range Siteca {
-			if KNT[a].Bestellnummer != "" {
-				if KNT[a].Beschreibung != "" {
-					//if strings.EqualFold(strings.ToLower(bestellnummerClean2(KNT[a].Bestellnummer)),strings.ToLower(bestellnummerClean2(bb.Bestellnummer))){
-					if strings.ToLower(bestellnummerClean2(KNT[a].Bestellnummer)) == strings.ToLower(bestellnummerClean2(bb.Bestellnummer)) {
-						(*P_KNT)[a].Fehler = append((*P_KNT)[a].Fehler, bb.ERP)
-						(*P_KNT)[a].Quelle = "SITECA"
-						(*P_KNT)[a].Hersteller = bb.Hersteller
-						(*P_KNT)[a].Beschreibung = bb.Beschreibung
-						fmt.Printf("Bestellnummer KNT: %-50s", KNT[a].Bestellnummer)
-						fmt.Printf("Bestellnummer Siteca: %-50s", bb.Bestellnummer)
-						fmt.Printf("ERP: %-50s", bb.ERP)
-						fmt.Printf("länge: %-20d", len((*P_KNT)[a].Fehler))
-						fmt.Printf("\n")
-					}
-				}
-
-			}
-
-		}
-	}
-
-	content, err := json.MarshalIndent(*P_KNT, "", "\t")
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	err = ioutil.WriteFile("\\\\ME-Datenbank-1\\Database\\Schnittstelle\\Test_Project\\blame_KNTLager_Clean.json", content, 0644)
-	if err != nil {
-		log.Fatal(err)
-	}
-	//STD_Write_Stueckliste(P_KNT)
-}
-
 func bestellnummerClean(x string) string {
 	x = strings.ReplaceAll(x, " ", "")
 	x = strings.ReplaceAll(x, "\t", "")
@@ -155,6 +82,7 @@ func bestellnummerClean(x string) string {
 	return x
 }
 
+/*
 func bestellnummerClean2(x string) string {
 	x = strings.ReplaceAll(x, " ", "")
 	x = strings.ReplaceAll(x, "\t", "")
@@ -167,7 +95,7 @@ func bestellnummerClean2(x string) string {
 	return x
 }
 
-/*
+
 func (structType *EplanAuswertungXML) convertFile(byteValue []byte) {
 	verbindungsliste = map[string]VERBINDUNG{}
 	xml.Unmarshal(byteValue, &structType)

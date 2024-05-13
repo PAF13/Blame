@@ -2,12 +2,14 @@
 	<title>About</title>
 	<meta name="description" content="About this app" />
 </svelte:head>
-<script>
+<script lang="ts">
 	import { Label, Input, Button, InputAddon, ButtonGroup, Checkbox,Avatar,Dropdown, DropdownItem, Search } from 'flowbite-svelte';
 	import { ChevronDownOutline, UserRemoveSolid } from 'flowbite-svelte-icons';
-	import { OpenFileDialog,LoadStueckliste} from "$lib/wailsjs/go/main/App";
+	import { OpenFileDialog,LoadStueckliste,ReturnOrte} from "$lib/wailsjs/go/main/App";
+
+
   let searchTerm = ''
-  const people = [{ name: 'All', checked: false }];
+  const people = [{ name: 'Alll', checked: false }];
   const people2 = new Array();
 
 
@@ -39,8 +41,6 @@
 	let BMK = new Array();
 	let BMK2 = new Array();
 
-
-
 	function dialog1(){
 		if(list1 != list1Last){
 			list1 = "loading..."
@@ -52,9 +52,10 @@
 	$: {
 		if (BMK != BMK2) {
 			ii2 = BMK.length;
-		for (let i = 0; i < ii2; i++) {
-			people[0]["name"] = "All";
-			people[0]["checked"] = true;
+			
+		for (let i = 1; i < ii2; i++) {	
+			people[0]["name"] = BMK[0];
+			people[0]["checked"] = false;		
 			people.push({ name: BMK[i], checked: false });
 			
 			}
@@ -67,6 +68,14 @@
 
 	}
 
+
+
+	function test(){
+		ReturnOrte().then((result) => (BMK = result));
+	}
+
+
+	
 	function reset(){
 		pfad1 = "";
 		pfad2 = "";
@@ -91,7 +100,7 @@ function switchList(){
 <div class="pt-8">
 <ButtonGroup class="w-full">
 	<Button color="dark" on:click={dialog1}>importieren</Button>
-	<Button color="dark" on:click={dialog2}>Laden</Button>
+	
 	<Input 		
 		id="input-addon" 
 		type="text" 
@@ -100,7 +109,8 @@ function switchList(){
 		color='green'/>
 </ButtonGroup>
 </div>
-
+<Button color="dark" on:click={dialog2}>Laden</Button>
+	<Button color="dark" on:click={test}>list</Button>
 	<Button color="dark" >Dropdown search<ChevronDownOutline class="w-6 h-6 ms-2 text-white dark:text-white" /></Button>
 	<Dropdown class="overflow-y-auto px-3 pb-3 text-sm h-44">
 		<div slot="header" class="p-3">
@@ -119,4 +129,4 @@ function switchList(){
 			<UserRemoveSolid class="w-4 h-4 me-2 text-primary-700 dark:text-primary-700" />Delete user
 		</a>
 	  </Dropdown>
-
+	  

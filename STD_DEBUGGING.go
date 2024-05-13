@@ -8,5 +8,24 @@ package main
 	fmt.Printf("Bestellnr_L1: %-20s", value.Bestellnr_L1)
 	fmt.Printf("Herstellertyp: %-20s", value.Herstellertyp)
 	fmt.Printf("Beistellung: %-20s", value.Beistellung)
-*/	
+	func bestellnummerClean(x string) string {
+	x = strings.ReplaceAll(x, " ", "")
+	x = strings.ReplaceAll(x, "\t", "")
+	x = strings.ReplaceAll(x, "\n", "")
+	return x
+}
 
+
+func bestellnummerClean2(x string) string {
+	x = strings.ReplaceAll(x, " ", "")
+	x = strings.ReplaceAll(x, "\t", "")
+	x = strings.ReplaceAll(x, "\n", "")
+	x = strings.ReplaceAll(x, ".", "")
+	x = strings.ReplaceAll(x, "-", "")
+	x = strings.ReplaceAll(x, "+", "")
+	x = strings.ReplaceAll(x, "/", "")
+	x = strings.ReplaceAll(x, ",", "")
+	return x
+}
+
+*/
