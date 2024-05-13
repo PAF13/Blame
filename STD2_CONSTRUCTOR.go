@@ -105,8 +105,9 @@ func setImportColumns(kunde string, maxSize1 int) EXCEL_SIMPLE {
 
 func NewArtikelliste(fileType string, source string) *ARTIKELLISTE {
 	return &ARTIKELLISTE{
-		Header:  setHeader(fileType, source),
-		Artikel: map[string][]ARTIKEL{},
+		Header:    setHeader(fileType, source),
+		BMK_Liste: map[string]string{},
+		Artikel:   map[string][]ARTIKEL{},
 	}
 }
 

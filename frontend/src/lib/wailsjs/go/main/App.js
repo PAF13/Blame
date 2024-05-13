@@ -26,6 +26,10 @@ export function LoadCSV(arg1) {
   return window['go']['main']['App']['LoadCSV'](arg1);
 }
 
+export function LoadStueckliste(arg1) {
+  return window['go']['main']['App']['LoadStueckliste'](arg1);
+}
+
 export function MessageDialog() {
   return window['go']['main']['App']['MessageDialog']();
 }

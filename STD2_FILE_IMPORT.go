@@ -11,11 +11,10 @@ import (
 	"github.com/xuri/excelize/v2"
 )
 
-func ImportFile2(fileName string, kunde string, fileType string) {
+func ImportFile2(pfad string, kunde string, fileType string) {
 	defer wg.Done()
-	excelSize := 0
 
-	file, err := excelize.OpenFile(rootPfadInput + fileName + ".xlsx")
+	file, err := excelize.OpenFile(pfad)
 	if err != nil {
 		return
 	}
@@ -30,13 +29,14 @@ func ImportFile2(fileName string, kunde string, fileType string) {
 		log.Fatal(err)
 	}
 
+	excelSize := 0
 	for _, b := range rows {
 		if len(b) > excelSize {
 			excelSize = len(b)
 		}
 	}
 	excelSize = excelSize + 1
-	newRow := NewExcelImport(kunde, excelSize, fileType, fileName+".xlsx")
+	newRow := NewExcelImport(kunde, excelSize, fileType, pfad)
 	for a, b := range rows {
 		excelRow := make([]string, excelSize)
 		newRow.Rows = append(newRow.Rows, excelRow)
@@ -48,15 +48,15 @@ func ImportFile2(fileName string, kunde string, fileType string) {
 		fmt.Println(err)
 	}
 
-	err = ioutil.WriteFile(rootPfadOutput+"Blame_Import_"+fileName+".json", content, 0644)
+	err = ioutil.WriteFile(rootPfadOutput+"Blame_Import_"+fileType+".json", content, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
 }
 
-func loadFile2(fileName string) {
+func loadFile2(fileType string) {
 	defer wg.Done()
-	jsonFile, err := os.Open(rootPfadOutput + "Blame_Import_" + fileName + ".json")
+	jsonFile, err := os.Open(rootPfadOutput + "Blame_Import_" + fileType + ".json")
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -103,13 +103,13 @@ func loadFile2(fileName string) {
 		fmt.Println(err)
 	}
 
-	err = ioutil.WriteFile(rootPfadOutput+"Blame_Clean_"+fileName+".json", content, 0644)
+	err = ioutil.WriteFile(rootPfadOutput+"Blame_Clean_"+fileType+".json", content, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
 }
 
-func sumListe(stueckliste string) {
+func sumListe(fileType string) {
 	jsonFile_KNT, err := os.Open(rootPfadOutput + "Blame_Clean_Kopie von Lagerhueter_26_04_2024.json")
 	if err != nil {
 		fmt.Println(err)
@@ -120,7 +120,7 @@ func sumListe(stueckliste string) {
 		fmt.Println(err)
 	}
 	defer jsonFile_SITECA.Close()
-	jsonFile_LISTE, err := os.Open(rootPfadOutput + "Blame_Clean_" + stueckliste + ".json")
+	jsonFile_LISTE, err := os.Open(rootPfadOutput + "Blame_Clean_" + fileType + ".json")
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -142,12 +142,17 @@ func sumListe(stueckliste string) {
 
 	for _, b := range artikel_LISTE.Artikel {
 		for _, bb := range b {
-			_, ok := artikel_LISTE_CLEAN.Artikel[bb.Bestellnummer+bb.BMK.Aufstellungsort+bb.BMK.Ortskennzeichen]
+			orten := bb.BMK.FunktionaleZuordnung + bb.BMK.Funktionskennzeichen + bb.BMK.Aufstellungsort + bb.BMK.Ortskennzeichen
+			if bb.BMK.FunktionaleZuordnung+bb.BMK.Funktionskennzeichen+bb.BMK.Aufstellungsort+bb.BMK.Ortskennzeichen != "" {
+				artikel_LISTE_CLEAN.BMK_Liste[bb.BMK.FunktionaleZuordnung+bb.BMK.Funktionskennzeichen+bb.BMK.Aufstellungsort+bb.BMK.Ortskennzeichen] = bb.BMK.FunktionaleZuordnung + bb.BMK.Funktionskennzeichen + bb.BMK.Aufstellungsort + bb.BMK.Ortskennzeichen
+			}
+			_, ok := artikel_LISTE_CLEAN.Artikel[bb.Bestellnummer+orten]
 			if !ok {
-				artikel_LISTE_CLEAN.Artikel[bb.Bestellnummer+bb.BMK.Aufstellungsort+bb.BMK.Ortskennzeichen] = append(artikel_LISTE_CLEAN.Artikel[bb.Bestellnummer+bb.BMK.Aufstellungsort+bb.BMK.Ortskennzeichen], bb)
+				artikel_LISTE_CLEAN.Artikel[bb.Bestellnummer+orten] = append(artikel_LISTE_CLEAN.Artikel[bb.Bestellnummer+orten], bb)
 			} else {
-				artikel_LISTE_CLEAN.Artikel[bb.Bestellnummer+bb.BMK.Aufstellungsort+bb.BMK.Ortskennzeichen][0].Stueckzahl = artikel_LISTE_CLEAN.Artikel[bb.Bestellnummer+bb.BMK.Aufstellungsort+bb.BMK.Ortskennzeichen][0].Stueckzahl + bb.Stueckzahl
-				artikel_LISTE_CLEAN.Artikel[bb.Bestellnummer+bb.BMK.Aufstellungsort+bb.BMK.Ortskennzeichen][0].Bestellung_Siteca = artikel_LISTE_CLEAN.Artikel[bb.Bestellnummer+bb.BMK.Aufstellungsort+bb.BMK.Ortskennzeichen][0].Bestellung_Siteca + bb.Stueckzahl
+				artikel_LISTE_CLEAN.Artikel[bb.Bestellnummer+orten][0].Stueckzahl = artikel_LISTE_CLEAN.Artikel[bb.Bestellnummer+orten][0].Stueckzahl + bb.Stueckzahl
+				artikel_LISTE_CLEAN.Artikel[bb.Bestellnummer+orten][0].Bestellung_Siteca = artikel_LISTE_CLEAN.Artikel[bb.Bestellnummer+orten][0].Bestellung_Siteca + bb.Stueckzahl
+
 			}
 		}
 	}
@@ -206,12 +211,12 @@ func sumListe(stueckliste string) {
 		fmt.Println(err)
 	}
 
-	err = ioutil.WriteFile(rootPfadOutput+"Blame_Clean2_"+stueckliste+".json", content, 0644)
+	err = ioutil.WriteFile(rootPfadOutput+"Blame_Clean2_"+fileType+".json", content, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	writeStueckliste(artikel_LISTE_CLEAN.Artikel, "sdf", "sdf")
+	writeStueckliste(artikel_LISTE_CLEAN.Artikel, fileType, fileType)
 }
 
 func writeStueckliste(lagerbestand map[string][]ARTIKEL, quelle string, fileType string) {

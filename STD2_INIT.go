@@ -23,24 +23,22 @@ func (a *App) BlameStartup() bool {
 	rootPfadOutput = rootPfad + "BlameOutput\\"
 	rootPfadInput = rootPfad + "BlameInput\\"
 	rootPfadDatenbank = rootPfad + "BlameDatenbank\\"
-
-	lagerSiteca := "Topix_Artikel20240502"
-	lagerKNT := "Kopie von Lagerhueter_26_04_2024"
 	/*
-		wg.Add(1)
-		go ImportFile2(stueckliste, "stueckliste", "stueckliste")
+		lagerSiteca := "Topix_Artikel20240502"
+		lagerKNT := "Kopie von Lagerhueter_26_04_2024"
+
 		wg.Add(1)
 		go ImportFile2(lagerSiteca, "SITECA", "lager")
 		wg.Add(1)
 		go ImportFile2(lagerKNT, "KNT", "lager")
 		wg.Wait()
+
+		wg.Add(1)
+		go loadFile2(lagerSiteca)
+		wg.Add(1)
+		go loadFile2(lagerKNT)
+		wg.Wait()
 	*/
-
-	wg.Add(1)
-	go loadFile2(lagerSiteca)
-	wg.Add(1)
-	go loadFile2(lagerKNT)
-
 	duration := time.Since(start)
 	// Formatted string, such as "2h3m0.5s" or "4.503μs"
 	fmt.Println(duration)
@@ -51,11 +49,21 @@ func (a *App) BlameStartup() bool {
 }
 
 func (a *App) LoadStueckliste(pfad string) {
-	go ImportFile2(pfad, "stueckliste", "stueckliste")
+	start := time.Now()
+	wg.Add(1)
+	ImportFile2(pfad, "stueckliste", "stueckliste")
+	wg.Add(1)
+	loadFile2("stueckliste")
+	wg.Add(1)
+	sumListe("stueckliste")
+	wg.Wait()
 
-	go loadFile2(pfad)
+	duration := time.Since(start)
+	// Formatted string, such as "2h3m0.5s" or "4.503μs"
+	fmt.Println(duration)
 
-	sumListe(pfad)
+	// Nanoseconds as int64
+	fmt.Println(duration.Nanoseconds())
 }
 
 var currentProject *PROJEKT

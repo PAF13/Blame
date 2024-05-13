@@ -70,8 +70,9 @@ type EXCEL_IMPORT struct {
 	Rows    [][]string
 }
 type ARTIKELLISTE struct {
-	Header  JSON_HEADER
-	Artikel map[string][]ARTIKEL
+	Header    JSON_HEADER
+	BMK_Liste map[string]string
+	Artikel   map[string][]ARTIKEL
 }
 type ARTIKEL struct {
 	UUID               UUID

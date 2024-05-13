@@ -13,6 +13,8 @@ export function ListTrees():Promise<void>;
 
 export function LoadCSV(arg1:string):Promise<void>;
 
+export function LoadStueckliste(arg1:string):Promise<void>;
+
 export function MessageDialog():Promise<string>;
 
 export function NewProject(arg1:string,arg2:string,arg3:string):Promise<void>;

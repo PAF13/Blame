@@ -5,7 +5,7 @@
 <script>
 	import { Label, Input, Button, InputAddon, ButtonGroup, Checkbox,Avatar,Dropdown, DropdownItem, Search } from 'flowbite-svelte';
 	import { ChevronDownOutline, UserRemoveSolid } from 'flowbite-svelte-icons';
-	import { OpenFileDialog} from "$lib/wailsjs/go/main/App";
+	import { OpenFileDialog,LoadStueckliste} from "$lib/wailsjs/go/main/App";
   let searchTerm = ''
   const people = [{ name: 'All', checked: false }];
   const people2 = new Array();
@@ -19,7 +19,7 @@
 	let list2 = "";
 	let list2Switch = "";
 	let list2Last = "replace";
-	
+
 	let pfad1 = "";
 	let pfad1Last = "";
 	let pfad1Switch = "";
@@ -63,16 +63,7 @@
 	}
 
 	function dialog2(){
-		let ii3 = 0;
-		people.forEach(function (item, index) {
-
-  			console.log(item, index);
-			  if(item.checked == true){
-				ii3++
-				people2[ii3] = item.name;
-				//people2.push(item.name);
-			  }
-		});
+		LoadStueckliste(list1);
 
 	}
 
@@ -99,12 +90,12 @@ function switchList(){
 
 <div class="pt-8">
 <ButtonGroup class="w-full">
-	<Button color="dark">importieren</Button>
-	<Button color="dark">Laden</Button>
+	<Button color="dark" on:click={dialog1}>importieren</Button>
+	<Button color="dark" on:click={dialog2}>Laden</Button>
 	<Input 		
 		id="input-addon" 
 		type="text" 
-		value={pfad1} 
+		value={list1} 
 		placeholder="Alte Stückliste" 
 		color='green'/>
 </ButtonGroup>
@@ -129,18 +120,3 @@ function switchList(){
 		</a>
 	  </Dropdown>
 
-
-
-<div class="pt-8">
-	<ButtonGroup>
-		<Button color="dark" disabled={defaultModal} on:click={reset}>Reset</Button>
-		<Button color="dark" disabled={defaultModal} on:click={switchList}>Tauschen</Button>
-	</ButtonGroup>
-	</div>
-<div class="pt-8">
-	<ButtonGroup>
-		<Button color="dark" disabled={defaultModal}>Differenz</Button>	
-		<Button color="dark" disabled={defaultModal} on:click={dialog2}>Stueckliste Sum</Button>
-		<Button color="dark" disabled={defaultModal}>verbindungsliste</Button>
-	</ButtonGroup>
-</div>

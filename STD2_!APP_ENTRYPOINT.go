@@ -285,7 +285,7 @@ func ValueRestrict(s string) error {
 func (a *App) OpenFileDialog() string {
 	result, err := runtime.OpenFileDialog(a.ctx, runtime.OpenDialogOptions{
 		Title:            "Question",
-		DefaultDirectory: "\\\\ME-Datenbank-1\\Database\\Schnittstelle",
+		DefaultDirectory: "\\\\ME-Datenbank-1\\Projektdaten 2024",
 	})
 	if err != nil {
 		log.Fatal(err)
