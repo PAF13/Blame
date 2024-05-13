@@ -41,6 +41,7 @@ func (a *App) BlameStartup() bool {
 		go loadFile2(lagerKNT)
 		wg.Wait()
 	*/
+	INIT_VERBINDUNGSLITE()
 	duration := time.Since(start)
 	// Formatted string, such as "2h3m0.5s" or "4.503μs"
 	fmt.Println(duration)
@@ -69,10 +70,9 @@ func (a *App) LoadStueckliste(pfad string) {
 }
 
 var currentProject *PROJEKT
-var schranknum int
 
 func (a *App) NewProject2() {
-	schranknum = 0
+
 	currentProject = &PROJEKT{
 		PROJEKT_NUMMER:       "8000772",
 		PROJEKT_BESCHREIBUNG: "Polifilm",

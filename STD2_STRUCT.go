@@ -54,9 +54,9 @@ type VERBINDUNG struct {
 	Quelle                    BETRIEBSMITELLKENNZEICHEN
 	Ziel                      BETRIEBSMITELLKENNZEICHEN
 	VerbindungZugehörigkeit   string
-	Verbindungsquerschnitt    string
+	Verbindungsquerschnitt    float64
 	Verbindungsfarbeundnummer string
-	VerbindungLänge           string
+	VerbindungLänge           int
 	Netzname                  string
 	Signalname                string
 	Potenzialname             string

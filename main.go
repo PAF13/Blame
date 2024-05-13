@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/wailsapp/wails/v2"
+	"github.com/wailsapp/wails/v2/pkg/logger"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 )
@@ -38,15 +39,15 @@ func (h *FileLoader) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 
 func main() {
 	app := NewApp()
-	//myLog := logger.NewFileLogger("LOG.txt")
+	myLog := logger.NewFileLogger("LOG.txt")
 
 	err := wails.Run(&options.App{
-		Title:     "Blame",
-		Width:     1024,
-		Height:    768,
-		MinWidth:  400,
-		MinHeight: 400,
-		//Logger:    myLog,
+		Title:       "Blame",
+		Width:       1024,
+		Height:      768,
+		MinWidth:    400,
+		MinHeight:   400,
+		Logger:      myLog,
 		AlwaysOnTop: true,
 		AssetServer: &assetserver.Options{
 			Assets:  assets,
