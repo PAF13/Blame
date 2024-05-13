@@ -4,7 +4,6 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"encoding/json"
-	"encoding/xml"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -168,6 +167,7 @@ func bestellnummerClean2(x string) string {
 	return x
 }
 
+/*
 func (structType *EplanAuswertungXML) convertFile(byteValue []byte) {
 	verbindungsliste = map[string]VERBINDUNG{}
 	xml.Unmarshal(byteValue, &structType)
@@ -279,7 +279,7 @@ func ValueRestrict(s string) error {
 		return fmt.Errorf("unsupported value: %q", s)
 	}
 }
-
+*/
 //dialog windows
 
 func (a *App) OpenFileDialog() string {
@@ -296,8 +296,8 @@ func (a *App) OpenFileDialog() string {
 
 func (a *App) OpenMultipleFilesDialog() []string {
 	result, err := runtime.OpenMultipleFilesDialog(a.ctx, runtime.OpenDialogOptions{
-		Title:            "Question",
-		DefaultDirectory: "\\\\ME-Datenbank-1\\Database\\Schnittstelle",
+		Title:            "Choose File",
+		DefaultDirectory: "\\\\ME-Datenbank-1\\Projektdaten 2024",
 	})
 	if err != nil {
 		log.Fatal(err)

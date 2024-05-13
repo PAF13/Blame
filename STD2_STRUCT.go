@@ -1,5 +1,7 @@
 package main
 
+import "time"
+
 /*
 	Current Imports:
 		Lagerstand:
@@ -18,11 +20,12 @@ type UUID = string //UUID should show source and time of import data
 
 type VerbindungName = string
 
-//var lagerbestand []ARTIKEL // Lagerort
-
-var verbindungsliste map[string]VERBINDUNG
-
-var betriebsmittel map[string][50]ARTIKEL
+type JSON_HEADER struct {
+	Name    string
+	Version [3]int
+	Time    time.Time
+	Source  string
+}
 
 //non standard generics
 type LAGER struct {
@@ -61,11 +64,20 @@ type VERBINDUNG struct {
 	Potenzialwert             string
 	Netzindex                 string
 }
-
+type EXCEL_IMPORT struct {
+	Header  JSON_HEADER
+	Columns EXCEL_SIMPLE
+	Rows    [][]string
+}
+type ARTIKELLISTE struct {
+	Header  JSON_HEADER
+	Artikel map[string][]ARTIKEL
+}
 type ARTIKEL struct {
 	UUID               UUID
 	BMK                BETRIEBSMITELLKENNZEICHEN
 	ERP                string
+	ERP_KNT            string
 	Bestellnummer      string
 	ArtikelnummerEplan string
 	Hersteller         string
@@ -91,6 +103,7 @@ type EXCEL_SIMPLE struct {
 	Ortskennzeichen      int //+
 	BMK                  int //-
 	ERP                  int
+	ERP_KNT              int
 	Hersteller           int
 	Bestellnummer        int
 	Bezeichnung          int

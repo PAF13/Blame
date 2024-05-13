@@ -5,7 +5,7 @@
 
 <script>
 	import { Label, Input, Button, InputAddon, ButtonGroup, Checkbox } from 'flowbite-svelte';
-	import { OpenFileDialog } from "$lib/wailsjs/go/main/App";
+
 	let list1 = "";
 	let list1Switch = "";
 	let list1Last = "replace";
@@ -14,7 +14,7 @@
 	let list2Last = "replace";
 
 
-
+/*
 	function dialog1(){
 		if(list1 != list1Last){
 			list1 = "loading..."
@@ -28,7 +28,7 @@
 			list2Last = "loading..."
 			OpenFileDialog().then((result) => (list2 = result));
 		}
-	}
+	}*/
 	function reset(){
 		list1 = "";
 		list2 = "";
@@ -69,14 +69,14 @@
 <div class="pt-8">
 	<Label for="input-addon" class="mb-2">Alte Stückliste</Label>
 	<ButtonGroup class="w-full">
-		<Button color="dark" on:click={dialog1}>importieren</Button>
+		<Button color="dark" >importieren</Button>
 		<Input id="input-addon" type="text" value={list1} placeholder="Dateipfad" />
 	</ButtonGroup>
 	</div>
 	<div class="pt-8">
 	<Label for="input-addon" class="mb-2">Neue Stückliste</Label>
 	<ButtonGroup class="w-full">
-		<Button color="dark" on:click={dialog2}>importieren</Button>
+		<Button color="dark">importieren</Button>
 		<Input id="input-addon" type="text" value={list2} placeholder="Dateipfad" />
 		
 	</ButtonGroup>

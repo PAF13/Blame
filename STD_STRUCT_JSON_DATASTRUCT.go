@@ -1,10 +1,5 @@
 package main
 
-type JSON_HEADER struct {
-	NAME    string
-	VERSION [3]int
-}
-
 type BMK2 struct {
 	BMK_VOLL             string
 	BMK_ID               string

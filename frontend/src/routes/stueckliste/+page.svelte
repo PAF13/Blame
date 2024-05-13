@@ -3,9 +3,9 @@
 	<meta name="description" content="About this app" />
 </svelte:head>
 <script>
-	import { OpenFileDialog} from "$lib/wailsjs/go/main/App";
 	import { Label, Input, Button, InputAddon, ButtonGroup, Checkbox,Avatar,Dropdown, DropdownItem, Search } from 'flowbite-svelte';
 	import { ChevronDownOutline, UserRemoveSolid } from 'flowbite-svelte-icons';
+	import { OpenFileDialog} from "$lib/wailsjs/go/main/App";
   let searchTerm = ''
   const people = [{ name: 'All', checked: false }];
   const people2 = new Array();
@@ -13,6 +13,13 @@
 
   $: filteredItems = people.filter((person) => person.name.toLowerCase().indexOf(searchTerm?.toLowerCase()) !== -1);
 
+  let list1 = "";
+	let list1Switch = "";
+	let list1Last = "replace";
+	let list2 = "";
+	let list2Switch = "";
+	let list2Last = "replace";
+	
 	let pfad1 = "";
 	let pfad1Last = "";
 	let pfad1Switch = "";
@@ -35,11 +42,12 @@
 
 
 	function dialog1(){
-		OpenFileDialog().then((result) => (pfad1 = result));
-		pfad2Loaded = true;
+		if(list1 != list1Last){
+			list1 = "loading..."
+			list1Last = "loading..."
+			OpenFileDialog().then((result) => (list1 = result));
+		}
 	}
-
-
 
 	$: {
 		if (BMK != BMK2) {
@@ -91,7 +99,7 @@ function switchList(){
 
 <div class="pt-8">
 <ButtonGroup class="w-full">
-	<Button color="dark" on:click={dialog1}>importieren</Button>
+	<Button color="dark">importieren</Button>
 	<Button color="dark">Laden</Button>
 	<Input 		
 		id="input-addon" 
@@ -99,11 +107,6 @@ function switchList(){
 		value={pfad1} 
 		placeholder="Alte Stückliste" 
 		color='green'/>
-</ButtonGroup>
-<ButtonGroup class="w-full">
-	<Button color="dark" disabled={pfad22}>importieren</Button>
-	<Button color="dark" disabled={pfad22}>Laden</Button>
-	<Input id="input-addon" type="text" value={pfad2} placeholder="Neue Stückliste" color='green' disabled={pfad22}/>
 </ButtonGroup>
 </div>
 
