@@ -2,20 +2,20 @@ package main
 
 import "time"
 
-func setHeader(fileType string, source string) JSON_HEADER {
+func setHeader(fileType string, fileName string) JSON_HEADER {
 	return JSON_HEADER{
 		Name:    fileType,
 		Version: [3]int{0, 0, 1},
 		Time:    time.Now(),
-		Source:  source,
+		Source:  fileName,
 	}
 
 }
-func setImportColumns(kunde string, maxSize1 int) EXCEL_SIMPLE {
+func setImportColumns(kunde string, maxSize1 int, fileType string) EXCEL_SIMPLE {
 	maxSize := maxSize1 - 1
 	var columnNumber EXCEL_SIMPLE
-	switch kunde {
-	case "SITECA":
+	switch {
+	case kunde == "SITECA" && fileType == "Lager":
 		columnNumber =
 			EXCEL_SIMPLE{
 				Header:               3,
@@ -37,7 +37,7 @@ func setImportColumns(kunde string, maxSize1 int) EXCEL_SIMPLE {
 				Hersteller:           6,
 				Beistellung:          maxSize,
 			}
-	case "KNT":
+	case kunde == "KNT" && fileType == "Lager":
 		columnNumber = EXCEL_SIMPLE{
 			Header:               4,
 			BMKVollständig:       maxSize,
@@ -58,7 +58,48 @@ func setImportColumns(kunde string, maxSize1 int) EXCEL_SIMPLE {
 			Hersteller:           maxSize,
 			Beistellung:          maxSize,
 		}
-	case "stueckliste":
+	case kunde == "MOELLER" && fileType == "Lager":
+		columnNumber = EXCEL_SIMPLE{
+			Header:               1,
+			BMKVollständig:       maxSize,
+			FunktionaleZuordnung: maxSize,
+			Funktionskennzeichen: maxSize,
+			Aufstellungsort:      maxSize,
+			Ortskennzeichen:      maxSize,
+			BMK:                  maxSize,
+			ERP:                  4,
+			Bestellnummer:        2,
+			Bezeichnung:          1,
+			Beschreibung:         maxSize,
+			Stueckzahl:           3,
+			Einheit:              maxSize,
+			Verpackungseinheit:   maxSize,
+			Lagerort:             maxSize,
+			Hersteller:           0,
+			Beistellung:          maxSize,
+		}
+	case kunde == "TOPIX" && fileType == "stueckliste":
+		columnNumber = EXCEL_SIMPLE{
+			Header:               1,
+			BMKVollständig:       maxSize,
+			FunktionaleZuordnung: maxSize,
+			Funktionskennzeichen: maxSize,
+			Aufstellungsort:      maxSize,
+			Ortskennzeichen:      maxSize,
+			BMK:                  maxSize,
+			ERP:                  83,
+			ERP_KNT:              maxSize,
+			Bestellnummer:        84,
+			Bezeichnung:          maxSize,
+			Beschreibung:         85,
+			Stueckzahl:           80,
+			Einheit:              81,
+			Verpackungseinheit:   81,
+			Lagerort:             maxSize,
+			Hersteller:           11,
+			Beistellung:          maxSize,
+		}
+	case kunde == "KNT" && fileType == "stueckliste":
 		columnNumber = EXCEL_SIMPLE{
 			Header:               7,
 			BMKVollständig:       maxSize,
@@ -79,6 +120,7 @@ func setImportColumns(kunde string, maxSize1 int) EXCEL_SIMPLE {
 			Hersteller:           11,
 			Beistellung:          12,
 		}
+
 	default:
 		columnNumber = EXCEL_SIMPLE{
 			Header:               maxSize,
@@ -111,10 +153,10 @@ func NewArtikelliste(fileType string, source string) *ARTIKELLISTE {
 	}
 }
 
-func NewExcelImport(kunde string, maxSize int, fileType string, source string) *EXCEL_IMPORT {
+func NewExcelImport(kunde string, maxSize int, fileType string, fileName string) *EXCEL_IMPORT {
 	return &EXCEL_IMPORT{
-		Header:  setHeader(fileType, source),
-		Columns: setImportColumns(kunde, maxSize),
+		Header:  setHeader(fileType, fileName),
+		Columns: setImportColumns(kunde, maxSize, fileType),
 		Rows:    make([][]string, 0),
 	}
 }

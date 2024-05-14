@@ -18,8 +18,8 @@ export function LoadCSV(arg1) {
   return window['go']['main']['App']['LoadCSV'](arg1);
 }
 
-export function LoadStueckliste(arg1) {
-  return window['go']['main']['App']['LoadStueckliste'](arg1);
+export function LoadStueckliste(arg1, arg2, arg3) {
+  return window['go']['main']['App']['LoadStueckliste'](arg1, arg2, arg3);
 }
 
 export function MessageDialog() {

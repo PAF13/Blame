@@ -1,12 +1,14 @@
 package main
 
 import (
+	"encoding/csv"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/xuri/excelize/v2"
 )
@@ -32,9 +34,8 @@ func (a *App) ReturnOrte() []string {
 	fmt.Println(bmks)
 	return bmks
 }
-func ImportFile2(pfad string, kunde string, fileType string) {
+func ImportFile(pfad string, kunde string, fileType string, fileName string) {
 	defer wg.Done()
-
 	file, err := excelize.OpenFile(pfad)
 	if err != nil {
 		return
@@ -44,12 +45,10 @@ func ImportFile2(pfad string, kunde string, fileType string) {
 			fmt.Println(err)
 		}
 	}()
-
 	rows, err := file.GetRows(file.GetSheetList()[0])
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	excelSize := 0
 	for _, b := range rows {
 		if len(b) > excelSize {
@@ -57,27 +56,25 @@ func ImportFile2(pfad string, kunde string, fileType string) {
 		}
 	}
 	excelSize = excelSize + 1
-	newRow := NewExcelImport(kunde, excelSize, fileType, pfad)
+	newRow := NewExcelImport(kunde, excelSize, fileType, fileName)
 	for a, b := range rows {
 		excelRow := make([]string, excelSize)
 		newRow.Rows = append(newRow.Rows, excelRow)
 		copy(newRow.Rows[a], b)
 	}
-
 	content, err := json.MarshalIndent(newRow, "", "\t")
 	if err != nil {
 		fmt.Println(err)
 	}
-
-	err = ioutil.WriteFile(rootPfadOutput+"Blame_Import_"+fileType+".json", content, 0644)
+	err = ioutil.WriteFile(rootPfadOutput+"Blame_Import1_"+kunde+"_"+fileName+"_"+fileType+".json", content, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
 }
 
-func loadFile2(fileType string) {
+func loadFile(kunde string, fileType string, fileName string) {
 	defer wg.Done()
-	jsonFile, err := os.Open(rootPfadOutput + "Blame_Import_" + fileType + ".json")
+	jsonFile, err := os.Open(rootPfadOutput + "Blame_Import1_" + kunde + "_" + fileName + "_" + fileType + ".json")
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -126,43 +123,56 @@ func loadFile2(fileType string) {
 		fmt.Println(err)
 	}
 
-	err = ioutil.WriteFile(rootPfadOutput+"Blame_Clean_"+fileType+".json", content, 0644)
+	err = ioutil.WriteFile(rootPfadOutput+"Blame_Import2_"+kunde+"_"+fileName+"_"+fileType+".json", content, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
 }
 
-func sumListe(fileType string) {
-	jsonFile_KNT, err := os.Open(rootPfadOutput + "Blame_Clean_Kopie von Lagerhueter_26_04_2024.json")
+func sumListe(kunde string, fileType string, fileName string) {
+	jsonFile_KNT, err := os.Open("\\\\ME-Datenbank-1\\Database\\Schnittstelle\\BlameOutput\\Blame_Import2_KNT_Lagerhueter_Lager.json")
 	if err != nil {
 		fmt.Println(err)
 	}
 	defer jsonFile_KNT.Close()
-	jsonFile_SITECA, err := os.Open(rootPfadOutput + "Blame_Clean_Topix_Artikel20240502.json")
+
+	jsonFile_MOELLER, err := os.Open("\\\\ME-Datenbank-1\\Database\\Schnittstelle\\BlameOutput\\Blame_Import2_MOELLER_Moeller_Lager.json")
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer jsonFile_KNT.Close()
+
+	jsonFile_SITECA, err := os.Open("\\\\ME-Datenbank-1\\Database\\Schnittstelle\\BlameOutput\\Blame_Import2_SITECA_Topix_Lager.json")
 	if err != nil {
 		fmt.Println(err)
 	}
 	defer jsonFile_SITECA.Close()
-	jsonFile_LISTE, err := os.Open(rootPfadOutput + "Blame_Clean_" + fileType + ".json")
+
+	jsonFile_LISTE, err := os.Open(rootPfadOutput + "Blame_Import2_" + kunde + "_" + fileName + "_" + fileType + ".json")
 	if err != nil {
 		fmt.Println(err)
 	}
 	defer jsonFile_LISTE.Close()
 
 	byteValue_KNT, _ := ioutil.ReadAll(jsonFile_KNT)
+	byteValue_MOELLER, _ := ioutil.ReadAll(jsonFile_MOELLER)
 	byteValue_SITECA, _ := ioutil.ReadAll(jsonFile_SITECA)
 	byteValue_LISTE, _ := ioutil.ReadAll(jsonFile_LISTE)
 
 	artikel_KNT := ARTIKELLISTE{}
+	artikel_MOELLER := ARTIKELLISTE{}
 	artikel_SITECA := ARTIKELLISTE{}
 	artikel_LISTE := ARTIKELLISTE{}
-	artikel_KNT_CLEAN := NewArtikelliste("Type dont know", "Source dont know")
-	artikel_LISTE_CLEAN := NewArtikelliste("Type dont know", "Source dont know")
+	artikel_KNT_CLEAN := NewArtikelliste(fileName, "Source dont know")
+	artikel_MOELLER_CLEAN := NewArtikelliste(fileName, "Source dont know")
+	artikel_LISTE_CLEAN := NewArtikelliste(fileName, "Source dont know")
 
 	json.Unmarshal(byteValue_KNT, &artikel_KNT)
+	json.Unmarshal(byteValue_MOELLER, &artikel_MOELLER)
 	json.Unmarshal(byteValue_SITECA, &artikel_SITECA)
 	json.Unmarshal(byteValue_LISTE, &artikel_LISTE)
 
+	//sum stueckliste
 	for _, b := range artikel_LISTE.Artikel {
 		for _, bb := range b {
 			orten := bb.BMK.FunktionaleZuordnung + bb.BMK.Funktionskennzeichen + bb.BMK.Aufstellungsort + bb.BMK.Ortskennzeichen
@@ -180,6 +190,17 @@ func sumListe(fileType string) {
 		}
 	}
 
+	//Sum Lager
+	for _, b := range artikel_MOELLER.Artikel {
+		for _, bb := range b {
+			_, ok := artikel_MOELLER_CLEAN.Artikel[bb.Bestellnummer+bb.BMK.Aufstellungsort+bb.BMK.Ortskennzeichen]
+			if !ok {
+				artikel_MOELLER_CLEAN.Artikel[bb.Bestellnummer+bb.BMK.Aufstellungsort+bb.BMK.Ortskennzeichen] = append(artikel_MOELLER_CLEAN.Artikel[bb.Bestellnummer+bb.BMK.Aufstellungsort+bb.BMK.Ortskennzeichen], bb)
+			} else {
+				artikel_MOELLER_CLEAN.Artikel[bb.Bestellnummer+bb.BMK.Aufstellungsort+bb.BMK.Ortskennzeichen][0].Stueckzahl = artikel_MOELLER_CLEAN.Artikel[bb.Bestellnummer+bb.BMK.Aufstellungsort+bb.BMK.Ortskennzeichen][0].Stueckzahl + bb.Stueckzahl
+			}
+		}
+	}
 	for _, b := range artikel_KNT.Artikel {
 		for _, bb := range b {
 			_, ok := artikel_KNT_CLEAN.Artikel[bb.Bestellnummer+bb.BMK.Aufstellungsort+bb.BMK.Ortskennzeichen]
@@ -205,7 +226,28 @@ func sumListe(fileType string) {
 			}
 
 		}
-		if b[0].Beistellung == "SITECA" {
+		if true {
+			_, ok_Moeller := artikel_MOELLER_CLEAN.Artikel[b[0].Bestellnummer]
+			if ok_Moeller {
+
+				if artikel_LISTE_CLEAN.Artikel[a][0].Bestellung_Siteca > artikel_MOELLER_CLEAN.Artikel[b[0].Bestellnummer][0].Stueckzahl {
+					//set KNT bestellung
+					artikel_LISTE_CLEAN.Artikel[a][0].Bestellung_Moeller = artikel_MOELLER_CLEAN.Artikel[b[0].Bestellnummer][0].Stueckzahl
+					//set Rest stueckzahl
+					artikel_LISTE_CLEAN.Artikel[a][0].Bestellung_Siteca = artikel_LISTE_CLEAN.Artikel[a][0].Bestellung_Siteca - artikel_MOELLER_CLEAN.Artikel[b[0].Bestellnummer][0].Stueckzahl
+					//set lager rest
+					artikel_MOELLER_CLEAN.Artikel[b[0].Bestellnummer][0].Stueckzahl = 0
+				} else {
+					//set KNT bestellung
+					artikel_LISTE_CLEAN.Artikel[a][0].Bestellung_Moeller = artikel_LISTE_CLEAN.Artikel[a][0].Bestellung_Siteca
+
+					artikel_MOELLER_CLEAN.Artikel[b[0].Bestellnummer][0].Stueckzahl = artikel_MOELLER_CLEAN.Artikel[b[0].Bestellnummer][0].Stueckzahl - artikel_LISTE_CLEAN.Artikel[a][0].Bestellung_Siteca
+					//set lager rest
+					artikel_LISTE_CLEAN.Artikel[a][0].Bestellung_Siteca = 0
+				}
+
+			}
+
 			_, ok2 := artikel_KNT_CLEAN.Artikel[b[0].Bestellnummer]
 			if ok2 {
 
@@ -234,15 +276,16 @@ func sumListe(fileType string) {
 		fmt.Println(err)
 	}
 
-	err = ioutil.WriteFile(rootPfadOutput+"Blame_Clean2_stueckliste.json", content, 0644)
+	err = ioutil.WriteFile(rootPfadOutput+"Blame_Import3_"+kunde+"_"+fileName+"_"+fileType+".json", content, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	writeStueckliste(artikel_LISTE_CLEAN.Artikel, fileType, fileType)
+	writeStueckliste(artikel_LISTE_CLEAN.Artikel, kunde, fileType, fileName)
+	writeCSV(artikel_LISTE_CLEAN, fileName)
 }
 
-func writeStueckliste(lagerbestand map[string][]ARTIKEL, quelle string, fileType string) {
+func writeStueckliste(lagerbestand map[string][]ARTIKEL, kunde string, fileType string, fileName string) {
 	file2 := excelize.NewFile()
 	rowNum := 1
 	colNum := 0
@@ -313,11 +356,145 @@ func writeStueckliste(lagerbestand map[string][]ARTIKEL, quelle string, fileType
 		ShowColumnStripes: true,
 	})
 
-	if err := file2.SaveAs(rootPfadOutput + "Blame_Clean2_" + fileType + "_" + quelle + ".xlsx"); err != nil {
+	if err := file2.SaveAs(rootPfadOutput + "Blame_Sum_" + kunde + "_" + fileName + "_" + fileType + ".xlsx"); err != nil {
 		fmt.Println(err)
 	}
 }
 func lineWriter(file *excelize.File, sheet string, colNum *int, rowNum *int, val string) {
+
 	file.SetCellValue(sheet, fmt.Sprintf("%s%d", string(rune(65+*colNum)), *rowNum), val)
 	*colNum++
+}
+func bestellnummerClean3(x string) string {
+	x = strings.ReplaceAll(x, " ", "")
+	x = strings.ReplaceAll(x, "\t", "")
+	x = strings.ReplaceAll(x, "\n", "")
+	x = strings.ReplaceAll(x, ".", "")
+	x = strings.ReplaceAll(x, "/", "")
+	x = strings.ReplaceAll(x, ",", "")
+	x = strings.ReplaceAll(x, "ü", "ue")
+	x = strings.ReplaceAll(x, "ä", "ae")
+	x = strings.ReplaceAll(x, "ö", "oe")
+	x = strings.ReplaceAll(x, "Ü", "Ue")
+	x = strings.ReplaceAll(x, "Ä", "Ae")
+	x = strings.ReplaceAll(x, "Ö", "Oe")
+	return x
+}
+func writeCSV(lagerbestand *ARTIKELLISTE, fileName string) {
+	for a := range lagerbestand.BMK_Liste {
+		teilvorhanden := false
+		var err error
+		var file *os.File
+		var file2 *os.File
+		var w *csv.Writer
+		var w2 *csv.Writer
+		var bestellSiteca []string
+		var bestellKNT []string
+		interStueck := 1
+		externStueck := 1
+		for _, record := range lagerbestand.Artikel {
+			switch {
+			case a == record[0].BMK.BMKVollständig:
+				if !teilvorhanden {
+					file, err = os.Create(rootPfadOutput + "Blame_SITECA_" + fileName + "_" + bestellnummerClean3(a) + ".csv")
+					if err != nil {
+						log.Fatalln("failed to open file", err)
+					}
+					defer file.Close()
+
+					file2, err = os.Create(rootPfadOutput + "Blame_KNT_" + fileName + "_" + bestellnummerClean3(a) + ".csv")
+					if err != nil {
+						log.Fatalln("failed to open file", err)
+					}
+					defer file2.Close()
+
+					w = csv.NewWriter_REFAC(file)
+					defer w.Flush()
+					w2 = csv.NewWriter_REFAC(file2)
+					defer w2.Flush()
+
+					headers := []string{
+						"",
+						"",
+						"",
+						"Stuecklistenart",
+						"",
+						"Pos.",
+						"ERP",
+						"Menge",
+						"Herstellernummer",
+						"Hersteller",
+					}
+
+					if err := w.Write(headers); err != nil {
+						log.Fatalln("error writing record to file", err)
+					}
+					if err := w2.Write(headers); err != nil {
+						log.Fatalln("error writing record to file", err)
+					}
+
+					bestellSiteca = []string{}
+					for i := 1; i < 20; i++ {
+						bestellSiteca = append(bestellSiteca, "")
+					}
+					bestellKNT = []string{}
+					for i := 1; i < 20; i++ {
+						bestellKNT = append(bestellKNT, "")
+					}
+					interStueck = 0
+					externStueck = 0
+					teilvorhanden = true
+				}
+
+				switch {
+				case record[0].Bestellung_Moeller != 0:
+					bestellSiteca[0] = bestellnummerClean3(fileName)
+					bestellSiteca[1] = ""
+					bestellSiteca[2] = "1"
+					bestellSiteca[3] = "2"
+					bestellSiteca[4] = "ABLR"
+					bestellSiteca[5] = fmt.Sprintf("%d", interStueck)
+					bestellSiteca[6] = record[0].ERP
+					bestellSiteca[7] = fmt.Sprintf("%.0f", record[0].Bestellung_Moeller)
+					bestellSiteca[8] = record[0].Bestellnummer
+					bestellSiteca[9] = record[0].Hersteller
+					interStueck++
+					if err := w.Write(bestellSiteca); err != nil {
+						log.Fatalln("error writing record to file", err)
+					}
+				case record[0].Bestellung_KNT != 0:
+					bestellKNT[0] = bestellnummerClean3(fileName)
+					bestellKNT[1] = ""
+					bestellKNT[2] = "1"
+					bestellKNT[3] = "2"
+					bestellKNT[4] = "ABLR"
+					bestellKNT[5] = fmt.Sprintf("%d", externStueck)
+					bestellKNT[6] = record[0].ERP_KNT
+					bestellKNT[7] = fmt.Sprintf("%.0f", record[0].Bestellung_KNT)
+					bestellKNT[8] = record[0].Bestellnummer
+					bestellKNT[9] = record[0].Hersteller
+					externStueck++
+					if err := w2.Write(bestellKNT); err != nil {
+						log.Fatalln("error writing record to file", err)
+					}
+				case record[0].Bestellung_Siteca != 0:
+					bestellSiteca[0] = bestellnummerClean3(fileName)
+					bestellSiteca[1] = ""
+					bestellSiteca[2] = "1"
+					bestellSiteca[3] = "2"
+					bestellSiteca[4] = "ABLR"
+					bestellSiteca[5] = fmt.Sprintf("%d", interStueck)
+					bestellSiteca[6] = record[0].ERP
+					bestellSiteca[7] = fmt.Sprintf("%.0f", record[0].Bestellung_Siteca)
+					bestellSiteca[8] = record[0].Bestellnummer
+					bestellSiteca[9] = record[0].Hersteller
+					interStueck++
+					if err := w.Write(bestellSiteca); err != nil {
+						log.Fatalln("error writing record to file", err)
+					}
+				}
+			default:
+			}
+		}
+	}
 }

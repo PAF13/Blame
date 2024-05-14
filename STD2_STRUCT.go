@@ -123,5 +123,16 @@ type PROJEKT struct {
 	BAUJAHR              int
 	AKTIV                bool
 
-	Produktname []string
+	Produkte []PRODUKT
+}
+type PRODUKT struct {
+	Bestellt       bool
+	Freigegeben    bool
+	Betriebsmittel []BETRIEBSMITELL
+	Verbindungen   []VERBINDUNG
+	Fehler         []string
+}
+type BETRIEBSMITELL struct {
+	BMK     BETRIEBSMITELLKENNZEICHEN
+	Artikel [50]ARTIKEL
 }

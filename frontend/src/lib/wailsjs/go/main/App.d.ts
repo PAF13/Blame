@@ -9,7 +9,7 @@ export function ListTrees():Promise<void>;
 
 export function LoadCSV(arg1:string):Promise<void>;
 
-export function LoadStueckliste(arg1:string):Promise<void>;
+export function LoadStueckliste(arg1:Array<string>,arg2:string,arg3:string):Promise<void>;
 
 export function MessageDialog():Promise<string>;
 

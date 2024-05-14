@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 	"sync"
 	"time"
 )
@@ -14,58 +15,74 @@ var rootPfadOutput string
 var rootPfadInput string
 var rootPfadDatenbank string
 var wg sync.WaitGroup
+var pfaden [][]string
 
 func (a *App) BlameStartup() bool {
 	start := time.Now()
-	// Code to measure
-
 	rootPfad = "\\\\ME-Datenbank-1\\Database\\Schnittstelle\\"
 	rootPfadOutput = rootPfad + "BlameOutput\\"
 	rootPfadInput = rootPfad + "BlameInput\\"
 	rootPfadDatenbank = rootPfad + "BlameDatenbank\\"
-	fmt.Println(rootPfadInput)
-	fmt.Println(rootPfadDatenbank)
-	/*
-		lagerSiteca := "Topix_Artikel20240502"
-		lagerKNT := "Kopie von Lagerhueter_26_04_2024"
+	// Code to measure
+	pfaden = [][]string{
+		//{"\\\\ME-Datenbank-1\\Database\\Schnittstelle\\BlameInput\\Lagerhueter.xlsx", "KNT", "Lager"},
+		//{"\\\\ME-Datenbank-1\\Database\\Schnittstelle\\BlameInput\\Topix.xlsx", "SITECA", "Lager"},
+		//{"\\\\ME-Datenbank-1\\Database\\Schnittstelle\\BlameInput\\Moeller.xlsx", "MOELLER", "Lager"},
+	}
+
+	for _, pfad := range pfaden {
+
+		pfadLen := len(strings.Split(pfad[0], "\\"))
+		fileNameVoll := strings.Split(pfad[0], "\\")[pfadLen-1]
+		fileName := strings.Split(fileNameVoll, ".")[0]
+		fileExtension := strings.Split(fileNameVoll, ".")[1]
+		fmt.Println(fileNameVoll)
+		fmt.Println(fileName)
+		fmt.Println(fileExtension)
 
 		wg.Add(1)
-		go ImportFile2(lagerSiteca, "SITECA", "lager")
+		ImportFile(pfad[0], pfad[1], pfad[2], fileName)
 		wg.Add(1)
-		go ImportFile2(lagerKNT, "KNT", "lager")
-		wg.Wait()
+		loadFile(pfad[1], pfad[2], fileName)
+	}
 
-		wg.Add(1)
-		go loadFile2(lagerSiteca)
-		wg.Add(1)
-		go loadFile2(lagerKNT)
-		wg.Wait()
-	*/
-	INIT_VERBINDUNGSLITE()
+	//INIT_VERBINDUNGSLITE()
 	duration := time.Since(start)
-	// Formatted string, such as "2h3m0.5s" or "4.503μs"
 	fmt.Println(duration)
-
-	// Nanoseconds as int64
 	fmt.Println(duration.Nanoseconds())
 	return true
 }
 
-func (a *App) LoadStueckliste(pfad string) {
+func (a *App) LoadStueckliste(pfad []string, kunde string, fileType string) {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Println("Recovered. Error:\n", r)
+		}
+	}()
 	start := time.Now()
-	wg.Add(1)
-	ImportFile2(pfad, "stueckliste", "stueckliste")
-	wg.Add(1)
-	loadFile2("stueckliste")
-	wg.Add(1)
-	sumListe("stueckliste")
+	for _, pfad2 := range pfad {
+		pfadLen := len(strings.Split(pfad2, "\\"))
+		fileNameVoll := strings.Split(pfad2, "\\")[pfadLen-1]
+		fileName := strings.Split(fileNameVoll, ".")[0]
+		fileExtension := strings.Split(fileNameVoll, ".")[1]
+		fmt.Println(fileNameVoll)
+		fmt.Println(fileName)
+		fmt.Println(fileExtension)
+
+		wg.Add(1)
+		fmt.Println("Importing " + fileName)
+		ImportFile(pfad2, kunde, fileType, fileName)
+		wg.Add(1)
+		fmt.Println("Loading " + fileName)
+		loadFile(kunde, fileType, fileName)
+		wg.Add(1)
+		fmt.Println("Summing " + fileName)
+		sumListe(kunde, fileType, fileName)
+
+	}
 	wg.Wait()
-
 	duration := time.Since(start)
-	// Formatted string, such as "2h3m0.5s" or "4.503μs"
 	fmt.Println(duration)
-
-	// Nanoseconds as int64
 	fmt.Println(duration.Nanoseconds())
 }
 
