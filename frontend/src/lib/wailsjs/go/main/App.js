@@ -6,6 +6,10 @@ export function BlameStartup() {
   return window['go']['main']['App']['BlameStartup']();
 }
 
+export function ExportStueckliste(arg1, arg2, arg3) {
+  return window['go']['main']['App']['ExportStueckliste'](arg1, arg2, arg3);
+}
+
 export function Greet(arg1) {
   return window['go']['main']['App']['Greet'](arg1);
 }

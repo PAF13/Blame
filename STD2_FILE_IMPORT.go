@@ -112,7 +112,8 @@ func loadFile(kunde string, fileType string, fileName string) {
 					Aufstellungsort:      newRow[excelFile.Columns.Aufstellungsort],
 					Ortskennzeichen:      newRow[excelFile.Columns.Ortskennzeichen],
 					BMK:                  newRow[excelFile.Columns.BMK],
-					BMKVollständig:       newRow[excelFile.Columns.FunktionaleZuordnung] + newRow[excelFile.Columns.Funktionskennzeichen] + newRow[excelFile.Columns.Aufstellungsort] + newRow[excelFile.Columns.Ortskennzeichen],
+					//BMKVollständig:       newRow[excelFile.Columns.Ortskennzeichen],
+					BMKVollständig: newRow[excelFile.Columns.FunktionaleZuordnung] + newRow[excelFile.Columns.Funktionskennzeichen] + newRow[excelFile.Columns.Aufstellungsort] + newRow[excelFile.Columns.Ortskennzeichen],
 				},
 			})
 		}
@@ -129,7 +130,8 @@ func loadFile(kunde string, fileType string, fileName string) {
 	}
 }
 
-func sumListe(kunde string, fileType string, fileName string) {
+func sumListe(kunde string, fileType string, fileName string) []string {
+	defer wg.Done()
 	jsonFile_KNT, err := os.Open("\\\\ME-Datenbank-1\\Database\\Schnittstelle\\BlameOutput\\Blame_Import2_KNT_Lagerhueter_Lager.json")
 	if err != nil {
 		fmt.Println(err)
@@ -171,43 +173,47 @@ func sumListe(kunde string, fileType string, fileName string) {
 	json.Unmarshal(byteValue_MOELLER, &artikel_MOELLER)
 	json.Unmarshal(byteValue_SITECA, &artikel_SITECA)
 	json.Unmarshal(byteValue_LISTE, &artikel_LISTE)
-
+	fmt.Println("summing list")
 	//sum stueckliste
 	for _, b := range artikel_LISTE.Artikel {
 		for _, bb := range b {
-			orten := bb.BMK.FunktionaleZuordnung + bb.BMK.Funktionskennzeichen + bb.BMK.Aufstellungsort + bb.BMK.Ortskennzeichen
-			if bb.BMK.FunktionaleZuordnung+bb.BMK.Funktionskennzeichen+bb.BMK.Aufstellungsort+bb.BMK.Ortskennzeichen != "" {
-				artikel_LISTE_CLEAN.BMK_Liste[bb.BMK.FunktionaleZuordnung+bb.BMK.Funktionskennzeichen+bb.BMK.Aufstellungsort+bb.BMK.Ortskennzeichen] = bb.BMK.FunktionaleZuordnung + bb.BMK.Funktionskennzeichen + bb.BMK.Aufstellungsort + bb.BMK.Ortskennzeichen
-			}
-			_, ok := artikel_LISTE_CLEAN.Artikel[bb.Bestellnummer+orten]
-			if !ok {
-				artikel_LISTE_CLEAN.Artikel[bb.Bestellnummer+orten] = append(artikel_LISTE_CLEAN.Artikel[bb.Bestellnummer+orten], bb)
-			} else {
-				artikel_LISTE_CLEAN.Artikel[bb.Bestellnummer+orten][0].Stueckzahl = artikel_LISTE_CLEAN.Artikel[bb.Bestellnummer+orten][0].Stueckzahl + bb.Stueckzahl
-				artikel_LISTE_CLEAN.Artikel[bb.Bestellnummer+orten][0].Bestellung_Siteca = artikel_LISTE_CLEAN.Artikel[bb.Bestellnummer+orten][0].Bestellung_Siteca + bb.Stueckzahl
+			if bb.Beistellung == "SITECA" {
+				orten := bb.BMK.Ortskennzeichen
+				if orten != "" {
+					artikel_LISTE_CLEAN.BMK_Liste[orten] = orten
+				}
+				_, ok := artikel_LISTE_CLEAN.Artikel[bb.Bestellnummer+orten]
+				if !ok {
+					artikel_LISTE_CLEAN.Artikel[bb.Bestellnummer+orten] = append(artikel_LISTE_CLEAN.Artikel[bb.Bestellnummer+orten], bb)
+				} else {
+					artikel_LISTE_CLEAN.Artikel[bb.Bestellnummer+orten][0].Stueckzahl = artikel_LISTE_CLEAN.Artikel[bb.Bestellnummer+orten][0].Stueckzahl + bb.Stueckzahl
+					artikel_LISTE_CLEAN.Artikel[bb.Bestellnummer+orten][0].Bestellung_Siteca = artikel_LISTE_CLEAN.Artikel[bb.Bestellnummer+orten][0].Bestellung_Siteca + bb.Stueckzahl
 
+				}
 			}
 		}
 	}
-
+	fmt.Println("summing lager")
 	//Sum Lager
 	for _, b := range artikel_MOELLER.Artikel {
 		for _, bb := range b {
-			_, ok := artikel_MOELLER_CLEAN.Artikel[bb.Bestellnummer+bb.BMK.Aufstellungsort+bb.BMK.Ortskennzeichen]
+			orten := bb.BMK.Ortskennzeichen
+			_, ok := artikel_MOELLER_CLEAN.Artikel[bb.Bestellnummer+orten]
 			if !ok {
-				artikel_MOELLER_CLEAN.Artikel[bb.Bestellnummer+bb.BMK.Aufstellungsort+bb.BMK.Ortskennzeichen] = append(artikel_MOELLER_CLEAN.Artikel[bb.Bestellnummer+bb.BMK.Aufstellungsort+bb.BMK.Ortskennzeichen], bb)
+				artikel_MOELLER_CLEAN.Artikel[bb.Bestellnummer+orten] = append(artikel_MOELLER_CLEAN.Artikel[bb.Bestellnummer+orten], bb)
 			} else {
-				artikel_MOELLER_CLEAN.Artikel[bb.Bestellnummer+bb.BMK.Aufstellungsort+bb.BMK.Ortskennzeichen][0].Stueckzahl = artikel_MOELLER_CLEAN.Artikel[bb.Bestellnummer+bb.BMK.Aufstellungsort+bb.BMK.Ortskennzeichen][0].Stueckzahl + bb.Stueckzahl
+				artikel_MOELLER_CLEAN.Artikel[bb.Bestellnummer+orten][0].Stueckzahl = artikel_MOELLER_CLEAN.Artikel[bb.Bestellnummer+orten][0].Stueckzahl + bb.Stueckzahl
 			}
 		}
 	}
 	for _, b := range artikel_KNT.Artikel {
 		for _, bb := range b {
-			_, ok := artikel_KNT_CLEAN.Artikel[bb.Bestellnummer+bb.BMK.Aufstellungsort+bb.BMK.Ortskennzeichen]
+			orten := bb.BMK.Ortskennzeichen
+			_, ok := artikel_KNT_CLEAN.Artikel[bb.Bestellnummer+orten]
 			if !ok {
-				artikel_KNT_CLEAN.Artikel[bb.Bestellnummer+bb.BMK.Aufstellungsort+bb.BMK.Ortskennzeichen] = append(artikel_KNT_CLEAN.Artikel[bb.Bestellnummer+bb.BMK.Aufstellungsort+bb.BMK.Ortskennzeichen], bb)
+				artikel_KNT_CLEAN.Artikel[bb.Bestellnummer+orten] = append(artikel_KNT_CLEAN.Artikel[bb.Bestellnummer+orten], bb)
 			} else {
-				artikel_KNT_CLEAN.Artikel[bb.Bestellnummer+bb.BMK.Aufstellungsort+bb.BMK.Ortskennzeichen][0].Stueckzahl = artikel_KNT_CLEAN.Artikel[bb.Bestellnummer+bb.BMK.Aufstellungsort+bb.BMK.Ortskennzeichen][0].Stueckzahl + bb.Stueckzahl
+				artikel_KNT_CLEAN.Artikel[bb.Bestellnummer+orten][0].Stueckzahl = artikel_KNT_CLEAN.Artikel[bb.Bestellnummer+orten][0].Stueckzahl + bb.Stueckzahl
 			}
 		}
 	}
@@ -215,6 +221,7 @@ func sumListe(kunde string, fileType string, fileName string) {
 	for a, b := range artikel_LISTE_CLEAN.Artikel {
 		_, ok := artikel_SITECA.Artikel[b[0].Bestellnummer]
 		if ok {
+			fmt.Println("checking erp")
 			for aa, bb := range artikel_SITECA.Artikel[b[0].Bestellnummer] {
 
 				if len(artikel_SITECA.Artikel[b[0].Bestellnummer]) >= 1 && len(artikel_SITECA.Artikel[b[0].Bestellnummer]) == aa+1 {
@@ -227,48 +234,57 @@ func sumListe(kunde string, fileType string, fileName string) {
 
 		}
 		if true {
+			fmt.Println("spliting lager")
+			bestellungMoeller := &artikel_LISTE_CLEAN.Artikel[a][0].Bestellung_Moeller
+			bestellungKNT := &artikel_LISTE_CLEAN.Artikel[a][0].Bestellung_KNT
+			bestellungSiteca := &artikel_LISTE_CLEAN.Artikel[a][0].Bestellung_Siteca
+			var lagerMoeller *float64
+			var lagerKNT *float64
 			_, ok_Moeller := artikel_MOELLER_CLEAN.Artikel[b[0].Bestellnummer]
 			if ok_Moeller {
+				lagerMoeller = &artikel_MOELLER_CLEAN.Artikel[b[0].Bestellnummer][0].Stueckzahl
+			}
 
-				if artikel_LISTE_CLEAN.Artikel[a][0].Bestellung_Siteca > artikel_MOELLER_CLEAN.Artikel[b[0].Bestellnummer][0].Stueckzahl {
-					//set KNT bestellung
-					artikel_LISTE_CLEAN.Artikel[a][0].Bestellung_Moeller = artikel_MOELLER_CLEAN.Artikel[b[0].Bestellnummer][0].Stueckzahl
-					//set Rest stueckzahl
-					artikel_LISTE_CLEAN.Artikel[a][0].Bestellung_Siteca = artikel_LISTE_CLEAN.Artikel[a][0].Bestellung_Siteca - artikel_MOELLER_CLEAN.Artikel[b[0].Bestellnummer][0].Stueckzahl
-					//set lager rest
-					artikel_MOELLER_CLEAN.Artikel[b[0].Bestellnummer][0].Stueckzahl = 0
-				} else {
-					//set KNT bestellung
-					artikel_LISTE_CLEAN.Artikel[a][0].Bestellung_Moeller = artikel_LISTE_CLEAN.Artikel[a][0].Bestellung_Siteca
+			_, ok_KNT := artikel_KNT_CLEAN.Artikel[b[0].Bestellnummer]
+			if ok_KNT {
+				lagerKNT = &artikel_KNT_CLEAN.Artikel[b[0].Bestellnummer][0].Stueckzahl
+			}
 
-					artikel_MOELLER_CLEAN.Artikel[b[0].Bestellnummer][0].Stueckzahl = artikel_MOELLER_CLEAN.Artikel[b[0].Bestellnummer][0].Stueckzahl - artikel_LISTE_CLEAN.Artikel[a][0].Bestellung_Siteca
-					//set lager rest
-					artikel_LISTE_CLEAN.Artikel[a][0].Bestellung_Siteca = 0
+			if *bestellungSiteca != 0 {
+
+				if ok_Moeller && *bestellungSiteca > *lagerMoeller {
+					*bestellungSiteca = *bestellungSiteca - *lagerMoeller
+					*bestellungMoeller = *lagerMoeller
+					*lagerMoeller = 0
+
+				} else if ok_Moeller {
+					*bestellungMoeller = *bestellungSiteca
+					*bestellungSiteca = 0
+					*lagerMoeller = 0
 				}
 
 			}
 
-			_, ok2 := artikel_KNT_CLEAN.Artikel[b[0].Bestellnummer]
-			if ok2 {
+			if *bestellungSiteca != 0 {
 
-				if artikel_LISTE_CLEAN.Artikel[a][0].Bestellung_Siteca > artikel_KNT_CLEAN.Artikel[b[0].Bestellnummer][0].Stueckzahl {
-					//set KNT bestellung
-					artikel_LISTE_CLEAN.Artikel[a][0].Bestellung_KNT = artikel_KNT_CLEAN.Artikel[b[0].Bestellnummer][0].Stueckzahl
-					//set Rest stueckzahl
-					artikel_LISTE_CLEAN.Artikel[a][0].Bestellung_Siteca = artikel_LISTE_CLEAN.Artikel[a][0].Bestellung_Siteca - artikel_KNT_CLEAN.Artikel[b[0].Bestellnummer][0].Stueckzahl
-					//set lager rest
-					artikel_KNT_CLEAN.Artikel[b[0].Bestellnummer][0].Stueckzahl = 0
-				} else {
-					//set KNT bestellung
-					artikel_LISTE_CLEAN.Artikel[a][0].Bestellung_KNT = artikel_LISTE_CLEAN.Artikel[a][0].Bestellung_Siteca
-
-					artikel_KNT_CLEAN.Artikel[b[0].Bestellnummer][0].Stueckzahl = artikel_KNT_CLEAN.Artikel[b[0].Bestellnummer][0].Stueckzahl - artikel_LISTE_CLEAN.Artikel[a][0].Bestellung_Siteca
-					//set lager rest
-					artikel_LISTE_CLEAN.Artikel[a][0].Bestellung_Siteca = 0
+				if ok_KNT && *bestellungSiteca > *lagerKNT {
+					*bestellungSiteca = *bestellungSiteca - *lagerKNT
+					*bestellungKNT = *lagerKNT
+					*lagerKNT = 0
+				} else if ok_KNT {
+					*bestellungKNT = *bestellungSiteca
+					*bestellungSiteca = 0
+					*lagerKNT = 0
 				}
-
 			}
+
 		}
+	}
+	temp := []string{}
+
+	for a := range artikel_LISTE_CLEAN.BMK_Liste {
+
+		temp = append(temp, a)
 	}
 
 	content, err := json.MarshalIndent(artikel_LISTE_CLEAN, "", "\t")
@@ -280,9 +296,11 @@ func sumListe(kunde string, fileType string, fileName string) {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	writeStueckliste(artikel_LISTE_CLEAN.Artikel, kunde, fileType, fileName)
-	writeCSV(artikel_LISTE_CLEAN, fileName)
+	return temp
+	/*
+		writeStueckliste(artikel_LISTE_CLEAN.Artikel, kunde, fileType, fileName)
+		writeCSV(artikel_LISTE_CLEAN, fileName)
+	*/
 }
 
 func writeStueckliste(lagerbestand map[string][]ARTIKEL, kunde string, fileType string, fileName string) {
@@ -380,8 +398,8 @@ func bestellnummerClean3(x string) string {
 	x = strings.ReplaceAll(x, "Ö", "Oe")
 	return x
 }
-func writeCSV(lagerbestand *ARTIKELLISTE, fileName string) {
-	for a := range lagerbestand.BMK_Liste {
+func writeCSV(lagerbestand *ARTIKELLISTE, fileName string, orte []string) {
+	for _, a := range orte {
 		teilvorhanden := false
 		var err error
 		var file *os.File
@@ -394,7 +412,7 @@ func writeCSV(lagerbestand *ARTIKELLISTE, fileName string) {
 		externStueck := 1
 		for _, record := range lagerbestand.Artikel {
 			switch {
-			case a == record[0].BMK.BMKVollständig:
+			case a == record[0].BMK.Ortskennzeichen:
 				if !teilvorhanden {
 					file, err = os.Create(rootPfadOutput + "Blame_SITECA_" + fileName + "_" + bestellnummerClean3(a) + ".csv")
 					if err != nil {
@@ -406,6 +424,7 @@ func writeCSV(lagerbestand *ARTIKELLISTE, fileName string) {
 					if err != nil {
 						log.Fatalln("failed to open file", err)
 					}
+
 					defer file2.Close()
 
 					w = csv.NewWriter_REFAC(file)
@@ -424,6 +443,7 @@ func writeCSV(lagerbestand *ARTIKELLISTE, fileName string) {
 						"Menge",
 						"Herstellernummer",
 						"Hersteller",
+						"Quelle",
 					}
 
 					if err := w.Write(headers); err != nil {
@@ -441,13 +461,12 @@ func writeCSV(lagerbestand *ARTIKELLISTE, fileName string) {
 					for i := 1; i < 20; i++ {
 						bestellKNT = append(bestellKNT, "")
 					}
-					interStueck = 0
-					externStueck = 0
+					interStueck = 1
+					externStueck = 1
 					teilvorhanden = true
 				}
 
-				switch {
-				case record[0].Bestellung_Moeller != 0:
+				if record[0].Bestellung_Moeller != 0 {
 					bestellSiteca[0] = bestellnummerClean3(fileName)
 					bestellSiteca[1] = ""
 					bestellSiteca[2] = "1"
@@ -458,11 +477,13 @@ func writeCSV(lagerbestand *ARTIKELLISTE, fileName string) {
 					bestellSiteca[7] = fmt.Sprintf("%.0f", record[0].Bestellung_Moeller)
 					bestellSiteca[8] = record[0].Bestellnummer
 					bestellSiteca[9] = record[0].Hersteller
+					bestellSiteca[10] = "Moeller"
 					interStueck++
 					if err := w.Write(bestellSiteca); err != nil {
 						log.Fatalln("error writing record to file", err)
 					}
-				case record[0].Bestellung_KNT != 0:
+				}
+				if record[0].Bestellung_KNT != 0 {
 					bestellKNT[0] = bestellnummerClean3(fileName)
 					bestellKNT[1] = ""
 					bestellKNT[2] = "1"
@@ -473,11 +494,13 @@ func writeCSV(lagerbestand *ARTIKELLISTE, fileName string) {
 					bestellKNT[7] = fmt.Sprintf("%.0f", record[0].Bestellung_KNT)
 					bestellKNT[8] = record[0].Bestellnummer
 					bestellKNT[9] = record[0].Hersteller
+					bestellKNT[10] = "KNT"
 					externStueck++
 					if err := w2.Write(bestellKNT); err != nil {
 						log.Fatalln("error writing record to file", err)
 					}
-				case record[0].Bestellung_Siteca != 0:
+				}
+				if record[0].Bestellung_Siteca != 0 {
 					bestellSiteca[0] = bestellnummerClean3(fileName)
 					bestellSiteca[1] = ""
 					bestellSiteca[2] = "1"
@@ -488,11 +511,13 @@ func writeCSV(lagerbestand *ARTIKELLISTE, fileName string) {
 					bestellSiteca[7] = fmt.Sprintf("%.0f", record[0].Bestellung_Siteca)
 					bestellSiteca[8] = record[0].Bestellnummer
 					bestellSiteca[9] = record[0].Hersteller
+					bestellSiteca[10] = "Siteca"
 					interStueck++
 					if err := w.Write(bestellSiteca); err != nil {
 						log.Fatalln("error writing record to file", err)
 					}
 				}
+
 			default:
 			}
 		}

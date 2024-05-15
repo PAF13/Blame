@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"strings"
@@ -29,7 +30,6 @@ func (a *App) BlameStartup() bool {
 		//{"\\\\ME-Datenbank-1\\Database\\Schnittstelle\\BlameInput\\Topix.xlsx", "SITECA", "Lager"},
 		//{"\\\\ME-Datenbank-1\\Database\\Schnittstelle\\BlameInput\\Moeller.xlsx", "MOELLER", "Lager"},
 	}
-
 	for _, pfad := range pfaden {
 
 		pfadLen := len(strings.Split(pfad[0], "\\"))
@@ -46,20 +46,21 @@ func (a *App) BlameStartup() bool {
 		loadFile(pfad[1], pfad[2], fileName)
 	}
 
-	//INIT_VERBINDUNGSLITE()
+	INIT_VERBINDUNGSLITE()
 	duration := time.Since(start)
 	fmt.Println(duration)
 	fmt.Println(duration.Nanoseconds())
 	return true
 }
 
-func (a *App) LoadStueckliste(pfad []string, kunde string, fileType string) {
+func (a *App) LoadStueckliste(pfad []string, kunde string, fileType string) []string {
 	defer func() {
 		if r := recover(); r != nil {
 			fmt.Println("Recovered. Error:\n", r)
 		}
 	}()
 	start := time.Now()
+	var temp []string
 	for _, pfad2 := range pfad {
 		pfadLen := len(strings.Split(pfad2, "\\"))
 		fileNameVoll := strings.Split(pfad2, "\\")[pfadLen-1]
@@ -68,7 +69,7 @@ func (a *App) LoadStueckliste(pfad []string, kunde string, fileType string) {
 		fmt.Println(fileNameVoll)
 		fmt.Println(fileName)
 		fmt.Println(fileExtension)
-
+		temp = append(temp, fileName)
 		wg.Add(1)
 		fmt.Println("Importing " + fileName)
 		ImportFile(pfad2, kunde, fileType, fileName)
@@ -77,13 +78,38 @@ func (a *App) LoadStueckliste(pfad []string, kunde string, fileType string) {
 		loadFile(kunde, fileType, fileName)
 		wg.Add(1)
 		fmt.Println("Summing " + fileName)
-		sumListe(kunde, fileType, fileName)
+		temp2 := sumListe(kunde, fileType, fileName)
+
+		for _, b := range temp2 {
+			temp = append(temp, b)
+		}
 
 	}
 	wg.Wait()
+	fmt.Println("temp")
+	fmt.Println(temp)
 	duration := time.Since(start)
 	fmt.Println(duration)
 	fmt.Println(duration.Nanoseconds())
+	return temp
+}
+func (a *App) ExportStueckliste(orten []string, kunde string, fileType string) {
+	fmt.Println("trying")
+	fileName := orten[0]
+	for _, b := range orten {
+		fmt.Println(b)
+	}
+	jsonFile_LISTE, err := os.Open(rootPfadOutput + "Blame_Import3_" + kunde + "_" + fileName + "_" + fileType + ".json")
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer jsonFile_LISTE.Close()
+	byteValue_LISTE, _ := ioutil.ReadAll(jsonFile_LISTE)
+	var artikel_LISTE ARTIKELLISTE
+	json.Unmarshal(byteValue_LISTE, &artikel_LISTE)
+
+	writeStueckliste(artikel_LISTE.Artikel, kunde, fileType, fileName)
+	writeCSV(&artikel_LISTE, fileName, orten)
 }
 
 var currentProject *PROJEKT

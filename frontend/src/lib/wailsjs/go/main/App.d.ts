@@ -3,13 +3,15 @@
 
 export function BlameStartup():Promise<boolean>;
 
+export function ExportStueckliste(arg1:Array<string>,arg2:string,arg3:string):Promise<void>;
+
 export function Greet(arg1:string):Promise<string>;
 
 export function ListTrees():Promise<void>;
 
 export function LoadCSV(arg1:string):Promise<void>;
 
-export function LoadStueckliste(arg1:Array<string>,arg2:string,arg3:string):Promise<void>;
+export function LoadStueckliste(arg1:Array<string>,arg2:string,arg3:string):Promise<Array<string>>;
 
 export function MessageDialog():Promise<string>;
 
