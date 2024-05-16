@@ -14,6 +14,10 @@ export function Greet(arg1) {
   return window['go']['main']['App']['Greet'](arg1);
 }
 
+export function ImportVerbindungsliste() {
+  return window['go']['main']['App']['ImportVerbindungsliste']();
+}
+
 export function ListTrees() {
   return window['go']['main']['App']['ListTrees']();
 }

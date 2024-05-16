@@ -160,3 +160,43 @@ func NewExcelImport(kunde string, maxSize int, fileType string, fileName string)
 		Rows:    make([][]string, 0),
 	}
 }
+
+func NewProjekt(fileType string, source string) *PROJEKT {
+	return &PROJEKT{
+		HEADER:               setHeader(fileType, source),
+		PROJEKT_NUMMER:       "",
+		PROJEKT_BESCHREIBUNG: "",
+		BAUJAHR:              2024,
+		AKTIV:                true,
+		Produkte:             nil,
+	}
+}
+func NewVerbindung() map[string]VERBINDUNG {
+	return make(map[string]VERBINDUNG)
+}
+func NewVerbindung1() map[string]VERBINDUNG {
+	return make(map[string]VERBINDUNG)
+}
+func NewProdukt() *PRODUKT {
+	return &PRODUKT{
+		Bestellt:               false,
+		KundeFraigabe:          false,
+		EPlanFraigabe:          false,
+		SchaltplanQuelle:       "",
+		BeschriftungFraigabe:   false,
+		BetriebsmittelFreigabe: false,
+		Betriebsmittel:         make(map[string]BETRIEBSMITELL),
+		VerbindungenFreigabe:   false,
+		Verbindungen:           make(map[string]VERBINDUNG),
+		NCDatenFraigabe:        false,
+	}
+}
+
+func NewEplanAuswertungXML() *EplanAuswertungXML {
+	return &EplanAuswertungXML{}
+}
+
+func NewBool() *bool {
+	b := false
+	return &b
+}

@@ -46,23 +46,35 @@ type BETRIEBSMITELLKENNZEICHEN struct {
 	Anlagennummer              string //empty?
 	BMK                        string //-
 	Kennbuchstabe              string
+	Symbolname                 string
+	Platzierung                string
 }
 
 type VERBINDUNG struct {
 	//Info from XML
-	UUID                      string
-	Quelle                    BETRIEBSMITELLKENNZEICHEN
-	Ziel                      BETRIEBSMITELLKENNZEICHEN
-	VerbindungZugehörigkeit   string
-	Verbindungsquerschnitt    float64
-	Verbindungsfarbeundnummer string
-	VerbindungLänge           int
-	Netzname                  string
-	Signalname                string
-	Potenzialname             string
-	Potenzialtyp              string
-	Potenzialwert             string
-	Netzindex                 string
+	UUID                                  string
+	Quelle                                BETRIEBSMITELLKENNZEICHEN
+	Ziel                                  BETRIEBSMITELLKENNZEICHEN
+	VerbindungZugehörigkeit               string
+	Verbindungsquerschnitt                float64
+	Verbindungsfarbeundnummer             string
+	VerbindungLänge                       int
+	Netzname                              string
+	Signalname                            string
+	Potenzialname                         string
+	Potenzialtyp                          string
+	Potenzialwert                         string
+	Netzindex                             string
+	Funktionsdefinition                   string
+	Darstellungsart                       string
+	QuelleAnschlussbezeichnungderFunktion string
+	ZielAnschlussbezeichnungderFunktion   string
+	QuelleKlemmenbezeichnung              string
+	ZielKlemmenbezeichnung                string
+	QuelleFunktionKatagorie               string
+	ZielFunktionKatagorie                 string
+	QuelleAnschluss                       string
+	ZielAnschluss                         string
 }
 type EXCEL_IMPORT struct {
 	Header  JSON_HEADER
@@ -123,14 +135,19 @@ type PROJEKT struct {
 	BAUJAHR              int
 	AKTIV                bool
 
-	Produkte []PRODUKT
+	Produkte []*PRODUKT
 }
 type PRODUKT struct {
-	Bestellt       bool
-	Freigegeben    bool
-	Betriebsmittel []BETRIEBSMITELL
-	Verbindungen   []VERBINDUNG
-	Fehler         []string
+	Bestellt               bool
+	KundeFraigabe          bool
+	EPlanFraigabe          bool
+	SchaltplanQuelle       string
+	BeschriftungFraigabe   bool
+	BetriebsmittelFreigabe bool
+	Betriebsmittel         map[string]BETRIEBSMITELL
+	VerbindungenFreigabe   bool
+	Verbindungen           map[string]VERBINDUNG
+	NCDatenFraigabe        bool
 }
 type BETRIEBSMITELL struct {
 	BMK     BETRIEBSMITELLKENNZEICHEN

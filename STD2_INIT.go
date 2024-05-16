@@ -46,7 +46,6 @@ func (a *App) BlameStartup() bool {
 		loadFile(pfad[1], pfad[2], fileName)
 	}
 
-	INIT_VERBINDUNGSLITE()
 	duration := time.Since(start)
 	fmt.Println(duration)
 	fmt.Println(duration.Nanoseconds())

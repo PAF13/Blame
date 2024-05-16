@@ -2,19 +2,28 @@
 	<title>About</title>
 	<meta name="description" content="About this app" />
 </svelte:head>
+<script lang="ts">
+	import { Label, Select,MultiSelect, Input,ButtonGroup,Button,Dropdown,Search,Checkbox,P} from 'flowbite-svelte';
 
-<script>
-  import { Label, Select } from 'flowbite-svelte';
-  let selected= "";
+	import {ImportVerbindungsliste} from "$lib/wailsjs/go/main/App";
 
-  let countries = [
-    { value: 'us', name: 'United States' },
-    { value: 'ca', name: 'Canada' },
-    { value: 'fr', name: 'France' }
-  ];
+
+	function dialog3(){
+    ImportVerbindungsliste();
+	}
+
+
+
+
+
+
+
 </script>
 
-<Label>
-	Select an option
-	<Select class="mt-2" items={countries} bind:value={selected} />
-  </Label>
+
+<h1>Verbindungsliste</h1>
+
+
+<ButtonGroup>
+<Button color="dark" on:click={dialog3}>Export</Button>
+</ButtonGroup>
