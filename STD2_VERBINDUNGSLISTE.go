@@ -38,14 +38,15 @@ func setVerbindung(quelle *string, ziel *string, pos *bool, value string) {
 	}
 }
 func (structType *EplanAuswertungXML) STD_Write_Verbindungsliste(byteValue []byte) {
-	verbindungsliste := NewVerbindung()
-	array := []VERBINDUNG{}
+	verbindungsliste := NewVerbindungMap()
+	array := NewVerbindungArray()
+	verbindungAllpolig := NewVerbindungArray()
+	verbindung3D := NewVerbindungArray()
 	xml.Unmarshal(byteValue, &structType)
 	line := structType.Document.Page.Line
 	for a, aa := range line {
 		fmt.Println("line: " + fmt.Sprintf("%d", a))
-		verbindung := VERBINDUNG{}
-		P_verbindung := &verbindung
+		P_verbindung := NewVerbindung()
 		pos := make(map[string]*bool)
 		for _, bb := range aa.Label.Property {
 			switch bb.PropertyName {
@@ -135,11 +136,9 @@ func (structType *EplanAuswertungXML) STD_Write_Verbindungsliste(byteValue []byt
 				P_verbindung.Verbindungsfarbeundnummer = bb.PropertyValue
 			case "Verbindung: Länge (vollständig)":
 				laenge, _ := strconv.Atoi(bb.PropertyValue)
-				if laenge < 300 {
-					P_verbindung.VerbindungLänge = 300
-				} else {
-					P_verbindung.VerbindungLänge = laenge
-				}
+
+				P_verbindung.VerbindungLänge = laenge
+
 			case "Netzname":
 				P_verbindung.Netzname = bb.PropertyValue
 			case "Signalname":
@@ -185,27 +184,37 @@ func (structType *EplanAuswertungXML) STD_Write_Verbindungsliste(byteValue []byt
 			P_verbindung.ZielAnschluss = P_verbindung.ZielKlemmenbezeichnung
 		}
 
-		array = append(array, *P_verbindung)
-		// P_verbindung.Verbindungsquerschnitt <= 6 && P_verbindung.VerbindungZugehörigkeit == "Einzelverbindung" && P_verbindung.Funktionsdefinition != "Stegbrücke"
-		if P_verbindung.Verbindungsquerschnitt <= 6 && P_verbindung.VerbindungZugehörigkeit == "Einzelverbindung" && P_verbindung.Funktionsdefinition != "Stegbrücke" {
-
-			entry, ok := verbindungsliste[P_verbindung.Ziel.BMKVollständig+P_verbindung.Quelle.BMKVollständig]
+		*array = append(*array, *P_verbindung)
+		if P_verbindung.Verbindungsquerschnitt <= 6 && P_verbindung.VerbindungZugehörigkeit == "Einzelverbindung" && P_verbindung.Funktionsdefinition == "Ader / Draht" {
 			switch {
-			case !ok && P_verbindung.Darstellungsart == "Allpolig":
-				P_verbindung.VerbindungLänge = 0
-				verbindungsliste[P_verbindung.Ziel.BMKVollständig+P_verbindung.Quelle.BMKVollständig] = *P_verbindung
-			/*case !ok && P_verbindung.Darstellungsart == "3D-Montageaufbau":
-				verbindungsliste[P_verbindung.Ziel.BMKVollständig+P_verbindung.Quelle.BMKVollständig] = *P_verbindung
-			//case ok && P_verbindung.Darstellungsart == "Allpolig":*/
-			case ok && P_verbindung.Darstellungsart == "3D-Montageaufbau":
-				entry.VerbindungLänge = P_verbindung.VerbindungLänge
-				verbindungsliste[P_verbindung.Ziel.BMKVollständig+P_verbindung.Quelle.BMKVollständig] = entry
-			}
+			case P_verbindung.Darstellungsart == "Allpolig":
+				*verbindungAllpolig = append(*verbindungAllpolig, *P_verbindung)
+			case P_verbindung.Darstellungsart == "3D-Montageaufbau":
 
-			//verbindungsliste[fmt.Sprintf("%d", a)] = *P_verbindung
+				*verbindung3D = append(*verbindung3D, *P_verbindung)
+			}
+			// P_verbindung.Verbindungsquerschnitt <= 6 && P_verbindung.VerbindungZugehörigkeit == "Einzelverbindung" && P_verbindung.Funktionsdefinition != "Stegbrücke"
 
 		}
 
+	}
+	//fmt.Println(verbindung3D)
+	for _, b3 := range *verbindungAllpolig {
+		_, ok := verbindungsliste[b3.Quelle.BMKVollständig+b3.Ziel.BMKVollständig]
+		if !ok {
+			verbindungsliste[b3.Quelle.BMKVollständig+b3.Ziel.BMKVollständig] = writeVerbindung(b3)
+		}
+	}
+	for _, b2 := range *verbindung3D {
+		_, ok := verbindungsliste[b2.Quelle.BMKVollständig+b2.Ziel.BMKVollständig]
+		if !ok {
+			verbindungsliste[b2.Quelle.BMKVollständig+b2.Ziel.BMKVollständig] = writeVerbindung(b2)
+		} else {
+			if b2.VerbindungLänge != 0 {
+				verbindungsliste[b2.Quelle.BMKVollständig+b2.Ziel.BMKVollständig] = updateVerbindung(verbindungsliste[b2.Quelle.BMKVollständig+b2.Ziel.BMKVollständig], b2.VerbindungLänge)
+			}
+
+		}
 	}
 
 	content, err := json.MarshalIndent(verbindungsliste, "", "\t")
@@ -214,10 +223,20 @@ func (structType *EplanAuswertungXML) STD_Write_Verbindungsliste(byteValue []byt
 	}
 	err = ioutil.WriteFile("\\\\ME-Datenbank-1\\Database\\Schnittstelle\\BlameOutput\\blame_verbindungsliste2.json", content, 0644)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 	STD_Write_Verbindungsliste(verbindungsliste, "map")
-	STD_Write_Verbindungsliste2(array, "array")
+	STD_Write_Verbindungsliste2(*array, "array")
+}
+func updateVerbindung(v VERBINDUNG, l int) VERBINDUNG {
+	v.VerbindungLänge = l
+	return v
+}
+func writeVerbindung(v VERBINDUNG) VERBINDUNG {
+	if v.VerbindungLänge < 300 && v.VerbindungLänge != 0 {
+		v.VerbindungLänge = 300
+	}
+	return v
 }
 func SortString(w string) string {
 	s := strings.Split(w, "")
@@ -227,7 +246,7 @@ func SortString(w string) string {
 func STD_Write_Verbindungsliste(bind map[string]VERBINDUNG, typeName string) {
 	csvFile, err := os.Create("\\\\ME-Datenbank-1\\Database\\Schnittstelle\\BlameOutput\\Verbindungsliste_" + typeName + ".csv")
 	if err != nil {
-		log.Fatalf("failed creating file: %s", err)
+		log.Printf("failed creating file: %s\n", err)
 	}
 	defer csvFile.Close()
 	w := csv.NewWriter_REFAC(csvFile)
@@ -273,14 +292,14 @@ func STD_Write_Verbindungsliste(bind map[string]VERBINDUNG, typeName string) {
 		verbindung[6] = "3"
 		verbindung[7] = ""
 		//verbindung[8] = fmt.Sprintf("%.1f", b.Verbindungsquerschnitt)
-		verbindung[8] = strings.Replace(fmt.Sprintf("%.2f", b.Verbindungsquerschnitt), ".", ",", 1)
+		verbindung[8] = strings.Replace(fmt.Sprintf("%.1f", b.Verbindungsquerschnitt), ".", ",", 1)
 		verbindung[9] = b.Verbindungsfarbeundnummer
 		verbindung[10] = fmt.Sprintf("%d", b.VerbindungLänge)
-		verbindung[11] = b.Funktionsdefinition
-		verbindung[12] = ""
+		verbindung[11] = ""
+		verbindung[12] = b.ZielFunktionKatagorie
 		verbindung[13] = b.VerbindungZugehörigkeit
-		verbindung[14] = ""
-		verbindung[15] = ""
+		verbindung[14] = b.Funktionsdefinition
+		verbindung[15] = b.Darstellungsart
 		if err := w.Write(verbindung); err != nil {
 			log.Fatalln("error writing record to file", err)
 		}

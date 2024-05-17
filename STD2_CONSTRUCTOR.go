@@ -171,8 +171,14 @@ func NewProjekt(fileType string, source string) *PROJEKT {
 		Produkte:             nil,
 	}
 }
-func NewVerbindung() map[string]VERBINDUNG {
+func NewVerbindungMap() map[string]VERBINDUNG {
 	return make(map[string]VERBINDUNG)
+}
+func NewVerbindungArray() *[]VERBINDUNG {
+	return &[]VERBINDUNG{}
+}
+func NewVerbindung() *VERBINDUNG {
+	return &VERBINDUNG{}
 }
 func NewVerbindung1() map[string]VERBINDUNG {
 	return make(map[string]VERBINDUNG)
