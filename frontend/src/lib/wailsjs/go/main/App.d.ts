@@ -7,6 +7,8 @@ export function ExportStueckliste(arg1:Array<string>,arg2:string,arg3:string):Pr
 
 export function Greet(arg1:string):Promise<string>;
 
+export function ImportBetriebsmittel():Promise<void>;
+
 export function ImportVerbindungsliste():Promise<void>;
 
 export function ListTrees():Promise<void>;

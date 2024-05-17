@@ -206,3 +206,14 @@ func NewBool() *bool {
 	b := false
 	return &b
 }
+
+func NewBetriebsmittel() *BETRIEBSMITELL {
+	return &BETRIEBSMITELL{
+		Artikel: [50]ARTIKEL{},
+	}
+}
+
+func NewCounter() *int {
+	d := 0
+	return &d
+}

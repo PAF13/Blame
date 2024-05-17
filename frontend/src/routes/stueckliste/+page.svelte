@@ -5,7 +5,7 @@
 <script lang="ts">
 	import { Label, Select,MultiSelect, Input,ButtonGroup,Button,Dropdown,Search,Checkbox,P} from 'flowbite-svelte';
 	import { ChevronDownOutline, UserRemoveSolid, SearchOutline,} from 'flowbite-svelte-icons';
-	import { OpenMultipleFilesDialog,LoadStueckliste,ReturnOrte,ExportStueckliste} from "$lib/wailsjs/go/main/App";
+	import { OpenMultipleFilesDialog,LoadStueckliste,ReturnOrte,ExportStueckliste,ImportBetriebsmittel} from "$lib/wailsjs/go/main/App";
 
 
 
@@ -63,6 +63,10 @@ var num2: number = 0;
 		
 		
 	}
+	function dialog5(){
+			ImportBetriebsmittel()		
+	}
+
 	$:{ if (ort != ort_TEMP){
 		let check = 0;
 		ort_TEMP.forEach(function (myans) {
@@ -126,4 +130,6 @@ var num2: number = 0;
 		<P size="xl" linethrough opacity={25} color="text-blue-600 dark:text-blue-500">{person.name}</P>
   {/each}
   {/key}
+
+  <Button color="dark" on:click={dialog5}>Export</Button>
 

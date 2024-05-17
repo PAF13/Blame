@@ -62,14 +62,8 @@ func ImportFile(pfad string, kunde string, fileType string, fileName string) {
 		newRow.Rows = append(newRow.Rows, excelRow)
 		copy(newRow.Rows[a], b)
 	}
-	content, err := json.MarshalIndent(newRow, "", "\t")
-	if err != nil {
-		fmt.Println(err)
-	}
-	err = ioutil.WriteFile(rootPfadOutput+"Blame_Import1_"+kunde+"_"+fileName+"_"+fileType+".json", content, 0644)
-	if err != nil {
-		log.Fatal(err)
-	}
+
+	writeJsonFile(rootPfadOutput+"Blame_Import1_"+kunde+"_"+fileName+"_"+fileType, newRow)
 }
 
 func loadFile(kunde string, fileType string, fileName string) {
@@ -119,15 +113,8 @@ func loadFile(kunde string, fileType string, fileName string) {
 		}
 
 	}
-	content, err := json.MarshalIndent(artikelliste, "", "\t")
-	if err != nil {
-		fmt.Println(err)
-	}
 
-	err = ioutil.WriteFile(rootPfadOutput+"Blame_Import2_"+kunde+"_"+fileName+"_"+fileType+".json", content, 0644)
-	if err != nil {
-		log.Fatal(err)
-	}
+	writeJsonFile(rootPfadOutput+"Blame_Import2_"+kunde+"_"+fileName+"_"+fileType, artikelliste)
 }
 
 func sumListe(kunde string, fileType string, fileName string) []string {
@@ -287,15 +274,7 @@ func sumListe(kunde string, fileType string, fileName string) []string {
 		temp = append(temp, a)
 	}
 
-	content, err := json.MarshalIndent(artikel_LISTE_CLEAN, "", "\t")
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	err = ioutil.WriteFile(rootPfadOutput+"Blame_Import3_"+kunde+"_"+fileName+"_"+fileType+".json", content, 0644)
-	if err != nil {
-		log.Fatal(err)
-	}
+	writeJsonFile(rootPfadOutput+"Blame_Import3_"+kunde+"_"+fileName+"_"+fileType, artikel_LISTE_CLEAN)
 	return temp
 	/*
 		writeStueckliste(artikel_LISTE_CLEAN.Artikel, kunde, fileType, fileName)

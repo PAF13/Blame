@@ -1,12 +1,9 @@
 package main
 
 import (
-	"encoding/csv"
-	"encoding/json"
 	"encoding/xml"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 	"sort"
 	"strconv"
@@ -42,6 +39,7 @@ func (structType *EplanAuswertungXML) STD_Write_Verbindungsliste(byteValue []byt
 	array := NewVerbindungArray()
 	verbindungAllpolig := NewVerbindungArray()
 	verbindung3D := NewVerbindungArray()
+	verbindungtest := &[][]string{}
 	xml.Unmarshal(byteValue, &structType)
 	line := structType.Document.Page.Line
 	for a, aa := range line {
@@ -183,8 +181,10 @@ func (structType *EplanAuswertungXML) STD_Write_Verbindungsliste(byteValue []byt
 		} else {
 			P_verbindung.ZielAnschluss = P_verbindung.ZielKlemmenbezeichnung
 		}
+		P_verbindung.writeCSVFileBuffer(verbindungtest)
 
 		*array = append(*array, *P_verbindung)
+
 		if P_verbindung.Verbindungsquerschnitt <= 6 && P_verbindung.VerbindungZugehörigkeit == "Einzelverbindung" && P_verbindung.Funktionsdefinition == "Ader / Draht" {
 			switch {
 			case P_verbindung.Darstellungsart == "Allpolig":
@@ -217,16 +217,15 @@ func (structType *EplanAuswertungXML) STD_Write_Verbindungsliste(byteValue []byt
 		}
 	}
 
-	content, err := json.MarshalIndent(verbindungsliste, "", "\t")
-	if err != nil {
-		fmt.Println(err)
+	writeJsonFile("verbindungsliste2", verbindungsliste)
+	verbindungtest2 := &[][]string{}
+	for _, b := range verbindungsliste {
+		b.writeCSVFileBuffer(verbindungtest2)
 	}
-	err = ioutil.WriteFile("\\\\ME-Datenbank-1\\Database\\Schnittstelle\\BlameOutput\\blame_verbindungsliste2.json", content, 0644)
-	if err != nil {
-		log.Println(err)
-	}
-	STD_Write_Verbindungsliste(verbindungsliste, "map")
-	STD_Write_Verbindungsliste2(*array, "array")
+	writeJsonFile("Verbindungsliste_Raw", verbindungtest)
+	writeCSVFile("Verbindungsliste_Raw", verbindungtest, "PWA6000")
+	writeJsonFile("Verbindungsliste_Clean", verbindungtest2)
+	writeCSVFile("Verbindungsliste_Clean", verbindungtest2, "PWA6000")
 }
 func updateVerbindung(v VERBINDUNG, l int) VERBINDUNG {
 	v.VerbindungLänge = l
@@ -242,130 +241,4 @@ func SortString(w string) string {
 	s := strings.Split(w, "")
 	sort.Strings(s)
 	return strings.Join(s, "")
-}
-func STD_Write_Verbindungsliste(bind map[string]VERBINDUNG, typeName string) {
-	csvFile, err := os.Create("\\\\ME-Datenbank-1\\Database\\Schnittstelle\\BlameOutput\\Verbindungsliste_" + typeName + ".csv")
-	if err != nil {
-		log.Printf("failed creating file: %s\n", err)
-	}
-	defer csvFile.Close()
-	w := csv.NewWriter_REFAC(csvFile)
-	defer w.Flush()
-	headers := []string{
-		"DEST1",
-		"TA1",
-		"STOP1",
-		"DEVICE1",
-		"DEST2",
-		"TA2",
-		"STOP2",
-		"DEVICE2",
-		"CROSSSECTION",
-		"COLOUR",
-		"LENGTH",
-		"TYPE",
-		"WIREID",
-		"CAEID",
-		"Quelle Verlegerichtung",
-		"Ziel Verlegerichtung",
-		"Source Parent Item",
-		"Destination Parent Item",
-		"Source Z Pos",
-		"Destination Z Pos",
-	}
-
-	if err := w.Write(headers); err != nil {
-		log.Fatalln("error writing record to file", err)
-	}
-	verbindung := []string{}
-	for i := 1; i < 20; i++ {
-		verbindung = append(verbindung, "")
-	}
-	for _, b := range bind {
-
-		verbindung[0] = b.Quelle.BMKVollständig
-		verbindung[1] = ""
-		verbindung[2] = "3"
-		verbindung[3] = ""
-		verbindung[4] = b.Ziel.BMKVollständig
-		verbindung[5] = ""
-		verbindung[6] = "3"
-		verbindung[7] = ""
-		//verbindung[8] = fmt.Sprintf("%.1f", b.Verbindungsquerschnitt)
-		verbindung[8] = strings.Replace(fmt.Sprintf("%.1f", b.Verbindungsquerschnitt), ".", ",", 1)
-		verbindung[9] = b.Verbindungsfarbeundnummer
-		verbindung[10] = fmt.Sprintf("%d", b.VerbindungLänge)
-		verbindung[11] = ""
-		verbindung[12] = b.ZielFunktionKatagorie
-		verbindung[13] = b.VerbindungZugehörigkeit
-		verbindung[14] = b.Funktionsdefinition
-		verbindung[15] = b.Darstellungsart
-		if err := w.Write(verbindung); err != nil {
-			log.Fatalln("error writing record to file", err)
-		}
-	}
-
-}
-
-func STD_Write_Verbindungsliste2(bind []VERBINDUNG, typeName string) {
-	csvFile, err := os.Create("\\\\ME-Datenbank-1\\Database\\Schnittstelle\\BlameOutput\\Verbindungsliste_" + typeName + ".csv")
-	if err != nil {
-		log.Fatalf("failed creating file: %s", err)
-	}
-	defer csvFile.Close()
-	w := csv.NewWriter_REFAC(csvFile)
-	defer w.Flush()
-	headers := []string{
-		"DEST1",
-		"TA1",
-		"STOP1",
-		"DEVICE1",
-		"DEST2",
-		"TA2",
-		"STOP2",
-		"DEVICE2",
-		"CROSSSECTION",
-		"COLOUR",
-		"LENGTH",
-		"TYPE",
-		"WIREID",
-		"CAEID",
-		"Quelle Verlegerichtung",
-		"Ziel Verlegerichtung",
-		"Source Parent Item",
-		"Destination Parent Item",
-		"Source Z Pos",
-		"Destination Z Pos",
-	}
-
-	if err := w.Write(headers); err != nil {
-		log.Fatalln("error writing record to file", err)
-	}
-	verbindung := []string{}
-	for i := 1; i < 20; i++ {
-		verbindung = append(verbindung, "")
-	}
-	for _, b := range bind {
-
-		verbindung[0] = b.Quelle.BMKVollständig
-		verbindung[1] = b.QuelleAnschluss
-		verbindung[2] = "3"
-		verbindung[3] = ""
-		verbindung[4] = b.Ziel.BMKVollständig
-		verbindung[5] = b.ZielAnschluss
-		verbindung[6] = "3"
-		verbindung[7] = ""
-		verbindung[8] = strings.Replace(fmt.Sprintf("%.1f", b.Verbindungsquerschnitt), ".", ",", 1)
-		verbindung[9] = b.Verbindungsfarbeundnummer
-		verbindung[10] = fmt.Sprintf("%d", b.VerbindungLänge)
-		verbindung[11] = ""
-		verbindung[12] = b.ZielFunktionKatagorie
-		verbindung[13] = b.VerbindungZugehörigkeit
-		verbindung[14] = b.Funktionsdefinition
-		verbindung[15] = b.Darstellungsart
-		if err := w.Write(verbindung); err != nil {
-			log.Fatalln("error writing record to file", err)
-		}
-	}
-
 }

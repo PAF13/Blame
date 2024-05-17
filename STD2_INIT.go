@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 	"strings"
 	"sync"
@@ -122,14 +121,5 @@ func (a *App) NewProject2() {
 		AKTIV:                true,
 	}
 
-	b2, err := json.MarshalIndent(currentProject, "", "    ")
-	if err != nil {
-		log.Println(err)
-	}
-
-	fmt.Println(string(b2))
-	err = os.WriteFile("\\\\ME-Datenbank-1\\Database\\Schnittstelle\\Test_Project\\.blame.json", b2, 0644)
-	if err != nil {
-		log.Println(err)
-	}
+	writeJsonFile(".blame", currentProject)
 }
