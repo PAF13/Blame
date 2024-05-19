@@ -217,3 +217,11 @@ func NewCounter() *int {
 	d := 0
 	return &d
 }
+
+func newArtikel(url string) *ArtikelSeedRaw {
+	return &ArtikelSeedRaw{
+		URL:           url,
+		Artikelnummer: []string{},
+		Bestellnummer: []string{},
+	}
+}

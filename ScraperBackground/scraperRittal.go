@@ -17,13 +17,19 @@ var artikel []Artikel
 var rest int = 0
 var id int = 0
 
+type Artikel struct {
+	Id            int      `json:"id"`
+	URL           string   `json:"url"`
+	Artikelnummer []string `json:"artikelnummer"`
+}
+
 func Scraper() {
 	rand.Seed(time.Now().UnixNano())
 	chromedpScrape()
 }
 
-func writeJsonFileScrapper(fileName string, produkte map[string]*Product) {
-	dataJSON, err := json.MarshalIndent(produkte, "", "\t")
+func writeJsonFileScrapper(fileName string, data []Artikel) {
+	dataJSON, err := json.MarshalIndent(data, "", "\t")
 	if err != nil {
 		log.Println(err)
 		return
@@ -31,6 +37,13 @@ func writeJsonFileScrapper(fileName string, produkte map[string]*Product) {
 	err = os.WriteFile("\\\\ME-Datenbank-1\\Database\\Schnittstelle\\BlameInput\\Blame_"+fileName+".json", dataJSON, 0644)
 	if err != nil {
 		log.Println(err)
+	}
+}
+
+func newArtikel(url string) *Artikel {
+	return &Artikel{
+		URL:           url,
+		Artikelnummer: []string{},
 	}
 }
 
@@ -58,6 +71,7 @@ func chromedpScrape() {
 
 	// Start the recursive scraping
 	scrapeRittal0(url, &ctx, visited)
+	writeJsonFileScrapper("Rittal", artikel)
 	fmt.Println("Done")
 }
 
@@ -146,7 +160,9 @@ func scrapeRittal0(url string, ctx *context.Context, visited map[string]bool) {
 					return err
 				}
 				id++
+				part.Id = id
 				artikel = append(artikel, *part)
+				fmt.Printf("num: %-20d", part.Id)
 				fmt.Printf("Artikelnummer: %-40s", part.Artikelnummer)
 				fmt.Printf("URL: %-50s", part.URL)
 				fmt.Printf("\n")

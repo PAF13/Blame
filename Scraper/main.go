@@ -20,6 +20,25 @@ type ArtikelSeed struct {
 	URL           string
 }
 
+/*
+Seed based data retrievel:
+this code will get part data such as weight, tech. data etc. with only Bestell- or Artikelnummer and the set algorithm
+*/
+func main() {
+	//importJSON()
+	//Scraper()
+	hersteller := "SIEMENS"
+	bestellnummer := []string{
+		"3LD2418-0TK13",
+	}
+	switch hersteller {
+	case "SIEMENS":
+		scraperSiemens(bestellnummer)
+	}
+
+	fmt.Println("Done")
+}
+
 func importJSON() {
 
 	jsonFile_LISTE, err := os.Open("\\\\ME-Datenbank-1\\Database\\Software\\Blame\\Data\\Blame_Rittal1.json")
@@ -37,10 +56,10 @@ func importJSON() {
 	for _, b := range artikelRaw {
 
 		bestellnummer := strings.Split(b.URL, "=")[1]
-		artikelnummer := b.Artikelnummer[0]
+		artikelnummer := b.Artikelnummer
 
-		setSeed(artikelSeed, "Bestellnummer", bestellnummer, bestellnummer, b.Artikelnummer[0], b.URL)
-		setSeed(artikelSeed, "Artikelnummer", artikelnummer, bestellnummer, b.Artikelnummer[0], b.URL)
+		setSeed(artikelSeed, "Bestellnummer", bestellnummer, bestellnummer, b.Artikelnummer, b.URL)
+		setSeed(artikelSeed, "Artikelnummer", artikelnummer, bestellnummer, b.Artikelnummer, b.URL)
 	}
 
 	data, err := json.MarshalIndent(artikelSeed, "", "\t")
@@ -110,14 +129,7 @@ func cleanStringComplete(x string) string {
 	return x
 }
 
-func main() {
-	//importJSON()
-	//Scraper()
-	scraperSiemens()
-	fmt.Println("Done")
-}
-
-func scraperSiemens() {
+func scraperSiemens(bestellnummer []string) {
 	ctx, cancel := chromedp.NewContext(context.Background())
 	defer cancel()
 
@@ -127,11 +139,88 @@ func scraperSiemens() {
 	if err := chromedp.Run(ctx, network.Enable()); err != nil {
 		log.Fatalf("Failed to enable network: %v", err)
 	}
+	var produkte map[string]*Product = make(map[string]*Product)
+	for _, b := range bestellnummer {
+		scrapesSiemensLoop(b, &ctx, produkte)
+	}
 
-	url := "https://mall.industry.siemens.com/mall/de/de/Catalog/Product/3LD2418-0TK13"
+	writeJsonFileScrapper("Rittal", produkte)
+}
+func scrapesSiemensLoop(bestellnummer string, ctx *context.Context, produkte map[string]*Product) {
+	url := "https://mall.industry.siemens.com/mall/de/de/Catalog/Product/" + bestellnummer
+	product := newProduct(url)
 
-	visited := make(map[string]bool)
+	log.Printf("Visiting URL: %s", url)
+	printRemainingTime(*ctx)
 
-	scrapeRittal0(url, &ctx, visited)
-	//writeJsonFileScrapper("Rittal", artikel)
+	visitCtx, visitCancel := context.WithTimeout(*ctx, 240*time.Second)
+	defer visitCancel()
+
+	var existsArtikel bool
+
+	err := chromedp.Run(visitCtx,
+
+		chromedp.Navigate(url),
+		chromedp.WaitVisible(`body`, chromedp.ByQuery),
+		chromedp.ActionFunc(func(ctx context.Context) error {
+			var existsCookie bool
+			err := chromedp.EvaluateAsDevTools(`document.querySelector('div.cc-controls button.custom-button.--primary') !== null`, &existsCookie).Do(ctx)
+			if err != nil {
+				return err
+			}
+			if existsCookie {
+				log.Println("Cookie consent button found, clicking it.")
+				return chromedp.Click(`div.cc-controls button.custom-button.--primary`, chromedp.ByQuery).Do(ctx)
+			}
+			return nil
+		}),
+		chromedp.Sleep(1*time.Second), // Wait for content to load after clicking the button
+		chromedp.ActionFunc(func(ctx context.Context) error {
+
+			err := chromedp.EvaluateAsDevTools(`document.querySelector('span.productIdentifier') !== null`, &existsArtikel).Do(ctx)
+			if err != nil {
+				return err
+			}
+			var bestellnummer []string
+			var artikelnummer []string
+			var verrpackungsmasse string
+			var werte []*[]string = []*[]string{
+				&bestellnummer,
+				&artikelnummer,
+			}
+
+			if existsArtikel {
+				log.Println("On Artikel page")
+				err = chromedp.Evaluate(`Array.from(document.querySelectorAll('div.productDataGroup span.productIdentifier')).map(span => span.textContent)`, &bestellnummer).Do(ctx)
+				err = chromedp.Evaluate(`Array.from(document.querySelectorAll('div.productDataGroup span.productIdentifier')).map(span => span.textContent)`, &artikelnummer).Do(ctx)
+				err = chromedp.Evaluate(`(function() {
+					let label = Array.from(document.querySelectorAll('td.productDetailsTable_DataLabel'))
+						.find(el => el.textContent.trim() === 'Verpackungsmaße');
+					return label ? label.nextElementSibling.textContent.trim() : '';
+				})()`, &verrpackungsmasse).Do(ctx)
+				if err != nil {
+					return err
+				}
+				for _, b := range werte {
+					if len(*b) > 1 {
+						log.Println("Error: more than 1 element found | ")
+					}
+				}
+				product.Bestellnummer = bestellnummer[0]
+				product.Artikelnummer = artikelnummer[0]
+				product.Produktinformation.Material = verrpackungsmasse
+				produkte[product.Bestellnummer] = product
+				fmt.Printf("Bestellnummer: %-20s", product.Bestellnummer)
+				fmt.Printf("URL: %-50s", product.URL)
+				fmt.Printf("\n")
+			} else {
+				log.Println("Neither Product list nor Bestell list found on the page.")
+			}
+			return nil
+		}),
+	)
+	if err != nil {
+		log.Printf("Failed to visit %s: %v", url, err)
+		return
+	}
 }
