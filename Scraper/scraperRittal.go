@@ -28,7 +28,7 @@ func writeJsonFileScrapper(fileName string, produkte map[string]*Product) {
 		log.Println(err)
 		return
 	}
-	err = os.WriteFile("\\\\ME-Datenbank-1\\Database\\Schnittstelle\\BlameInput\\Blame_"+fileName+".json", dataJSON, 0644)
+	err = os.WriteFile("C:\\Dev\\Blame\\artikelSeeds\\Blame_Seed_"+fileName+"_Raw.json", dataJSON, 0644)
 	if err != nil {
 		log.Println(err)
 	}

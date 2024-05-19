@@ -16,6 +16,7 @@ type Artikel struct {
 
 func newProduct(url string) *Product {
 	return &Product{
+		Hersteller:    "",
 		Bestellnummer: "",
 		Artikelnummer: "",
 		EAN:           "",
@@ -58,6 +59,7 @@ func newProduct(url string) *Product {
 }
 
 type Product struct {
+	Hersteller          string
 	Bestellnummer       string
 	Artikelnummer       string
 	EAN                 string
