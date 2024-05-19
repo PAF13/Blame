@@ -18,7 +18,10 @@ func newProduct(url string) *Product {
 	return &Product{
 		Bestellnummer: "",
 		Artikelnummer: "",
-		URL:           url,
+		EAN:           "",
+		Kurztext:      "",
+		URLHersteller: "",
+		URLConrad:     url,
 		Generated:     false,
 		Lieferinformationen: Lieferinformationen{
 			PreisProVE:     0,
@@ -57,7 +60,10 @@ func newProduct(url string) *Product {
 type Product struct {
 	Bestellnummer       string
 	Artikelnummer       string
-	URL                 string
+	EAN                 string
+	Kurztext            string
+	URLHersteller       string
+	URLConrad           string
 	Produktfamilie      string
 	ProduktStatus       string
 	Generated           bool
