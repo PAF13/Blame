@@ -25,7 +25,7 @@ func (a *App) BlameStartup() bool {
 	rootPfadDatenbank = rootPfad + "BlameDatenbank\\"
 	// Code to measure
 	pfaden = [][]string{
-		//{"\\\\ME-Datenbank-1\\Database\\Schnittstelle\\BlameInput\\Lagerhueter.xlsx", "KNT", "Lager"},
+		{"\\\\ME-Datenbank-1\\Database\\Schnittstelle\\BlameInput\\Lagerhueter.xlsx", "KNT", "Lager"},
 		//{"\\\\ME-Datenbank-1\\Database\\Schnittstelle\\BlameInput\\Topix.xlsx", "SITECA", "Lager"},
 		//{"\\\\ME-Datenbank-1\\Database\\Schnittstelle\\BlameInput\\Moeller.xlsx", "MOELLER", "Lager"},
 	}
@@ -39,9 +39,7 @@ func (a *App) BlameStartup() bool {
 		fmt.Println(fileName)
 		fmt.Println(fileExtension)
 
-		wg.Add(1)
 		ImportFile(pfad[0], pfad[1], pfad[2], fileName)
-		wg.Add(1)
 		loadFile(pfad[1], pfad[2], fileName)
 	}
 
@@ -68,13 +66,13 @@ func (a *App) LoadStueckliste(pfad []string, kunde string, fileType string) []st
 		fmt.Println(fileName)
 		fmt.Println(fileExtension)
 		temp = append(temp, fileName)
-		wg.Add(1)
+
 		fmt.Println("Importing " + fileName)
-		ImportFile(pfad2, kunde, fileType, fileName)
-		wg.Add(1)
+		ImportFile(pfad2, "KNT", "stueckliste", fileName)
+
 		fmt.Println("Loading " + fileName)
-		loadFile(kunde, fileType, fileName)
-		wg.Add(1)
+		loadFile("KNT", "stueckliste", fileName)
+
 		fmt.Println("Summing " + fileName)
 		temp2 := sumListe(kunde, fileType, fileName)
 
@@ -83,7 +81,7 @@ func (a *App) LoadStueckliste(pfad []string, kunde string, fileType string) []st
 		}
 
 	}
-	wg.Wait()
+
 	fmt.Println("temp")
 	fmt.Println(temp)
 	duration := time.Since(start)

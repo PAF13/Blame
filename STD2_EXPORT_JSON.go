@@ -11,7 +11,7 @@ func writeJsonFile(fileName string, dataStruct any) {
 	if err != nil {
 		log.Println(err)
 	}
-	err = os.WriteFile(rootPfadOutput+"Blame_"+fileName+".json", data, 0644)
+	err = os.WriteFile(fileName+".json", data, 0644)
 	if err != nil {
 		log.Println(err)
 	}

@@ -14,7 +14,7 @@ import (
 )
 
 func (a *App) ReturnOrte() []string {
-	defer wg.Done()
+
 	jsonFile, err := os.Open("\\\\ME-Datenbank-1\\Database\\Schnittstelle\\BlameOutput\\Blame_Clean2_stueckliste.json")
 	if err != nil {
 		fmt.Println(err)
@@ -35,7 +35,7 @@ func (a *App) ReturnOrte() []string {
 	return bmks
 }
 func ImportFile(pfad string, kunde string, fileType string, fileName string) {
-	defer wg.Done()
+
 	file, err := excelize.OpenFile(pfad)
 	if err != nil {
 		return
@@ -67,7 +67,7 @@ func ImportFile(pfad string, kunde string, fileType string, fileName string) {
 }
 
 func loadFile(kunde string, fileType string, fileName string) {
-	defer wg.Done()
+
 	jsonFile, err := os.Open(rootPfadOutput + "Blame_Import1_" + kunde + "_" + fileName + "_" + fileType + ".json")
 	if err != nil {
 		fmt.Println(err)
@@ -118,7 +118,7 @@ func loadFile(kunde string, fileType string, fileName string) {
 }
 
 func sumListe(kunde string, fileType string, fileName string) []string {
-	defer wg.Done()
+
 	jsonFile_KNT, err := os.Open("\\\\ME-Datenbank-1\\Database\\Schnittstelle\\BlameOutput\\Blame_Import2_KNT_Lagerhueter_Lager.json")
 	if err != nil {
 		fmt.Println(err)
@@ -164,7 +164,7 @@ func sumListe(kunde string, fileType string, fileName string) []string {
 	//sum stueckliste
 	for _, b := range artikel_LISTE.Artikel {
 		for _, bb := range b {
-			if bb.Beistellung == "SITECA" {
+			if bb.Beistellung == "Beistellung" {
 				orten := bb.BMK.Ortskennzeichen
 				if orten != "" {
 					artikel_LISTE_CLEAN.BMK_Liste[orten] = orten
@@ -182,14 +182,16 @@ func sumListe(kunde string, fileType string, fileName string) []string {
 	}
 	fmt.Println("summing lager")
 	//Sum Lager
-	for _, b := range artikel_MOELLER.Artikel {
-		for _, bb := range b {
-			orten := bb.BMK.Ortskennzeichen
-			_, ok := artikel_MOELLER_CLEAN.Artikel[bb.Bestellnummer+orten]
-			if !ok {
-				artikel_MOELLER_CLEAN.Artikel[bb.Bestellnummer+orten] = append(artikel_MOELLER_CLEAN.Artikel[bb.Bestellnummer+orten], bb)
-			} else {
-				artikel_MOELLER_CLEAN.Artikel[bb.Bestellnummer+orten][0].Stueckzahl = artikel_MOELLER_CLEAN.Artikel[bb.Bestellnummer+orten][0].Stueckzahl + bb.Stueckzahl
+	if false {
+		for _, b := range artikel_MOELLER.Artikel {
+			for _, bb := range b {
+				orten := bb.BMK.Ortskennzeichen
+				_, ok := artikel_MOELLER_CLEAN.Artikel[bb.Bestellnummer+orten]
+				if !ok {
+					artikel_MOELLER_CLEAN.Artikel[bb.Bestellnummer+orten] = append(artikel_MOELLER_CLEAN.Artikel[bb.Bestellnummer+orten], bb)
+				} else {
+					artikel_MOELLER_CLEAN.Artikel[bb.Bestellnummer+orten][0].Stueckzahl = artikel_MOELLER_CLEAN.Artikel[bb.Bestellnummer+orten][0].Stueckzahl + bb.Stueckzahl
+				}
 			}
 		}
 	}

@@ -1,0 +1,259 @@
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"net/http"
+	"strconv"
+	"sync"
+	"time"
+
+	"github.com/gorilla/mux"
+)
+
+var port string = ":8080"
+var ErrIDNotFound = fmt.Errorf("ID not found")
+
+// Struct definitions
+type ConfigurationVariable struct {
+	ActiveFormulaEvaluated bool   `json:"activeFormulaEvaluated"`
+	Name                   string `json:"name"`
+	Value                  string `json:"value"`
+}
+
+type TypicalConfigurationData struct {
+	ConfigurationVariables []ConfigurationVariable `json:"configurationVariables"`
+}
+
+type ConfigurationData struct {
+	MacroList                []interface{}            `json:"macroList"`
+	TypicalConfigurationData TypicalConfigurationData `json:"typicalConfigurationData"`
+}
+
+type Config struct {
+	OrganizationName    string            `json:"OrganizationName"`
+	Library             string            `json:"library"`
+	Configurator        string            `json:"configurator"`
+	ConfiguratorElement string            `json:"configuratorElement"`
+	ConfigurationData   ConfigurationData `json:"configurationData"`
+}
+
+type Activity struct {
+	Time        time.Time `json:"time"`
+	Description string    `json:"description"`
+	ID          uint64    `json:"id"`
+}
+
+type Activities struct {
+	activities []Activity
+}
+
+func (c *Activities) Insert(activity Activity) uint64 {
+	activity.ID = uint64(len(c.activities)) + 1
+	c.activities = append(c.activities, activity)
+	return activity.ID
+}
+
+func (c *Activities) Retrieve(id uint64) (Activity, error) {
+	if id > uint64(len(c.activities)) {
+		return Activity{}, ErrIDNotFound
+	}
+	return c.activities[id-1], nil
+}
+
+type IDDocument struct {
+	ID uint64 `json:"id"`
+}
+
+type ActivityDocument struct {
+	Activity Activity `json:"activity"`
+}
+
+type httpServer struct {
+	Activities *Activities
+}
+
+type Post struct {
+	ID   int    `json:"id"`
+	Body string `json:"body"`
+}
+
+var (
+	posts   = make(map[int]Post)
+	nextID  = 1
+	postsMu sync.Mutex
+)
+
+func NewHTTPServer(addr string) *http.Server {
+	r := mux.NewRouter()
+	r.HandleFunc("/", handlePost).Methods("POST")
+	r.HandleFunc("/", handleGet).Methods("GET")
+	http.HandleFunc("/posts", postsHandler)
+	http.HandleFunc("/posts/", postHandler)
+	server := &http.Server{
+		Addr:    addr,
+		Handler: r,
+	}
+
+	return server
+}
+
+func postsHandler(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "GET":
+		handleGetPosts(w, r)
+	case "POST":
+		handlePostPosts(w, r)
+	default:
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+	}
+}
+
+func postHandler(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.URL.Path[len("/posts/"):])
+	if err != nil {
+		http.Error(w, "Invalid post ID", http.StatusBadRequest)
+		return
+	}
+
+	switch r.Method {
+	case "GET":
+		handleGetPost(w, r, id)
+	case "DELETE":
+		handleDeletePost(w, r, id)
+	default:
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+	}
+}
+func handleGetPosts(w http.ResponseWriter, r *http.Request) {
+	// This is the first time we're using the mutex.
+	// It essentially locks the server so that we can
+	// manipulate the posts map without worrying about
+	// another request trying to do the same thing at
+	// the same time.
+	postsMu.Lock()
+
+	// I love this feature of go - we can defer the
+	// unlocking until the function has finished executing,
+	// but define it up the top with our lock. Nice and neat.
+	// Caution: deferred statements are first-in-last-out,
+	// which is not all that intuitive to begin with.
+	defer postsMu.Unlock()
+
+	// Copying the posts to a new slice of type []Post
+	ps := make([]Post, 0, len(posts))
+	for _, p := range posts {
+		ps = append(ps, p)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(ps)
+}
+
+func handlePostPosts(w http.ResponseWriter, r *http.Request) {
+	var p Post
+
+	// This will read the entire body into a byte slice
+	// i.e. ([]byte)
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, "Error reading request body", http.StatusInternalServerError)
+		return
+	}
+
+	// Now we'll try to parse the body. This is similar
+	// to JSON.parse in JavaScript.
+	if err := json.Unmarshal(body, &p); err != nil {
+		http.Error(w, "Error parsing request body", http.StatusBadRequest)
+		return
+	}
+
+	// As we're going to mutate the posts map, we need to
+	// lock the server again
+	postsMu.Lock()
+	defer postsMu.Unlock()
+
+	p.ID = nextID
+	nextID++
+	posts[p.ID] = p
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(p)
+}
+
+func handleGetPost(w http.ResponseWriter, r *http.Request, id int) {
+	postsMu.Lock()
+	defer postsMu.Unlock()
+
+	p, ok := posts[id]
+	if !ok {
+		http.Error(w, "Post not found", http.StatusNotFound)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(p)
+}
+
+func handleDeletePost(w http.ResponseWriter, r *http.Request, id int) {
+	postsMu.Lock()
+	defer postsMu.Unlock()
+
+	// If you use a two-value assignment for accessing a
+	// value on a map, you get the value first then an
+	// "exists" variable.
+	_, ok := posts[id]
+	if !ok {
+		http.Error(w, "Post not found", http.StatusNotFound)
+		return
+	}
+
+	delete(posts, id)
+	w.WriteHeader(http.StatusOK)
+}
+func (s *httpServer) handlePost(w http.ResponseWriter, r *http.Request) {
+	var req ActivityDocument
+	err := json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	id := s.Activities.Insert(req.Activity)
+	res := IDDocument{ID: id}
+	json.NewEncoder(w).Encode(res)
+
+}
+
+func (s *httpServer) handleGet(w http.ResponseWriter, r *http.Request) {
+	var req IDDocument
+	err := json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	activity, err := s.Activities.Retrieve(req.ID)
+	if err == ErrIDNotFound {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
+
+	res := ActivityDocument{Activity: activity}
+	json.NewEncoder(w).Encode(res)
+}
+
+func handleGet(w http.ResponseWriter, req *http.Request) {
+	fmt.Fprintf(w, "get\n")
+}
+
+func handlePost(w http.ResponseWriter, req *http.Request) {
+	fmt.Fprintf(w, "post\n")
+}
+
+func main() {
+	println("Starting listening on port" + port)
+	srv := NewHTTPServer(port)
+	srv.ListenAndServe()
+
+}

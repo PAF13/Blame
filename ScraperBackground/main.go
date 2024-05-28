@@ -1,137 +1,86 @@
 package main
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
-	"os"
-	"strings"
+	"net/http"
 	"time"
-
-	"github.com/chromedp/cdproto/network"
-	"github.com/chromedp/chromedp"
 )
 
-type ArtikelSeed struct {
-	Bestellnummer string
-	Artikelnummer string
-	URL           string
+// Struct definitions
+type ConfigurationVariable struct {
+	ActiveFormulaEvaluated bool   `json:"activeFormulaEvaluated"`
+	Name                   string `json:"name"`
+	Value                  string `json:"value"`
 }
 
-func importJSON() {
-
-	jsonFile_LISTE, err := os.Open("\\\\ME-Datenbank-1\\Database\\Software\\Blame\\Data\\Blame_Rittal1.json")
-	if err != nil {
-		fmt.Println(err)
-	}
-	defer jsonFile_LISTE.Close()
-
-	byteValue_LISTE, _ := ioutil.ReadAll(jsonFile_LISTE)
-
-	artikelRaw := []Artikel{}
-	artikelSeed := map[string]*ArtikelSeed{}
-	json.Unmarshal(byteValue_LISTE, &artikelRaw)
-
-	for _, b := range artikelRaw {
-
-		bestellnummer := strings.Split(b.URL, "=")[1]
-		artikelnummer := b.Artikelnummer[0]
-
-		setSeed(artikelSeed, "Bestellnummer", bestellnummer, bestellnummer, b.Artikelnummer[0], b.URL)
-		setSeed(artikelSeed, "Artikelnummer", artikelnummer, bestellnummer, b.Artikelnummer[0], b.URL)
-	}
-
-	data, err := json.MarshalIndent(artikelSeed, "", "\t")
-	if err != nil {
-		log.Println(err)
-	}
-	err = os.WriteFile("\\\\ME-Datenbank-1\\Database\\Software\\Blame\\Data\\Blame_Artikel_Seed_Rittal.json", data, 0644)
-	if err != nil {
-		log.Println(err)
-	}
+type TypicalConfigurationData struct {
+	ConfigurationVariables []ConfigurationVariable `json:"configurationVariables"`
 }
 
-func setSeed(artikelSeed map[string]*ArtikelSeed, prefix string, key string, bestellnummer string, artikelnummer string, url string) {
-	key_Clean := prefix + ": " + cleanStringComplete(key)
-	bestellnummer_Clean := strings.ToUpper(bestellnummer)
-	artikelnummer_Clean := strings.ToUpper(artikelnummer)
+type ConfigurationData struct {
+	MacroList                []interface{}            `json:"macroList"`
+	TypicalConfigurationData TypicalConfigurationData `json:"typicalConfigurationData"`
+}
 
-	_, okBestellnummer := artikelSeed[key_Clean]
-	if !okBestellnummer {
-		artikelSeed[key_Clean] = &ArtikelSeed{
-			Bestellnummer: bestellnummer_Clean,
-			Artikelnummer: artikelnummer_Clean,
-			URL:           url,
+type Config struct {
+	OrganizationName    string            `json:"OrganizationName"`
+	Library             string            `json:"library"`
+	Configurator        string            `json:"configurator"`
+	ConfiguratorElement string            `json:"configuratorElement"`
+	ConfigurationData   ConfigurationData `json:"configurationData"`
+}
+
+var tom *Config = &Config{
+	OrganizationName:    "",
+	Library:             "",
+	Configurator:        "",
+	ConfiguratorElement: "",
+	ConfigurationData: ConfigurationData{
+		TypicalConfigurationData: TypicalConfigurationData{
+			ConfigurationVariables: []ConfigurationVariable{},
+		},
+	},
+}
+
+func tomHandler(w http.ResponseWriter, r *http.Request) {
+
+	switch r.Method {
+	case "GET":
+		// Just send out the JSON version of 'tom'
+		j, _ := json.Marshal(tom)
+		w.Write(j)
+	case "POST":
+		// Decode the JSON in the body and overwrite 'tom' with it
+		d := json.NewDecoder(r.Body)
+		p := &Config{}
+		err := d.Decode(p)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
-	} else {
-		if len(url) < len(artikelSeed[key_Clean].URL) {
-			artikelSeed[key_Clean].URL = url
-			fmt.Printf("Correcting " + key)
-			fmt.Printf("\n")
-			fmt.Printf("Old Artikelnummmer: %-73s", artikelSeed[key_Clean].Artikelnummer)
-			fmt.Printf("Old URL: %-50s", artikelSeed[key_Clean].URL)
-			fmt.Printf("\n")
-			fmt.Printf("New Artikelnummmer: %-73s", artikelnummer_Clean)
-			fmt.Printf("New URL: %-50s", url)
-			fmt.Printf("\n")
-			fmt.Println("--")
-		} else {
-			fmt.Printf("duplicate of " + key + " | Ignoring ")
-			fmt.Printf("\n")
-			fmt.Printf("Old Artikelnummmer: %-30s", artikelSeed[key_Clean].Artikelnummer)
-			fmt.Printf("Old URL len: %-30d", len(artikelSeed[key_Clean].URL))
-			fmt.Printf("Old URL: %-50s", artikelSeed[key_Clean].URL)
-			fmt.Printf("\n")
-			fmt.Printf("New Artikelnummmer: %-30s", artikelnummer_Clean)
-			fmt.Printf("New URL len: %-30d", len(url))
-			fmt.Printf("New URL: %-50s", url)
-			fmt.Printf("\n")
-			fmt.Println("--")
-		}
-
+		tom = p
+	default:
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		fmt.Fprintf(w, "I can't do that.")
 	}
 }
-func cleanStringComplete(x string) string {
-	x = strings.ToUpper(x)
-	x = strings.ReplaceAll(x, " ", "")
-	x = strings.ReplaceAll(x, "\t", "")
-	x = strings.ReplaceAll(x, "\n", "")
-	x = strings.ReplaceAll(x, ".", "")
-	x = strings.ReplaceAll(x, "/", "")
-	x = strings.ReplaceAll(x, ",", "")
-	x = strings.ReplaceAll(x, "ü", "ue")
-	x = strings.ReplaceAll(x, "ä", "ae")
-	x = strings.ReplaceAll(x, "ö", "oe")
-	x = strings.ReplaceAll(x, "Ü", "Ue")
-	x = strings.ReplaceAll(x, "Ä", "Ae")
-	x = strings.ReplaceAll(x, "Ö", "Oe")
-	return x
+func loggingMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		start := time.Now()
+		next.ServeHTTP(w, r)
+		log.Printf("%s %s %s %s", r.RemoteAddr, r.Method, r.URL.Path, time.Since(start))
+	})
 }
 
 func main() {
-	//importJSON()
-	//Scraper()
-	scraperSiemens()
-	fmt.Println("Done")
-}
 
-func scraperSiemens() {
-	ctx, cancel := chromedp.NewContext(context.Background())
-	defer cancel()
+	http.HandleFunc("/", tomHandler)
+	mux := http.NewServeMux()
+	loggedMux := loggingMiddleware(mux)
 
-	ctx, cancel = context.WithTimeout(ctx, 99999*time.Second)
-	defer cancel()
-
-	if err := chromedp.Run(ctx, network.Enable()); err != nil {
-		log.Fatalf("Failed to enable network: %v", err)
+	fmt.Println("Starting server on :8080")
+	if err := http.ListenAndServe(":8080", loggedMux); err != nil {
+		log.Fatalf("Could not start server: %s\n", err.Error())
 	}
-
-	url := "https://mall.industry.siemens.com/mall/de/de/Catalog/Product/3LD2418-0TK13"
-
-	visited := make(map[string]bool)
-
-	scrapeRittal0(url, &ctx, visited)
-	//writeJsonFileScrapper("Rittal", artikel)
 }
