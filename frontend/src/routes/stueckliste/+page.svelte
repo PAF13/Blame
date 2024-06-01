@@ -71,7 +71,7 @@ var num2: number = 0;
 		let check = 0;
 		ort_TEMP.forEach(function (myans) {
 			if (check > 0){
-				people_TEMP.push({ name: myans, checked: true }); 
+				people_TEMP.push({ name: myans, checked: false }); 
 			}
 			check++;				
 		});

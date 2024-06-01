@@ -164,7 +164,8 @@ func sumListe(kunde string, fileType string, fileName string) []string {
 	//sum stueckliste
 	for _, b := range artikel_LISTE.Artikel {
 		for _, bb := range b {
-			if bb.Beistellung == "Beistellung" {
+			//if bb.Beistellung == "Beistellung" {
+			if true {
 				orten := bb.BMK.Ortskennzeichen
 				if orten != "" {
 					artikel_LISTE_CLEAN.BMK_Liste[orten] = orten
@@ -182,7 +183,7 @@ func sumListe(kunde string, fileType string, fileName string) []string {
 	}
 	fmt.Println("summing lager")
 	//Sum Lager
-	if false {
+	if true {
 		for _, b := range artikel_MOELLER.Artikel {
 			for _, bb := range b {
 				orten := bb.BMK.Ortskennzeichen
@@ -195,18 +196,19 @@ func sumListe(kunde string, fileType string, fileName string) []string {
 			}
 		}
 	}
-	for _, b := range artikel_KNT.Artikel {
-		for _, bb := range b {
-			orten := bb.BMK.Ortskennzeichen
-			_, ok := artikel_KNT_CLEAN.Artikel[bb.Bestellnummer+orten]
-			if !ok {
-				artikel_KNT_CLEAN.Artikel[bb.Bestellnummer+orten] = append(artikel_KNT_CLEAN.Artikel[bb.Bestellnummer+orten], bb)
-			} else {
-				artikel_KNT_CLEAN.Artikel[bb.Bestellnummer+orten][0].Stueckzahl = artikel_KNT_CLEAN.Artikel[bb.Bestellnummer+orten][0].Stueckzahl + bb.Stueckzahl
+	if true {
+		for _, b := range artikel_KNT.Artikel {
+			for _, bb := range b {
+				orten := bb.BMK.Ortskennzeichen
+				_, ok := artikel_KNT_CLEAN.Artikel[bb.Bestellnummer+orten]
+				if !ok {
+					artikel_KNT_CLEAN.Artikel[bb.Bestellnummer+orten] = append(artikel_KNT_CLEAN.Artikel[bb.Bestellnummer+orten], bb)
+				} else {
+					artikel_KNT_CLEAN.Artikel[bb.Bestellnummer+orten][0].Stueckzahl = artikel_KNT_CLEAN.Artikel[bb.Bestellnummer+orten][0].Stueckzahl + bb.Stueckzahl
+				}
 			}
 		}
 	}
-
 	for a, b := range artikel_LISTE_CLEAN.Artikel {
 		_, ok := artikel_SITECA.Artikel[b[0].Bestellnummer]
 		if ok {
@@ -248,8 +250,9 @@ func sumListe(kunde string, fileType string, fileName string) []string {
 
 				} else if ok_Moeller {
 					*bestellungMoeller = *bestellungSiteca
+					*lagerMoeller = *lagerMoeller - *bestellungSiteca
 					*bestellungSiteca = 0
-					*lagerMoeller = 0
+
 				}
 
 			}
@@ -262,8 +265,9 @@ func sumListe(kunde string, fileType string, fileName string) []string {
 					*lagerKNT = 0
 				} else if ok_KNT {
 					*bestellungKNT = *bestellungSiteca
+					*lagerKNT = *lagerKNT - *bestellungSiteca
 					*bestellungSiteca = 0
-					*lagerKNT = 0
+
 				}
 			}
 
