@@ -76,11 +76,7 @@ type VERBINDUNG struct {
 	QuelleAnschluss                       string
 	ZielAnschluss                         string
 }
-type EXCEL_IMPORT struct {
-	Header  JSON_HEADER
-	Columns EXCEL_SIMPLE
-	Rows    [][]string
-}
+
 type ARTIKELLISTE struct {
 	Header    JSON_HEADER
 	BMK_Liste map[string]string
@@ -88,7 +84,6 @@ type ARTIKELLISTE struct {
 }
 type ARTIKEL struct {
 	UUID               UUID
-	BMK                BETRIEBSMITELLKENNZEICHEN
 	ERP                string
 	ERP_KNT            string
 	Bestellnummer      string
@@ -106,26 +101,6 @@ type ARTIKEL struct {
 	Bestellung_Moeller float64
 	Bestellung_KNT     float64
 	Bestellung_Siteca  float64
-}
-type EXCEL_SIMPLE struct {
-	Header               int
-	BMKVollständig       int
-	FunktionaleZuordnung int //==
-	Funktionskennzeichen int //=
-	Aufstellungsort      int //++
-	Ortskennzeichen      int //+
-	BMK                  int //-
-	ERP                  int
-	ERP_KNT              int
-	Hersteller           int
-	Bestellnummer        int
-	Bezeichnung          int
-	Beschreibung         int
-	Stueckzahl           int
-	Einheit              int
-	Verpackungseinheit   int
-	Lagerort             int
-	Beistellung          int
 }
 
 type PROJEKT struct {
@@ -152,4 +127,15 @@ type PRODUKT struct {
 type BETRIEBSMITELL struct {
 	BMK     BETRIEBSMITELLKENNZEICHEN
 	Artikel []*ARTIKEL
+}
+
+type FILTER struct {
+	Filter map[string]bool
+}
+type BETRIEBSMITELLLISTE struct {
+	Filter         map[string]bool
+	Betriebsmittel map[string]*BETRIEBSMITELL
+}
+type LAGERLISTE struct {
+	Betriebsmittel map[string]*ARTIKEL
 }
