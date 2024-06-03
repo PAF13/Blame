@@ -101,6 +101,7 @@ type ARTIKEL struct {
 	Bestellung_Moeller float64
 	Bestellung_KNT     float64
 	Bestellung_Siteca  float64
+	Funktionsgruppe    string
 }
 
 type PROJEKT struct {

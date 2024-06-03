@@ -15,11 +15,11 @@ func TestReadFile(t *testing.T) {
 		t.Errorf("failed")
 	}
 }
-func TestReadFile2(t *testing.T) {
+func TestLager(t *testing.T) {
 	pfaden := []string{
-		"\\\\ME-Datenbank-1\\Database\\Schnittstelle\\BlameInput\\Lagerhueter.xlsx",
 		"\\\\ME-Datenbank-1\\Database\\Schnittstelle\\BlameInput\\Topix.xlsx",
 		"\\\\ME-Datenbank-1\\Database\\Schnittstelle\\BlameInput\\Moeller.xlsx",
+		"\\\\ME-Datenbank-1\\Database\\Schnittstelle\\BlameInput\\Lagerhueter.xlsx",
 	}
 	LoadLager(pfaden)
 	got := false
