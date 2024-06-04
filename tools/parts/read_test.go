@@ -20,6 +20,7 @@ func TestLager(t *testing.T) {
 		"\\\\ME-Datenbank-1\\Database\\Schnittstelle\\BlameInput\\Topix.xlsx",
 		"\\\\ME-Datenbank-1\\Database\\Schnittstelle\\BlameInput\\Moeller.xlsx",
 		"\\\\ME-Datenbank-1\\Database\\Schnittstelle\\BlameInput\\Lagerhueter.xlsx",
+		"\\\\ME-Datenbank-1\\Projektdaten 2024\\KROENERT\\8000634_Kay II-Automotive\\03 MATERIAL\\01 STUECKLISTEN\\40514_8000634-02_Beistellung_Siteca_DE.xlsx",
 	}
 	LoadLager(pfaden)
 	got := false

@@ -84,13 +84,13 @@ type ARTIKELLISTE struct {
 }
 type ARTIKEL struct {
 	UUID               UUID
+	Beigestellt        bool
 	ERP                string
 	ERP_KNT            string
 	Bestellnummer      string
 	ArtikelnummerEplan string
 	Hersteller         string
 	Beschreibung       string
-	Stueckzahl         float64
 	Einheit            string
 	Quelle             string
 	Stand              string
@@ -98,10 +98,14 @@ type ARTIKEL struct {
 	Strom              string
 	Symbol             string
 	Fehler             []string
-	Bestellung_Moeller float64
-	Bestellung_KNT     float64
-	Bestellung_Siteca  float64
 	Funktionsgruppe    string
+
+	Stueckzahl             float64
+	Beistellung_Stueckzahl float64
+	Bestellung_Moeller     float64
+	Lager_Siteca           float64
+	Bestellung_KNT         float64
+	Bestellung_Siteca      float64
 }
 
 type PROJEKT struct {
@@ -126,8 +130,9 @@ type PRODUKT struct {
 	NCDatenFraigabe        bool
 }
 type BETRIEBSMITELL struct {
-	BMK     BETRIEBSMITELLKENNZEICHEN
-	Artikel []*ARTIKEL
+	BMK         BETRIEBSMITELLKENNZEICHEN
+	SumBauteile map[string]*ARTIKEL
+	Artikel     []*ARTIKEL
 }
 
 type FILTER struct {

@@ -108,28 +108,15 @@ var num2: number = 0;
 
 <ButtonGroup>
 	<Button color="dark" on:click={load1}>Datei...</Button>
-	<Select color="dark" items={kunde} bind:value={selectedKunde} />
-	<Button color="dark"  on:click={dialog2}>Dropdown search<ChevronDownOutline class="w-6 h-6 ms-2 text-white dark:text-white" /></Button>
-<Dropdown class="overflow-y-auto px-3 pb-3 text-sm h-44">
-  <div slot="header" class="p-3">
-    <Search size="md" bind:value={searchTerm}/>
-  </div>
-  {#key test}
-  {#each filteredItems as person (person.name)}
-    <li class="rounded p-2 hover:bg-gray-100 dark:hover:bg-gray-600">
-      <Checkbox bind:checked={person.checked}>{person.name}</Checkbox>
-    </li>
-  {/each}
-  {/key}
-</Dropdown>
-<Button color="dark" on:click={dialog3}>Export</Button>
+
+<Button color="dark" on:click={dialog2}>Export</Button>
 </ButtonGroup>
 <h1>Orten</h1>
 {#key people}
   {#each filteredItems as person (person.name)}
 		<P size="xl" linethrough opacity={25} color="text-blue-600 dark:text-blue-500">{person.name}</P>
   {/each}
-  {/key}
+{/key}
 
   <Button color="dark" on:click={dialog5}>Export</Button>
 

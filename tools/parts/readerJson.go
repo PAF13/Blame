@@ -28,3 +28,13 @@ func (f *FILTER) readJson(pfad string) *FILTER {
 	json.Unmarshal(byteValue, f)
 	return f
 }
+func (f *LAGERLISTE) readJson(pfad string) *LAGERLISTE {
+	steucklisteClean, err := os.Open(pfad)
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer steucklisteClean.Close()
+	byteValue, _ := ioutil.ReadAll(steucklisteClean)
+	json.Unmarshal(byteValue, f)
+	return f
+}

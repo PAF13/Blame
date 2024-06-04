@@ -6,12 +6,12 @@ import (
 	"os"
 )
 
-func writeJsonFile(fileName string, dataStruct any) {
+func writeJsonFile(name string, dataStruct any) {
 	data, err := json.MarshalIndent(dataStruct, "", "\t")
 	if err != nil {
 		log.Println(err)
 	}
-	err = os.WriteFile(fileName+".json", data, 0644)
+	err = os.WriteFile("\\\\ME-Datenbank-1\\Database\\Software\\Blame\\Data\\Stueckliste\\"+name+".json", data, 0644)
 	if err != nil {
 		log.Println(err)
 	}

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"parts"
 	"strings"
 	"sync"
 	"time"
@@ -25,9 +26,9 @@ func (a *App) BlameStartup() bool {
 	rootPfadDatenbank = rootPfad + "BlameDatenbank\\"
 	// Code to measure
 	pfaden = [][]string{
-		{"\\\\ME-Datenbank-1\\Database\\Schnittstelle\\BlameInput\\Lagerhueter.xlsx", "KNT", "Lager"},
+		//{"\\\\ME-Datenbank-1\\Database\\Schnittstelle\\BlameInput\\Lagerhueter.xlsx", "KNT", "Lager"},
 		//{"\\\\ME-Datenbank-1\\Database\\Schnittstelle\\BlameInput\\Topix.xlsx", "SITECA", "Lager"},
-		{"\\\\ME-Datenbank-1\\Database\\Schnittstelle\\BlameInput\\Moeller.xlsx", "MOELLER", "Lager"},
+		//{"\\\\ME-Datenbank-1\\Database\\Schnittstelle\\BlameInput\\Moeller.xlsx", "MOELLER", "Lager"},
 	}
 	for _, pfad := range pfaden {
 
@@ -49,45 +50,18 @@ func (a *App) BlameStartup() bool {
 	return true
 }
 
-func (a *App) LoadStueckliste(pfad []string, kunde string, fileType string) []string {
+func (a *App) LoadStueckliste(pfaden []string, kunde string, fileType string) []string {
 	defer func() {
 		if r := recover(); r != nil {
 			fmt.Println("Recovered. Error:\n", r)
 		}
 	}()
 	start := time.Now()
-	var temp []string
-	for _, pfad2 := range pfad {
-		pfadLen := len(strings.Split(pfad2, "\\"))
-		fileNameVoll := strings.Split(pfad2, "\\")[pfadLen-1]
-		fileName := strings.Split(fileNameVoll, ".")[0]
-		fileExtension := strings.Split(fileNameVoll, ".")[1]
-		fmt.Println(fileNameVoll)
-		fmt.Println(fileName)
-		fmt.Println(fileExtension)
-		temp = append(temp, fileName)
-
-		fmt.Println("Importing " + fileName)
-		ImportFile(pfad2, "KNT", "stueckliste", fileName)
-
-		fmt.Println("Loading " + fileName)
-		loadFile("KNT", "stueckliste", fileName)
-
-		fmt.Println("Summing " + fileName)
-		temp2 := sumListe(kunde, fileType, fileName)
-
-		for _, b := range temp2 {
-			temp = append(temp, b)
-		}
-
-	}
-
-	fmt.Println("temp")
-	fmt.Println(temp)
+	parts.LoadStueckliste(pfaden)
 	duration := time.Since(start)
 	fmt.Println(duration)
 	fmt.Println(duration.Nanoseconds())
-	return temp
+	return []string{}
 }
 func (a *App) ExportStueckliste(orten []string, kunde string, fileType string) {
 	fmt.Println("trying")

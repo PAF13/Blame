@@ -10,7 +10,9 @@ func writeStueckliste(pfad string, lagerbestand map[string]*BETRIEBSMITELL) {
 	file2 := excelize.NewFile()
 	defer func() {
 		if err := file2.Close(); err != nil {
+			fmt.Println("--1--")
 			fmt.Println(err)
+			fmt.Println("--1--")
 		}
 	}()
 	rowNum := 1
@@ -36,18 +38,22 @@ func writeStueckliste(pfad string, lagerbestand map[string]*BETRIEBSMITELL) {
 	file2.SetColWidth("Sheet1", "I", "I", 10)
 	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Menge")
 	file2.SetColWidth("Sheet1", "J", "J", 20)
-	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Bestellung Moeller")
+	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Beistellung Kunde")
 	file2.SetColWidth("Sheet1", "K", "K", 20)
-	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Bestellung KNT")
+	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Bestellung Moeller")
 	file2.SetColWidth("Sheet1", "L", "L", 20)
+	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Lager Siteca")
+	file2.SetColWidth("Sheet1", "M", "M", 20)
+	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Bestellung KNT")
+	file2.SetColWidth("Sheet1", "N", "N", 20)
 	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Bestellung Siteca")
-	file2.SetColWidth("Sheet1", "M", "M", 13)
+	file2.SetColWidth("Sheet1", "O", "O", 13)
 	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Beisteller")
-	file2.SetColWidth("Sheet1", "N", "N", 13)
+	file2.SetColWidth("Sheet1", "P", "P", 13)
 	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Quelle")
-	file2.SetColWidth("Sheet1", "O", "O", 20)
+	file2.SetColWidth("Sheet1", "Q", "Q", 20)
 	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Beschreibung")
-	file2.SetColWidth("Sheet1", "P", "P", 70)
+	file2.SetColWidth("Sheet1", "R", "R", 70)
 	rowNum++
 	for _, b := range lagerbestand {
 		for _, bb := range b.Artikel {
@@ -62,18 +68,20 @@ func writeStueckliste(pfad string, lagerbestand map[string]*BETRIEBSMITELL) {
 			lineWriter(file2, "Sheet1", &colNum, &rowNum, bb.ERP_KNT)
 			lineWriter(file2, "Sheet1", &colNum, &rowNum, bb.Hersteller)
 			lineWriter(file2, "Sheet1", &colNum, &rowNum, fmt.Sprintf("%.0f", bb.Stueckzahl))
+			lineWriter(file2, "Sheet1", &colNum, &rowNum, fmt.Sprintf("%.0f", bb.Beistellung_Stueckzahl))
 			lineWriter(file2, "Sheet1", &colNum, &rowNum, fmt.Sprintf("%.0f", bb.Bestellung_Moeller))
+			lineWriter(file2, "Sheet1", &colNum, &rowNum, fmt.Sprintf("%.0f", bb.Lager_Siteca))
 			lineWriter(file2, "Sheet1", &colNum, &rowNum, fmt.Sprintf("%.0f", bb.Bestellung_KNT))
 			lineWriter(file2, "Sheet1", &colNum, &rowNum, fmt.Sprintf("%.0f", bb.Bestellung_Siteca))
 			lineWriter(file2, "Sheet1", &colNum, &rowNum, bb.Beistellung)
-			lineWriter(file2, "Sheet1", &colNum, &rowNum, bb.Quelle)
+			lineWriter(file2, "Sheet1", &colNum, &rowNum, "=="+b.BMK.FunktionaleZuordnung+"+"+b.BMK.Ortskennzeichen)
 			lineWriter(file2, "Sheet1", &colNum, &rowNum, bb.Beschreibung)
 			rowNum++
 		}
 	}
 	disable := false
 	file2.AddTable("Sheet1", &excelize.Table{
-		Range:             "A1:P" + fmt.Sprintf("%d", rowNum),
+		Range:             "A1:R" + fmt.Sprintf("%d", rowNum),
 		Name:              "table",
 		StyleName:         "TableStyleMedium2",
 		ShowFirstColumn:   true,
@@ -83,7 +91,9 @@ func writeStueckliste(pfad string, lagerbestand map[string]*BETRIEBSMITELL) {
 	})
 
 	if err := file2.SaveAs(pfad + ".xlsx"); err != nil {
+		fmt.Println("--2--")
 		fmt.Println(err)
+		fmt.Println("--2--")
 	}
 }
 func lineWriter(file *excelize.File, sheet string, colNum *int, rowNum *int, val string) {
@@ -122,18 +132,22 @@ func (Liste *LAGERLISTE) writeStueckliste(name string) {
 	file2.SetColWidth("Sheet1", "I", "I", 10)
 	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Menge")
 	file2.SetColWidth("Sheet1", "J", "J", 20)
-	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Lager Moeller")
+	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Beistellung Kunde")
 	file2.SetColWidth("Sheet1", "K", "K", 20)
-	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Lager KNT")
+	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Bestellung Moeller")
 	file2.SetColWidth("Sheet1", "L", "L", 20)
 	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Lager Siteca")
-	file2.SetColWidth("Sheet1", "M", "M", 13)
+	file2.SetColWidth("Sheet1", "M", "M", 20)
+	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Bestellung KNT")
+	file2.SetColWidth("Sheet1", "N", "N", 20)
+	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Bestellung Siteca")
+	file2.SetColWidth("Sheet1", "O", "O", 13)
 	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Beisteller")
-	file2.SetColWidth("Sheet1", "N", "N", 13)
+	file2.SetColWidth("Sheet1", "P", "P", 13)
 	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Quelle")
-	file2.SetColWidth("Sheet1", "O", "O", 20)
+	file2.SetColWidth("Sheet1", "Q", "Q", 20)
 	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Beschreibung")
-	file2.SetColWidth("Sheet1", "P", "P", 70)
+	file2.SetColWidth("Sheet1", "R", "R", 70)
 	rowNum++
 	for _, b := range Liste.Betriebsmittel {
 
@@ -148,7 +162,9 @@ func (Liste *LAGERLISTE) writeStueckliste(name string) {
 		lineWriter(file2, "Sheet1", &colNum, &rowNum, b.ERP_KNT)
 		lineWriter(file2, "Sheet1", &colNum, &rowNum, b.Hersteller)
 		lineWriter(file2, "Sheet1", &colNum, &rowNum, fmt.Sprintf("%.0f", b.Stueckzahl))
+		lineWriter(file2, "Sheet1", &colNum, &rowNum, fmt.Sprintf("%.0f", b.Beistellung_Stueckzahl))
 		lineWriter(file2, "Sheet1", &colNum, &rowNum, fmt.Sprintf("%.0f", b.Bestellung_Moeller))
+		lineWriter(file2, "Sheet1", &colNum, &rowNum, fmt.Sprintf("%.0f", b.Lager_Siteca))
 		lineWriter(file2, "Sheet1", &colNum, &rowNum, fmt.Sprintf("%.0f", b.Bestellung_KNT))
 		lineWriter(file2, "Sheet1", &colNum, &rowNum, fmt.Sprintf("%.0f", b.Bestellung_Siteca))
 		lineWriter(file2, "Sheet1", &colNum, &rowNum, b.Beistellung)
@@ -159,7 +175,7 @@ func (Liste *LAGERLISTE) writeStueckliste(name string) {
 	}
 	disable := false
 	file2.AddTable("Sheet1", &excelize.Table{
-		Range:             "A1:P" + fmt.Sprintf("%d", rowNum),
+		Range:             "A1:R" + fmt.Sprintf("%d", rowNum),
 		Name:              "table",
 		StyleName:         "TableStyleMedium2",
 		ShowFirstColumn:   true,
