@@ -15,9 +15,36 @@ func writeStueckliste(pfad string, lagerbestand map[string]*BETRIEBSMITELL) {
 			fmt.Println("--1--")
 		}
 	}()
+
+	style, err := file2.NewStyle(&excelize.Style{
+		Alignment: &excelize.Alignment{
+			TextRotation: 90,
+			Horizontal:   "left",
+		},
+		Font: &excelize.Font{
+			Bold:  true,
+			Color: "FFFFFF",
+			Size:  14,
+		},
+	})
+	if err != nil {
+		fmt.Println(err)
+	}
+	style2, err := file2.NewStyle(&excelize.Style{
+		Font: &excelize.Font{
+			Bold:  true,
+			Color: "FFFFFF",
+			Size:  14,
+		},
+	})
+	if err != nil {
+		fmt.Println(err)
+	}
+	file2.SetCellStyle("Sheet1", "A1", "R1", style2)
 	rowNum := 1
 	colNum := 0
 	fmt.Println("starting excel")
+	file2.SetRowHeight("Sheet1", 1, 150)
 	lineWriter(file2, "Sheet1", &colNum, &rowNum, "==")
 	file2.SetColWidth("Sheet1", "A", "A", 13)
 	lineWriter(file2, "Sheet1", &colNum, &rowNum, "=")
@@ -35,21 +62,27 @@ func writeStueckliste(pfad string, lagerbestand map[string]*BETRIEBSMITELL) {
 	lineWriter(file2, "Sheet1", &colNum, &rowNum, "ERP KNT")
 	file2.SetColWidth("Sheet1", "H", "H", 20)
 	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Hersteller")
-	file2.SetColWidth("Sheet1", "I", "I", 10)
+	file2.SetColWidth("Sheet1", "I", "I", 20)
 	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Menge")
-	file2.SetColWidth("Sheet1", "J", "J", 20)
+	file2.SetColWidth("Sheet1", "J", "J", 8)
+	file2.SetCellStyle("Sheet1", "J1", "J1", style)
 	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Beistellung Kunde")
-	file2.SetColWidth("Sheet1", "K", "K", 20)
+	file2.SetColWidth("Sheet1", "K", "K", 8)
+	file2.SetCellStyle("Sheet1", "K1", "K1", style)
 	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Bestellung Moeller")
-	file2.SetColWidth("Sheet1", "L", "L", 20)
+	file2.SetColWidth("Sheet1", "L", "L", 8)
+	file2.SetCellStyle("Sheet1", "L1", "L1", style)
 	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Lager Siteca")
-	file2.SetColWidth("Sheet1", "M", "M", 20)
+	file2.SetColWidth("Sheet1", "M", "M", 8)
+	file2.SetCellStyle("Sheet1", "M1", "M1", style)
 	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Bestellung KNT")
-	file2.SetColWidth("Sheet1", "N", "N", 20)
+	file2.SetColWidth("Sheet1", "N", "N", 8)
+	file2.SetCellStyle("Sheet1", "N1", "N1", style)
 	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Bestellung Siteca")
-	file2.SetColWidth("Sheet1", "O", "O", 13)
+	file2.SetColWidth("Sheet1", "O", "O", 8)
+	file2.SetCellStyle("Sheet1", "O1", "O1", style)
 	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Beisteller")
-	file2.SetColWidth("Sheet1", "P", "P", 13)
+	file2.SetColWidth("Sheet1", "P", "P", 20)
 	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Quelle")
 	file2.SetColWidth("Sheet1", "Q", "Q", 20)
 	lineWriter(file2, "Sheet1", &colNum, &rowNum, "Beschreibung")
@@ -74,7 +107,7 @@ func writeStueckliste(pfad string, lagerbestand map[string]*BETRIEBSMITELL) {
 			lineWriter(file2, "Sheet1", &colNum, &rowNum, fmt.Sprintf("%.0f", bb.Bestellung_KNT))
 			lineWriter(file2, "Sheet1", &colNum, &rowNum, fmt.Sprintf("%.0f", bb.Bestellung_Siteca))
 			lineWriter(file2, "Sheet1", &colNum, &rowNum, bb.Beistellung)
-			lineWriter(file2, "Sheet1", &colNum, &rowNum, "=="+b.BMK.FunktionaleZuordnung+"+"+b.BMK.Ortskennzeichen)
+			lineWriter(file2, "Sheet1", &colNum, &rowNum, bb.Quelle)
 			lineWriter(file2, "Sheet1", &colNum, &rowNum, bb.Beschreibung)
 			rowNum++
 		}

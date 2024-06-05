@@ -5,8 +5,15 @@ func (liste *BETRIEBSMITELLLISTE) fileFilter(filter *FILTER) *BETRIEBSMITELLLIST
 	listeRest := NewBetriebsmillliste()
 	for _, b := range liste.Betriebsmittel {
 		for _, bb := range b.Artikel {
-			if (bb.Funktionsgruppe != "Klemme" && bb.Hersteller != "HELU" && bb.Hersteller != "LAP") && filter.Filter["=="+b.BMK.FunktionaleZuordnung+"+"+b.BMK.Ortskennzeichen] && bb.Bestellnummer != "" {
-				key := "==" + b.BMK.FunktionaleZuordnung + "=" + b.BMK.Funktionskennzeichen + "++" + b.BMK.Aufstellungsort + "+" + b.BMK.Ortskennzeichen + "-" + b.BMK.BMK + "|" + bestellnummerCleaner(bb.Bestellnummer)
+			if ((bb.Funktionsgruppe != "Klemme" && bb.Hersteller != "HELU" && bb.Hersteller != "LAP") && filter.Filter["=="+b.BMK.FunktionaleZuordnung+"+"+b.BMK.Ortskennzeichen] && bb.Bestellnummer != "") ||
+				bb.Funktionsgruppe == "Reparaturschalter" {
+				key := "==" + b.BMK.FunktionaleZuordnung + "=" + b.BMK.Funktionskennzeichen + "++" + b.BMK.Aufstellungsort + "+" + b.BMK.Ortskennzeichen + "-" + b.BMK.BMK
+				if bestellnummerCleaner(bb.Bestellnummer) == "" {
+					key = key + "|" + bb.ERP_KNT
+				} else {
+					key = key + "|" + bestellnummerCleaner(bb.Bestellnummer)
+				}
+
 				_, ok := listeNew.Betriebsmittel[key]
 				if ok {
 					listeNew.Betriebsmittel[key].Artikel = append(listeNew.Betriebsmittel[key].Artikel, bb)

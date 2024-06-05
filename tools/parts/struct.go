@@ -136,10 +136,20 @@ type BETRIEBSMITELL struct {
 }
 
 type FILTER struct {
-	Filter map[string]bool
+	FunktionaleZuordnung       bool //==
+	Funktionskennzeichen       bool //=
+	Aufstellungsort            bool //++
+	Ortskennzeichen            bool //+
+	Dokumentenart              bool //&
+	BenutzerdefinierteStruktur bool //#
+	Anlagennummer              bool //empty?
+	BMK                        bool //-
+	Filter                     map[string]bool
+	Product                    map[string]string
 }
 type BETRIEBSMITELLLISTE struct {
 	Filter         map[string]bool
+	Produktliste   *FILTER
 	Betriebsmittel map[string]*BETRIEBSMITELL
 }
 type LAGERLISTE struct {

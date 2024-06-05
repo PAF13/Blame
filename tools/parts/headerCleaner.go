@@ -134,3 +134,28 @@ func bestellnummerCleaner(x string) string {
 	x = strings.ReplaceAll(x, "Ö", "OE")
 	return x
 }
+
+func bestellnummerCleaner2(x string) string {
+	x = strings.Replace(x, "TS ", "", 1)
+	x = strings.Replace(x, "VX ", "", 1)
+	x = strings.Replace(x, "VX.", "", 1)
+	x = strings.Replace(x, "SK ", "", 1)
+	x = strings.Replace(x, "SV ", "", 1)
+	x = strings.Replace(x, "SZ ", "", 1)
+	x = strings.Replace(x, "PS ", "", 1)
+	x = strings.Replace(x, "EL ", "", 1)
+	x = strings.Replace(x, "DK ", "", 1)
+	x = strings.Replace(x, "KX ", "", 1)
+	x = strings.Replace(x, "TP ", "", 1)
+
+	x = strings.ReplaceAll(x, " ", "")
+	x = strings.ReplaceAll(x, "\t", "")
+	x = strings.ReplaceAll(x, "\n", "")
+	x = strings.ReplaceAll(x, ".", "")
+	x = strings.ReplaceAll(x, "_", "")
+	x = strings.ToUpper(x)
+	x = strings.ReplaceAll(x, "Ü", "UE")
+	x = strings.ReplaceAll(x, "Ä", "AE")
+	x = strings.ReplaceAll(x, "Ö", "OE")
+	return x
+}

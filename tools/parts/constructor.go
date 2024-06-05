@@ -44,7 +44,20 @@ func (liste *BETRIEBSMITELL) NewBetriebsmittelTemp3() *BETRIEBSMITELL {
 		Artikel:     []*ARTIKEL{},
 	}
 }
-func NewArtikelTemp(headersClean map[string]uint64, row []string) *ARTIKEL {
+func (liste *BETRIEBSMITELL) NewBetriebsmittelTemp4() *BETRIEBSMITELL {
+	return &BETRIEBSMITELL{
+		BMK: BETRIEBSMITELLKENNZEICHEN{
+			FunktionaleZuordnung: liste.BMK.FunktionaleZuordnung,
+			//Funktionskennzeichen: liste.BMK.Funktionskennzeichen,
+			Aufstellungsort: liste.BMK.Aufstellungsort,
+			Ortskennzeichen: liste.BMK.Ortskennzeichen,
+			//BMK:                  liste.BMK.BMK,
+		},
+		SumBauteile: map[string]*ARTIKEL{},
+		Artikel:     []*ARTIKEL{},
+	}
+}
+func NewArtikelTemp(headersClean map[string]uint64, row []string, quelle string) *ARTIKEL {
 	var beistellung bool
 	if safeHeader(row, headersClean["Funktionsgruppe"]) == "Beistellung" {
 		beistellung = true
@@ -56,7 +69,7 @@ func NewArtikelTemp(headersClean map[string]uint64, row []string) *ARTIKEL {
 	stueckzahlKNT, _ := strconv.ParseFloat(safeHeader(row, headersClean["Bestellung_KNT"]), 64)
 	stueckzahlSiteca, _ := strconv.ParseFloat(safeHeader(row, headersClean["Bestellung_Siteca"]), 64)
 	return &ARTIKEL{
-		Bestellnummer:      safeHeader(row, headersClean["Bestellnummer"]),
+		Bestellnummer:      bestellnummerCleaner2(safeHeader(row, headersClean["Bestellnummer"])),
 		ERP:                safeHeader(row, headersClean["ERP"]),
 		ERP_KNT:            safeHeader(row, headersClean["ERP_KNT"]),
 		Hersteller:         safeHeader(row, headersClean["Hersteller"]),
@@ -68,6 +81,7 @@ func NewArtikelTemp(headersClean map[string]uint64, row []string) *ARTIKEL {
 		Beistellung:        safeHeader(row, headersClean["Beistellung"]),
 		Funktionsgruppe:    safeHeader(row, headersClean["Funktionsgruppe"]),
 		Beigestellt:        beistellung,
+		Quelle:             quelle,
 	}
 }
 
@@ -126,6 +140,7 @@ func NewBetriebsmillliste() *BETRIEBSMITELLLISTE {
 
 func NewFilter() *FILTER {
 	return &FILTER{
-		Filter: make(map[string]bool),
+		Filter:  make(map[string]bool),
+		Product: make(map[string]string),
 	}
 }

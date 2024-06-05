@@ -17,9 +17,18 @@ func LoadStueckliste(pfaden []string) {
 		betriebsmittelListe := NewBetriebsmillliste()
 		beistellung := NewBetriebsmillliste()
 		filter := NewFilter()
+		filter.FunktionaleZuordnung = true        //==
+		filter.Funktionskennzeichen = false       //=
+		filter.Aufstellungsort = true             //++
+		filter.Ortskennzeichen = true             //+
+		filter.Dokumentenart = false              //&
+		filter.BenutzerdefinierteStruktur = false //#
+		filter.Anlagennummer = false              //empty?
+		filter.BMK = false                        //-
+
 		filter2 := NewFilter()
 		rows, fileName := load(pfad)
-		rows2, _ := load("\\\\ME-Datenbank-1\\Projektdaten 2024\\KROENERT\\8000634_Kay II-Automotive\\03 MATERIAL\\01 STUECKLISTEN\\40514_8000634-02_Beistellung_Siteca_DE.xlsx")
+		rows2, fileName2 := load("\\\\ME-Datenbank-1\\Projektdaten 2024\\KROENERT\\8000634_Kay II-Automotive\\03 MATERIAL\\01 STUECKLISTEN\\40514_8000634-02_Beistellung_Siteca_DE.xlsx")
 		header, headerRow, err := setHeader(rows)
 		if err != nil {
 			fmt.Println(err)
@@ -30,28 +39,28 @@ func LoadStueckliste(pfaden []string) {
 		}
 
 		betriebsmittelListe.setListe(rows, header, headerRow, false, filter)
-		//betriebsmittelListe.writeJsonFile(fileName + "_Raw")
+		betriebsmittelListe.writeJsonFile(fileName + "_Raw")
 		//writeStueckliste("\\\\ME-Datenbank-1\\Database\\Software\\Blame\\Data\\Stueckliste\\"+fileName+"_Raw", betriebsmittelListe.Betriebsmittel)
 
 		beistellung.setListe(rows2, header2, headerRow2, true, filter2)
-		//beistellung.writeJsonFile(fileName2 + "_Raw")
+		beistellung.writeJsonFile(fileName2 + "_Raw")
 		//writeStueckliste("\\\\ME-Datenbank-1\\Database\\Software\\Blame\\Data\\Stueckliste\\"+fileName2+"_Raw", beistellung.Betriebsmittel)
 
-		//writeJsonFile("Filter", filter)
+		writeJsonFile("Filter", filter)
 
-		betriebsmittelListeRest := betriebsmittelListe.fileFilter(filter)
+		//betriebsmittelListeRest := betriebsmittelListe.fileFilter(filter)
 		//betriebsmittelListe.writeJsonFile(fileName + "_Filter")
 		//writeStueckliste("\\\\ME-Datenbank-1\\Database\\Software\\Blame\\Data\\Stueckliste\\"+fileName+"_Rest", betriebsmittelListeRest.Betriebsmittel)
 
 		betriebsmittelListe.listSum(filter)
-		//betriebsmittelListe.writeJsonFile(fileName + "_Sum")
+		betriebsmittelListe.writeJsonFile(fileName + "_Sum")
 		//writeStueckliste("\\\\ME-Datenbank-1\\Database\\Software\\Blame\\Data\\Stueckliste\\"+fileName+"_Rest", betriebsmittelListeRest.Betriebsmittel)
 
-		beistellung.listSum(filter)
-		//beistellung.writeJsonFile(fileName2 + "_Sum")
+		beistellung.listSum(filter2)
+		beistellung.writeJsonFile(fileName2 + "_Sum")
 		//writeStueckliste("\\\\ME-Datenbank-1\\Database\\Software\\Blame\\Data\\Stueckliste\\"+fileName+"_Rest", betriebsmittelListeRest.Betriebsmittel)
 
-		betriebsmittelListeRest.listSum2()
+		//betriebsmittelListeRest.listSum2()
 		//betriebsmittelListeRest.writeJsonFile(fileName + "_SumRest")
 		//writeStueckliste("\\\\ME-Datenbank-1\\Database\\Software\\Blame\\Data\\Stueckliste\\"+fileName+"_Rest", betriebsmittelListeRest.Betriebsmittel)
 
@@ -59,9 +68,9 @@ func LoadStueckliste(pfaden []string) {
 		betriebsmittelListe.writeJsonFile(fileName)
 		writeStueckliste("\\\\ME-Datenbank-1\\Database\\Software\\Blame\\Data\\Stueckliste\\"+fileName, betriebsmittelListe.Betriebsmittel)
 
-		betriebsmittelListeRest.lagerstandabgleich(beistellung)
-		betriebsmittelListeRest.writeJsonFile(fileName + "_Rest")
-		writeStueckliste("\\\\ME-Datenbank-1\\Database\\Software\\Blame\\Data\\Stueckliste\\"+fileName+"_Rest", betriebsmittelListeRest.Betriebsmittel)
+		//betriebsmittelListeRest.lagerstandabgleich(beistellung)
+		//betriebsmittelListeRest.writeJsonFile(fileName + "_Rest")
+		//writeStueckliste("\\\\ME-Datenbank-1\\Database\\Software\\Blame\\Data\\Stueckliste\\"+fileName+"_Rest", betriebsmittelListeRest.Betriebsmittel)
 
 		var orten [][]string
 
@@ -75,7 +84,7 @@ func LoadStueckliste(pfaden []string) {
 			}
 			orten = append(orten, ort)
 		}
-		//writeCSVFile("fileName", &orten, "EPlanBetriebsmittel")
+		writeCSVFile("fileName", &orten, "EPlanBetriebsmittel")
 	}
 
 }

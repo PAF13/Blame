@@ -7,23 +7,18 @@ func (liste *BETRIEBSMITELLLISTE) lagerstandabgleich(beistellung *BETRIEBSMITELL
 	for a, b := range liste.Betriebsmittel {
 
 		for _, bb := range b.Artikel {
-			var key string
-			if bb.Bestellnummer != "" {
-				key = bestellnummerCleaner(bb.Bestellnummer)
-			} else {
-				key = bb.ERP_KNT
-			}
 			_, okBeistellung := beistellung.Betriebsmittel[a]
 			if okBeistellung && beistellung.Betriebsmittel[a].Artikel[0].Beigestellt {
 				vergleich(bb, &bb.Beistellung_Stueckzahl, &beistellung.Betriebsmittel[a].Artikel[0].Stueckzahl)
 			}
-			_, ok := lager.Betriebsmittel[key]
+			nummer := bestellnummerCleaner(bb.Bestellnummer)
+			_, ok := lager.Betriebsmittel[nummer]
 			if ok {
-				bb.ERP = lager.Betriebsmittel[key].ERP
+				bb.ERP = lager.Betriebsmittel[nummer].ERP
 
-				vergleich(bb, &bb.Bestellung_Moeller, &lager.Betriebsmittel[key].Bestellung_Moeller)
-				vergleich(bb, &bb.Lager_Siteca, &lager.Betriebsmittel[key].Lager_Siteca)
-				vergleich(bb, &bb.Bestellung_KNT, &lager.Betriebsmittel[key].Bestellung_KNT)
+				vergleich(bb, &bb.Bestellung_Moeller, &lager.Betriebsmittel[nummer].Bestellung_Moeller)
+				vergleich(bb, &bb.Lager_Siteca, &lager.Betriebsmittel[nummer].Lager_Siteca)
+				vergleich(bb, &bb.Bestellung_KNT, &lager.Betriebsmittel[nummer].Bestellung_KNT)
 			}
 
 		}
