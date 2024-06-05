@@ -8,6 +8,7 @@ import (
 func TestReadFile(t *testing.T) {
 	pfaden := []string{
 		"C:\\Dev\\Blame\\tools\\parts\\test\\Files\\240529_8000634-02_Artikelstückliste_DE_Siteca.xlsx",
+		"\\\\ME-Datenbank-1\\Projektdaten 2024\\KROENERT\\8000772_Polifilm\\8000772_Stückliste_Änderung_1.xlsx",
 	}
 	LoadStueckliste(pfaden)
 	got := false
