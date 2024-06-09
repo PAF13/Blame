@@ -1,7 +1,7 @@
 package parts
 
 func (liste *BETRIEBSMITELLLISTE) lagerstandabgleich(beistellung *BETRIEBSMITELLLISTE) {
-	lager := NewLagerliste()
+	/*lager := NewLagerliste()
 	lager.readJson("\\\\ME-Datenbank-1\\Database\\Software\\Blame\\Data\\Lager\\Lager.json")
 
 	for a, b := range liste.Betriebsmittel {
@@ -11,18 +11,19 @@ func (liste *BETRIEBSMITELLLISTE) lagerstandabgleich(beistellung *BETRIEBSMITELL
 			if okBeistellung && beistellung.Betriebsmittel[a].Artikel[0].Beigestellt {
 				vergleich(bb, &bb.Beistellung_Stueckzahl, &beistellung.Betriebsmittel[a].Artikel[0].Stueckzahl)
 			}
-			nummer := bestellnummerCleaner(bb.Bestellnummer)
-			_, ok := lager.Betriebsmittel[nummer]
-			if ok {
-				bb.ERP = lager.Betriebsmittel[nummer].ERP
 
-				vergleich(bb, &bb.Bestellung_Moeller, &lager.Betriebsmittel[nummer].Bestellung_Moeller)
-				vergleich(bb, &bb.Lager_Siteca, &lager.Betriebsmittel[nummer].Lager_Siteca)
-				vergleich(bb, &bb.Bestellung_KNT, &lager.Betriebsmittel[nummer].Bestellung_KNT)
+			nummer := bestellnummerCleaner(bb.Bestellnummer)
+			_, ok := lager.Artikel[nummer]
+			if ok {
+				bb.ERP = lager.Artikel[nummer].ERP
+
+				vergleich(bb, &bb.Bestellung_Moeller, &lager.Artikel[nummer].Bestellung_Moeller)
+				vergleich(bb, &bb.Lager_Siteca, &lager.Artikel[nummer].Lager_Siteca)
+				vergleich(bb, &bb.Bestellung_KNT, &lager.Artikel[nummer].Bestellung_KNT)
 			}
 
 		}
-	}
+	}*/
 }
 
 func vergleich(bb *ARTIKEL, stueckzahl *float64, stueckzahlLager *float64) {

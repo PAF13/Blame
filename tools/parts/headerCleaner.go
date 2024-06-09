@@ -1,7 +1,6 @@
 package parts
 
 import (
-	"fmt"
 	"math"
 	"strings"
 )
@@ -29,6 +28,9 @@ func headerssClean(headers map[string]uint64) (map[string]uint64, error) {
 
 		"Beistellung":     math.MaxUint64,
 		"Funktionsgruppe": math.MaxUint64,
+
+		"EK_KNT":    math.MaxUint64,
+		"EK_Siteca": math.MaxUint64,
 	}
 	translateStuecklisteKNT := map[string]string{
 		"MODUL==":       "FunktionaleZuordnung",
@@ -52,6 +54,7 @@ func headerssClean(headers map[string]uint64) (map[string]uint64, error) {
 		"HERSTELLER":       "Hersteller",
 		"MENGEAB(L)":       "Bestellung_Siteca",
 		"BESCHREIBUNG2":    "Beschreibung",
+		"EK":               "EK_Siteca",
 	}
 	translateLagerMoeller := map[string]string{
 		"ART.-NR.":     "Bestellnummer",
@@ -66,6 +69,7 @@ func headerssClean(headers map[string]uint64) (map[string]uint64, error) {
 		"ARTIKLENUMMER":     "ERP_KNT",
 		"MENGE":             "Bestellung_KNT",
 		"BEZEICHNUNG2":      "Beschreibung",
+		"WERT":              "EK_KNT",
 	}
 	translate := []map[string]string{
 		translateStuecklisteKNT,
@@ -79,7 +83,6 @@ func headerssClean(headers map[string]uint64) (map[string]uint64, error) {
 			_, ok := b[aa]
 
 			if ok {
-				fmt.Println(aa)
 				headersClean[b[aa]] = bb
 			}
 		}
@@ -94,7 +97,9 @@ func headerssClean(headers map[string]uint64) (map[string]uint64, error) {
 			err = New("missing: ")
 		}
 	}
-	fmt.Println(err)
+	/*for a, b := range headersClean {
+		fmt.Printf("Header: %-30s value: %d\n", a, b)
+	}*/
 	return headersClean, err
 }
 
@@ -148,6 +153,19 @@ func bestellnummerCleaner2(x string) string {
 	x = strings.Replace(x, "KX ", "", 1)
 	x = strings.Replace(x, "TP ", "", 1)
 
+	x = strings.ReplaceAll(x, " ", "")
+	x = strings.ReplaceAll(x, "\t", "")
+	x = strings.ReplaceAll(x, "\n", "")
+	x = strings.ReplaceAll(x, ".", "")
+	x = strings.ReplaceAll(x, "_", "")
+	x = strings.ToUpper(x)
+	x = strings.ReplaceAll(x, "Ü", "UE")
+	x = strings.ReplaceAll(x, "Ä", "AE")
+	x = strings.ReplaceAll(x, "Ö", "OE")
+	return x
+}
+
+func bestellnummerCleaner3(x string) string {
 	x = strings.ReplaceAll(x, " ", "")
 	x = strings.ReplaceAll(x, "\t", "")
 	x = strings.ReplaceAll(x, "\n", "")

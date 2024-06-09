@@ -2,36 +2,33 @@ package parts
 
 import "strings"
 
-func (liste *BETRIEBSMITELLLISTE) listSum(filter *FILTER) {
+func (liste *BETRIEBSMITELLLISTE) listSum() {
 	listeNew := NewBetriebsmillliste()
 	for a, b := range liste.Betriebsmittel {
 
 		for _, bb := range b.Artikel {
-			if filter.Filter[a] || bb.Funktionsgruppe == "Reparaturschalter" {
-				_, ok := listeNew.Betriebsmittel[a]
-				if strings.Contains(bb.Quelle, "Schaltschrank") {
-					if ok {
-						listeNew.Betriebsmittel[a].Artikel[0].Stueckzahl = listeNew.Betriebsmittel[a].Artikel[0].Stueckzahl + bb.Stueckzahl
-						listeNew.Betriebsmittel[a].Artikel[0].Bestellung_Siteca = listeNew.Betriebsmittel[a].Artikel[0].Stueckzahl
-					} else {
-						listeNew.Betriebsmittel[a] = b.NewBetriebsmittelTemp3()
 
-						listeNew.Betriebsmittel[a].Artikel = append(listeNew.Betriebsmittel[a].Artikel, bb)
-						listeNew.Betriebsmittel[a].Artikel[0].Bestellung_Siteca = bb.Stueckzahl
-					}
+			_, ok := listeNew.Betriebsmittel[a]
+			if strings.Contains(bb.Quelle, "Schaltschrank") {
+				if ok {
+					listeNew.Betriebsmittel[a].Artikel[0].Stueckzahl = listeNew.Betriebsmittel[a].Artikel[0].Stueckzahl + bb.Stueckzahl
+					listeNew.Betriebsmittel[a].Artikel[0].Bestellung_Siteca = listeNew.Betriebsmittel[a].Artikel[0].Stueckzahl
 				} else {
-					if ok {
-						listeNew.Betriebsmittel[a].Artikel[0].Stueckzahl = listeNew.Betriebsmittel[a].Artikel[0].Stueckzahl + bb.Stueckzahl
-						listeNew.Betriebsmittel[a].Artikel[0].Bestellung_Siteca = listeNew.Betriebsmittel[a].Artikel[0].Stueckzahl
-					} else {
-						listeNew.Betriebsmittel[a] = b.NewBetriebsmittelTemp4()
+					listeNew.Betriebsmittel[a] = b.NewBetriebsmittelTemp3()
 
-						listeNew.Betriebsmittel[a].Artikel = append(listeNew.Betriebsmittel[a].Artikel, bb)
-						listeNew.Betriebsmittel[a].Artikel[0].Bestellung_Siteca = bb.Stueckzahl
-					}
+					listeNew.Betriebsmittel[a].Artikel = append(listeNew.Betriebsmittel[a].Artikel, bb)
+					listeNew.Betriebsmittel[a].Artikel[0].Bestellung_Siteca = bb.Stueckzahl
 				}
+			} else {
+				if ok {
+					listeNew.Betriebsmittel[a].Artikel[0].Stueckzahl = listeNew.Betriebsmittel[a].Artikel[0].Stueckzahl + bb.Stueckzahl
+					listeNew.Betriebsmittel[a].Artikel[0].Bestellung_Siteca = listeNew.Betriebsmittel[a].Artikel[0].Stueckzahl
+				} else {
+					listeNew.Betriebsmittel[a] = b.NewBetriebsmittelTemp4()
 
-				listeNew.Betriebsmittel[a].SumBauteile[a] = &ARTIKEL{}
+					listeNew.Betriebsmittel[a].Artikel = append(listeNew.Betriebsmittel[a].Artikel, bb)
+					listeNew.Betriebsmittel[a].Artikel[0].Bestellung_Siteca = bb.Stueckzahl
+				}
 			}
 		}
 	}

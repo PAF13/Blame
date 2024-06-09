@@ -14,8 +14,7 @@ func NewBetriebsmittelTemp(headersClean map[string]uint64, row []string) *BETRIE
 			Ortskennzeichen:      safeHeader(row, headersClean["Ortskennzeichen"]),
 			BMK:                  safeHeader(row, headersClean["BMK"]),
 		},
-		SumBauteile: map[string]*ARTIKEL{},
-		Artikel:     []*ARTIKEL{},
+		Artikel: []*ARTIKEL{},
 	}
 }
 func (liste *BETRIEBSMITELL) NewBetriebsmittelTemp2() *BETRIEBSMITELL {
@@ -27,8 +26,7 @@ func (liste *BETRIEBSMITELL) NewBetriebsmittelTemp2() *BETRIEBSMITELL {
 			Ortskennzeichen:      liste.BMK.Ortskennzeichen,
 			BMK:                  liste.BMK.BMK,
 		},
-		SumBauteile: map[string]*ARTIKEL{},
-		Artikel:     []*ARTIKEL{},
+		Artikel: []*ARTIKEL{},
 	}
 }
 func (liste *BETRIEBSMITELL) NewBetriebsmittelTemp3() *BETRIEBSMITELL {
@@ -40,8 +38,7 @@ func (liste *BETRIEBSMITELL) NewBetriebsmittelTemp3() *BETRIEBSMITELL {
 			Ortskennzeichen: liste.BMK.Ortskennzeichen,
 			//BMK:                  liste.BMK.BMK,
 		},
-		SumBauteile: map[string]*ARTIKEL{},
-		Artikel:     []*ARTIKEL{},
+		Artikel: []*ARTIKEL{},
 	}
 }
 func (liste *BETRIEBSMITELL) NewBetriebsmittelTemp4() *BETRIEBSMITELL {
@@ -53,8 +50,7 @@ func (liste *BETRIEBSMITELL) NewBetriebsmittelTemp4() *BETRIEBSMITELL {
 			Ortskennzeichen: liste.BMK.Ortskennzeichen,
 			//BMK:                  liste.BMK.BMK,
 		},
-		SumBauteile: map[string]*ARTIKEL{},
-		Artikel:     []*ARTIKEL{},
+		Artikel: []*ARTIKEL{},
 	}
 }
 func NewArtikelTemp(headersClean map[string]uint64, row []string, quelle string) *ARTIKEL {
@@ -68,6 +64,8 @@ func NewArtikelTemp(headersClean map[string]uint64, row []string, quelle string)
 	stueckzahlMoeller, _ := strconv.ParseFloat(safeHeader(row, headersClean["Bestellung_Moeller"]), 64)
 	stueckzahlKNT, _ := strconv.ParseFloat(safeHeader(row, headersClean["Bestellung_KNT"]), 64)
 	stueckzahlSiteca, _ := strconv.ParseFloat(safeHeader(row, headersClean["Bestellung_Siteca"]), 64)
+	EKKNT, _ := strconv.ParseFloat(safeHeader(row, headersClean["EK_KNT"]), 64)
+	EKSiteca, _ := strconv.ParseFloat(safeHeader(row, headersClean["EK_Siteca"]), 64)
 	return &ARTIKEL{
 		Bestellnummer:      bestellnummerCleaner2(safeHeader(row, headersClean["Bestellnummer"])),
 		ERP:                safeHeader(row, headersClean["ERP"]),
@@ -82,6 +80,8 @@ func NewArtikelTemp(headersClean map[string]uint64, row []string, quelle string)
 		Funktionsgruppe:    safeHeader(row, headersClean["Funktionsgruppe"]),
 		Beigestellt:        beistellung,
 		Quelle:             quelle,
+		EK_KNT:             EKKNT,
+		EK_Siteca:          EKSiteca,
 	}
 }
 
@@ -94,6 +94,7 @@ func NewArtikelTemp2(headersClean map[string]uint64, row []string) *ARTIKEL {
 	stueckzahlMoeller, _ := strconv.ParseFloat(safeHeader(row, headersClean["Bestellung_Moeller"]), 64)
 	stueckzahlKNT, _ := strconv.ParseFloat(safeHeader(row, headersClean["Bestellung_KNT"]), 64)
 	stueckzahlSiteca, _ := strconv.ParseFloat(safeHeader(row, headersClean["Bestellung_Siteca"]), 64)
+
 	return &ARTIKEL{
 		Bestellnummer:          safeHeader(row, headersClean["Bestellnummer"]),
 		ERP:                    safeHeader(row, headersClean["ERP"]),
@@ -118,9 +119,7 @@ func safeHeader(row []string, column uint64) string {
 	return value
 }
 func NewBetriebsmittel() *BETRIEBSMITELL {
-	return &BETRIEBSMITELL{
-		SumBauteile: make(map[string]*ARTIKEL),
-	}
+	return &BETRIEBSMITELL{}
 }
 func NewArtikel() *ARTIKEL {
 	return &ARTIKEL{}
@@ -128,7 +127,7 @@ func NewArtikel() *ARTIKEL {
 
 func NewLagerliste() *LAGERLISTE {
 	return &LAGERLISTE{
-		Betriebsmittel: make(map[string]*ARTIKEL),
+		Artikel: make(map[string]*ARTIKEL),
 	}
 }
 

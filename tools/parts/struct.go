@@ -82,6 +82,12 @@ type ARTIKELLISTE struct {
 	BMK_Liste map[string]string
 	Artikel   map[string][]ARTIKEL
 }
+type DATASOURCE struct {
+	KNT     bool
+	Siteca  bool
+	Moeller bool
+	Eplan   bool
+}
 type ARTIKEL struct {
 	UUID               UUID
 	Beigestellt        bool
@@ -91,6 +97,7 @@ type ARTIKEL struct {
 	ArtikelnummerEplan string
 	Hersteller         string
 	Beschreibung       string
+	ARTIKELINFO        ARTIKELINFO
 	Einheit            string
 	Quelle             string
 	Stand              string
@@ -99,6 +106,10 @@ type ARTIKEL struct {
 	Symbol             string
 	Fehler             []string
 	Funktionsgruppe    string
+	DataSource         DATASOURCE
+
+	EK_KNT    float64
+	EK_Siteca float64
 
 	Stueckzahl             float64
 	Beistellung_Stueckzahl float64
@@ -107,7 +118,16 @@ type ARTIKEL struct {
 	Bestellung_KNT         float64
 	Bestellung_Siteca      float64
 }
-
+type ARTIKELINFO struct {
+	gewerk             string
+	produktgruppe      string
+	produktuntergruppe string
+}
+type EPLANGRUPPEN struct {
+	gewerk             map[int]string
+	produktgruppe      map[int]string
+	produktuntergruppe map[int]string
+}
 type PROJEKT struct {
 	HEADER               JSON_HEADER
 	PROJEKT_NUMMER       string
@@ -130,9 +150,9 @@ type PRODUKT struct {
 	NCDatenFraigabe        bool
 }
 type BETRIEBSMITELL struct {
-	BMK         BETRIEBSMITELLKENNZEICHEN
-	SumBauteile map[string]*ARTIKEL
-	Artikel     []*ARTIKEL
+	BMK BETRIEBSMITELLKENNZEICHEN
+
+	Artikel []*ARTIKEL
 }
 
 type FILTER struct {
@@ -149,9 +169,11 @@ type FILTER struct {
 }
 type BETRIEBSMITELLLISTE struct {
 	Filter         map[string]bool
-	Produktliste   *FILTER
+	ProduktDef     FILTER
+	Produkte       map[string]*BETRIEBSMITELLKENNZEICHEN
 	Betriebsmittel map[string]*BETRIEBSMITELL
 }
 type LAGERLISTE struct {
-	Betriebsmittel map[string]*ARTIKEL
+	//Betriebsmittel map[string]*ARTIKEL
+	Artikel map[string]*ARTIKEL
 }
