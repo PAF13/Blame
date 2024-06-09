@@ -21,14 +21,14 @@ func (Liste *LAGERLISTE) setListe(P_rows *[][]string, headersClean map[string]ui
 				if Liste.Artikel[keyBetriebsmittel].ERP_KNT == "" {
 					Liste.Artikel[keyBetriebsmittel].ERP_KNT = safeHeader(rows[i], headersClean["ERP_KNT"])
 				}
-				stueckzahlMoeller, _ := strconv.ParseFloat(safeHeader(rows[i], headersClean["Bestellung_Moeller"]), 64)
-				stueckzahlKNT, _ := strconv.ParseFloat(safeHeader(rows[i], headersClean["Bestellung_KNT"]), 64)
-				stueckzahlSiteca, _ := strconv.ParseFloat(safeHeader(rows[i], headersClean["Bestellung_Siteca"]), 64)
+				stueckzahlMoeller, _ := strconv.ParseFloat(safeHeader(rows[i], headersClean["Lager_Moeller"]), 64)
+				stueckzahlKNT, _ := strconv.ParseFloat(safeHeader(rows[i], headersClean["Lager_KNT"]), 64)
+				stueckzahlSiteca, _ := strconv.ParseFloat(safeHeader(rows[i], headersClean["Lager_Siteca"]), 64)
 				EKKNT, _ := strconv.ParseFloat(safeHeader(rows[i], headersClean["EK_KNT"]), 64)
 				EKSiteca, _ := strconv.ParseFloat(safeHeader(rows[i], headersClean["EK_Siteca"]), 64)
 				Liste.Artikel[keyBetriebsmittel].Bestellung_Moeller = Liste.Artikel[keyBetriebsmittel].Bestellung_Moeller + stueckzahlMoeller
 				Liste.Artikel[keyBetriebsmittel].Bestellung_KNT = Liste.Artikel[keyBetriebsmittel].Bestellung_KNT + stueckzahlKNT
-				Liste.Artikel[keyBetriebsmittel].Bestellung_Siteca = Liste.Artikel[keyBetriebsmittel].Bestellung_Siteca + stueckzahlSiteca
+				Liste.Artikel[keyBetriebsmittel].Lager_Siteca = Liste.Artikel[keyBetriebsmittel].Bestellung_Siteca + stueckzahlSiteca
 				if Liste.Artikel[keyBetriebsmittel].EK_KNT < EKKNT {
 					Liste.Artikel[keyBetriebsmittel].EK_KNT = EKKNT
 				}
@@ -49,16 +49,26 @@ func (Liste *LAGERLISTE) setListe(P_rows *[][]string, headersClean map[string]ui
 	}
 }
 
-func (Liste *LAGERLISTE) setListe2(part *ARTIKEL) {
+func (Liste *LAGERLISTE) setListe2(part []*ARTIKEL) {
 
-	_, okBetriebsmittel := Liste.Artikel[part.Bestellnummer]
-	if !okBetriebsmittel {
-		Liste.Artikel[part.Bestellnummer] = part
-	} else {
+	for _, b := range part {
+		keyBetriebsmittel := bestellnummerCleaner(b.Bestellnummer)
 
+		_, okBetriebsmittel := Liste.Artikel[keyBetriebsmittel]
+		if !okBetriebsmittel {
+			Liste.Artikel[keyBetriebsmittel] = b
+		} else {
+			if Liste.Artikel[keyBetriebsmittel].ERP == "" {
+				Liste.Artikel[keyBetriebsmittel].ERP = b.ERP
+			}
+
+			if Liste.Artikel[keyBetriebsmittel].ArtikelnummerEplan == "" {
+				Liste.Artikel[keyBetriebsmittel].ArtikelnummerEplan = b.ArtikelnummerEplan
+			}
+			Liste.Artikel[keyBetriebsmittel].ARTIKELINFO = b.ARTIKELINFO
+			Liste.Artikel[keyBetriebsmittel].DataSource.Eplan = true
+		}
 	}
-
-	Liste.Artikel[part.Bestellnummer].DataSource.Eplan = true
 
 }
 func (Liste *BETRIEBSMITELLLISTE) setListe(P_rows *[][]string, headersClean map[string]uint64, headerRow int) {
@@ -71,12 +81,8 @@ func (Liste *BETRIEBSMITELLLISTE) setListe(P_rows *[][]string, headersClean map[
 		_, okBetriebsmittel := Liste.Betriebsmittel[keyBetriebsmittel]
 		if !okBetriebsmittel {
 			Liste.Betriebsmittel[keyBetriebsmittel] = NewBetriebsmittelTemp(headersClean, rows[i])
-			Liste.Betriebsmittel[keyBetriebsmittel].Artikel = append(Liste.Betriebsmittel[keyBetriebsmittel].Artikel, NewArtikelTemp(headersClean, rows[i], quelle))
-		} else {
-
-			//Liste.Betriebsmittel[keyBetriebsmittel].Artikel = NewArtikelTemp(headersClean, rows[i], quelle)
 		}
-
+		Liste.Betriebsmittel[keyBetriebsmittel].Artikel = append(Liste.Betriebsmittel[keyBetriebsmittel].Artikel, NewArtikelTemp(headersClean, rows[i], quelle))
 	}
 }
 

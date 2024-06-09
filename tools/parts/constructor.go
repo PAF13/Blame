@@ -61,9 +61,9 @@ func NewArtikelTemp(headersClean map[string]uint64, row []string, quelle string)
 	}
 
 	stueckzahl, _ := strconv.ParseFloat(safeHeader(row, headersClean["Stueckzahl"]), 64)
-	stueckzahlMoeller, _ := strconv.ParseFloat(safeHeader(row, headersClean["Bestellung_Moeller"]), 64)
-	stueckzahlKNT, _ := strconv.ParseFloat(safeHeader(row, headersClean["Bestellung_KNT"]), 64)
-	stueckzahlSiteca, _ := strconv.ParseFloat(safeHeader(row, headersClean["Bestellung_Siteca"]), 64)
+	stueckzahlMoeller, _ := strconv.ParseFloat(safeHeader(row, headersClean["Lager_Moeller"]), 64)
+	stueckzahlKNT, _ := strconv.ParseFloat(safeHeader(row, headersClean["Lager_KNT"]), 64)
+	stueckzahlSiteca, _ := strconv.ParseFloat(safeHeader(row, headersClean["Lager_Siteca"]), 64)
 	EKKNT, _ := strconv.ParseFloat(safeHeader(row, headersClean["EK_KNT"]), 64)
 	EKSiteca, _ := strconv.ParseFloat(safeHeader(row, headersClean["EK_Siteca"]), 64)
 	return &ARTIKEL{
@@ -74,7 +74,7 @@ func NewArtikelTemp(headersClean map[string]uint64, row []string, quelle string)
 		Stueckzahl:         stueckzahl,
 		Bestellung_Moeller: stueckzahlMoeller,
 		Bestellung_KNT:     stueckzahlKNT,
-		Bestellung_Siteca:  stueckzahlSiteca,
+		Lager_Siteca:       stueckzahlSiteca,
 		Beschreibung:       safeHeader(row, headersClean["Beschreibung"]),
 		Beistellung:        safeHeader(row, headersClean["Beistellung"]),
 		Funktionsgruppe:    safeHeader(row, headersClean["Funktionsgruppe"]),
@@ -91,9 +91,9 @@ func NewArtikelTemp2(headersClean map[string]uint64, row []string) *ARTIKEL {
 		stueckzahl, _ = strconv.ParseFloat(safeHeader(row, headersClean["Stueckzahl"]), 64)
 	}
 
-	stueckzahlMoeller, _ := strconv.ParseFloat(safeHeader(row, headersClean["Bestellung_Moeller"]), 64)
-	stueckzahlKNT, _ := strconv.ParseFloat(safeHeader(row, headersClean["Bestellung_KNT"]), 64)
-	stueckzahlSiteca, _ := strconv.ParseFloat(safeHeader(row, headersClean["Bestellung_Siteca"]), 64)
+	stueckzahlMoeller, _ := strconv.ParseFloat(safeHeader(row, headersClean["Lager_Moeller"]), 64)
+	stueckzahlKNT, _ := strconv.ParseFloat(safeHeader(row, headersClean["Lager_KNT"]), 64)
+	stueckzahlSiteca, _ := strconv.ParseFloat(safeHeader(row, headersClean["Lager_Siteca"]), 64)
 
 	return &ARTIKEL{
 		Bestellnummer:          safeHeader(row, headersClean["Bestellnummer"]),

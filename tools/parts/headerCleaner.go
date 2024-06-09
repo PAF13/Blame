@@ -22,6 +22,8 @@ func headerssClean(headers map[string]uint64) (map[string]uint64, error) {
 		"Beistellung_Stueckzahl": math.MaxUint64,
 		"Bestellung_Moeller":     math.MaxUint64,
 		"Lager_Siteca":           math.MaxUint64,
+		"Lager_KNT":              math.MaxUint64,
+		"Lager_Moeller":          math.MaxUint64,
 		"Bestellung_KNT":         math.MaxUint64,
 		"Bestellung_Siteca":      math.MaxUint64,
 		"Beschreibung":           math.MaxUint64,
@@ -52,7 +54,7 @@ func headerssClean(headers map[string]uint64) (map[string]uint64, error) {
 		"HERSTELLERNUMMER": "Bestellnummer",
 		"ARTIKELNUMMER":    "ERP",
 		"HERSTELLER":       "Hersteller",
-		"MENGEAB(L)":       "Bestellung_Siteca",
+		"MENGEAB(L)":       "Lager_Siteca",
 		"BESCHREIBUNG2":    "Beschreibung",
 		"EK":               "EK_Siteca",
 	}
@@ -60,16 +62,16 @@ func headerssClean(headers map[string]uint64) (map[string]uint64, error) {
 		"ART.-NR.":     "Bestellnummer",
 		"INTERNE-NR.":  "ERP",
 		"HERSTELLER":   "Hersteller",
-		"ANZAHLME":     "Bestellung_Moeller",
+		"ANZAHLME":     "Lager_Moeller",
 		"ANZAHLSITECA": "Lager_Siteca",
 		"BEZEICHNUNG":  "Beschreibung",
 	}
 	translateLagerKNT := map[string]string{
 		"HERSTELLERARTIKEL": "Bestellnummer",
 		"ARTIKLENUMMER":     "ERP_KNT",
-		"MENGE":             "Bestellung_KNT",
+		"MENGE":             "Lager_KNT",
 		"BEZEICHNUNG2":      "Beschreibung",
-		"WERT":              "EK_KNT",
+		"PREISGLD":          "EK_KNT",
 	}
 	translate := []map[string]string{
 		translateStuecklisteKNT,
@@ -87,10 +89,10 @@ func headerssClean(headers map[string]uint64) (map[string]uint64, error) {
 			}
 		}
 		if headersClean["Bestellnummer"] != math.MaxUint64 &&
-			(headersClean["Bestellung_Moeller"] != math.MaxUint64 ||
-				headersClean["Bestellung_KNT"] != math.MaxUint64 ||
+			(headersClean["Lager_Moeller"] != math.MaxUint64 ||
+				headersClean["Lager_KNT"] != math.MaxUint64 ||
 				headersClean["Stueckzahl"] != math.MaxUint64 ||
-				headersClean["Bestellung_Siteca"] != math.MaxUint64) {
+				headersClean["Lager_Siteca"] != math.MaxUint64) {
 			err = nil
 			break
 		} else {

@@ -119,14 +119,14 @@ type ARTIKEL struct {
 	Bestellung_Siteca      float64
 }
 type ARTIKELINFO struct {
-	gewerk             string
-	produktgruppe      string
-	produktuntergruppe string
+	Gewerk             string
+	Produktgruppe      string
+	Produktuntergruppe string
 }
 type EPLANGRUPPEN struct {
-	gewerk             map[int]string
-	produktgruppe      map[int]string
-	produktuntergruppe map[int]string
+	Gewerk             map[int]string
+	Produktgruppe      map[int]string
+	Produktuntergruppe map[int]string
 }
 type PROJEKT struct {
 	HEADER               JSON_HEADER

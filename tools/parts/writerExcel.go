@@ -50,48 +50,33 @@ func writeStueckliste(pfad string, lagerbestand map[string]*BETRIEBSMITELL) {
 	fmt.Println(excelMakeColumn(&column, true))
 
 	file2.SetRowHeight(tab1, 1, 150)
-	lineWriter(file2, tab1, &colNum, &rowNum, "==")
-	file2.SetColWidth(tab1, "A", "A", 13)
-	lineWriter(file2, tab1, &colNum, &rowNum, "=")
-	file2.SetColWidth(tab1, "B", "B", 13)
-	lineWriter(file2, tab1, &colNum, &rowNum, "++")
-	file2.SetColWidth(tab1, "C", "C", 13)
-	lineWriter(file2, tab1, &colNum, &rowNum, "+")
-	file2.SetColWidth(tab1, "D", "D", 13)
-	lineWriter(file2, tab1, &colNum, &rowNum, "-")
-	file2.SetColWidth(tab1, "E", "E", 13)
-	lineWriter(file2, tab1, &colNum, &rowNum, "Bestellnummer")
-	file2.SetColWidth(tab1, "F", "F", 30)
-	lineWriter(file2, tab1, &colNum, &rowNum, "ERP")
-	file2.SetColWidth(tab1, "G", "G", 13)
-	lineWriter(file2, tab1, &colNum, &rowNum, "ERP KNT")
-	file2.SetColWidth(tab1, "H", "H", 20)
-	lineWriter(file2, tab1, &colNum, &rowNum, "Hersteller")
-	file2.SetColWidth(tab1, "I", "I", 20)
-	lineWriter(file2, tab1, &colNum, &rowNum, "Menge")
-	file2.SetColWidth(tab1, "J", "J", 8)
-	file2.SetCellStyle(tab1, "J1", "J1", style)
-	lineWriter(file2, tab1, &colNum, &rowNum, "Beistellung Kunde")
-	file2.SetColWidth(tab1, "K", "K", 8)
-	file2.SetCellStyle(tab1, "K1", "K1", style)
-	lineWriter(file2, tab1, &colNum, &rowNum, "Bestellung Moeller")
-	file2.SetColWidth(tab1, "L", "L", 8)
-	file2.SetCellStyle(tab1, "L1", "L1", style)
-	lineWriter(file2, tab1, &colNum, &rowNum, "Lager Siteca")
-	file2.SetColWidth(tab1, "M", "M", 8)
-	file2.SetCellStyle(tab1, "M1", "M1", style)
-	lineWriter(file2, tab1, &colNum, &rowNum, "Bestellung KNT")
-	file2.SetColWidth(tab1, "N", "N", 8)
-	file2.SetCellStyle(tab1, "N1", "N1", style)
-	lineWriter(file2, tab1, &colNum, &rowNum, "Bestellung Siteca")
-	file2.SetColWidth(tab1, "O", "O", 8)
-	file2.SetCellStyle(tab1, "O1", "O1", style)
-	lineWriter(file2, tab1, &colNum, &rowNum, "Beisteller")
-	file2.SetColWidth(tab1, "P", "P", 20)
-	lineWriter(file2, tab1, &colNum, &rowNum, "Quelle")
-	file2.SetColWidth(tab1, "Q", "Q", 20)
-	lineWriter(file2, tab1, &colNum, &rowNum, "Beschreibung")
-	file2.SetColWidth(tab1, "R", "R", 70)
+	setHeaderRow(file2, tab1, &colNum, &rowNum, "==", 13)
+	setHeaderRow(file2, tab1, &colNum, &rowNum, "=", 13)
+	setHeaderRow(file2, tab1, &colNum, &rowNum, "++", 13)
+	setHeaderRow(file2, tab1, &colNum, &rowNum, "+", 13)
+	setHeaderRow(file2, tab1, &colNum, &rowNum, "-", 13)
+	setHeaderRow(file2, tab1, &colNum, &rowNum, "Bestellnummer", 30)
+	setHeaderRow(file2, tab1, &colNum, &rowNum, "ERP", 20)
+	setHeaderRow(file2, tab1, &colNum, &rowNum, "ERP KNT", 20)
+	setHeaderRow(file2, tab1, &colNum, &rowNum, "Hersteller", 30)
+	file2.SetCellStyle(tab1, excelMakeCell(&colNum, &rowNum), excelMakeCell(&colNum, &rowNum), style)
+	setHeaderRow(file2, tab1, &colNum, &rowNum, "Menge", 8)
+	file2.SetCellStyle(tab1, excelMakeCell(&colNum, &rowNum), excelMakeCell(&colNum, &rowNum), style)
+	setHeaderRow(file2, tab1, &colNum, &rowNum, "Beistellung Kunde", 8)
+	file2.SetCellStyle(tab1, excelMakeCell(&colNum, &rowNum), excelMakeCell(&colNum, &rowNum), style)
+	setHeaderRow(file2, tab1, &colNum, &rowNum, "Bestellung Moeller", 8)
+	file2.SetCellStyle(tab1, excelMakeCell(&colNum, &rowNum), excelMakeCell(&colNum, &rowNum), style)
+	setHeaderRow(file2, tab1, &colNum, &rowNum, "Lager Siteca", 8)
+	file2.SetCellStyle(tab1, excelMakeCell(&colNum, &rowNum), excelMakeCell(&colNum, &rowNum), style)
+	setHeaderRow(file2, tab1, &colNum, &rowNum, "Bestellung KNT", 8)
+	file2.SetCellStyle(tab1, excelMakeCell(&colNum, &rowNum), excelMakeCell(&colNum, &rowNum), style)
+	setHeaderRow(file2, tab1, &colNum, &rowNum, "Bestellung Siteca", 8)
+	setHeaderRow(file2, tab1, &colNum, &rowNum, "Quelle", 20)
+	setHeaderRow(file2, tab1, &colNum, &rowNum, "Gewerk", 30)
+	setHeaderRow(file2, tab1, &colNum, &rowNum, "Gruppe", 30)
+	setHeaderRow(file2, tab1, &colNum, &rowNum, "Untergruppe", 30)
+	setHeaderRow(file2, tab1, &colNum, &rowNum, "Beschreibung", 70)
+
 	rowNum++
 	var summe int
 	for _, b := range lagerbestand {
@@ -113,8 +98,10 @@ func writeStueckliste(pfad string, lagerbestand map[string]*BETRIEBSMITELL) {
 			lineWriter(file2, tab1, &colNum, &rowNum, bb.Lager_Siteca)
 			lineWriter(file2, tab1, &colNum, &rowNum, bb.Bestellung_KNT)
 			lineWriter(file2, tab1, &colNum, &rowNum, bb.Bestellung_Siteca)
-			lineWriter(file2, tab1, &colNum, &rowNum, bb.Beistellung)
 			lineWriter(file2, tab1, &colNum, &rowNum, bb.Quelle)
+			lineWriter(file2, tab1, &colNum, &rowNum, bb.ARTIKELINFO.Gewerk)
+			lineWriter(file2, tab1, &colNum, &rowNum, bb.ARTIKELINFO.Produktgruppe)
+			lineWriter(file2, tab1, &colNum, &rowNum, bb.ARTIKELINFO.Produktuntergruppe)
 			lineWriter(file2, tab1, &colNum, &rowNum, bb.Beschreibung)
 			rowNum++
 		}
@@ -129,7 +116,7 @@ func writeStueckliste(pfad string, lagerbestand map[string]*BETRIEBSMITELL) {
 
 	disable := false
 	file2.AddTable(tab1, &excelize.Table{
-		Range:             "A1:R" + fmt.Sprintf("%d", rowNum),
+		Range:             "A1:T" + fmt.Sprintf("%d", rowNum),
 		Name:              "table",
 		StyleName:         "TableStyleMedium2",
 		ShowFirstColumn:   true,
@@ -232,10 +219,10 @@ func (Liste *LAGERLISTE) writeStueckliste(name string) {
 	setHeaderRow(file2, tab1, &colNum, &rowNum, "Source KNT", 8)
 	file2.SetCellStyle(tab1, excelMakeCell(&colNum, &rowNum), excelMakeCell(&colNum, &rowNum), style)
 	setHeaderRow(file2, tab1, &colNum, &rowNum, "Source Eplan", 8)
+	setHeaderRow(file2, tab1, &colNum, &rowNum, "Gewerk", 30)
+	setHeaderRow(file2, tab1, &colNum, &rowNum, "Gruppe", 30)
+	setHeaderRow(file2, tab1, &colNum, &rowNum, "Untergruppe", 30)
 	setHeaderRow(file2, tab1, &colNum, &rowNum, "Beschreibung", 70)
-	setHeaderRow(file2, tab1, &colNum, &rowNum, "++", 20)
-	setHeaderRow(file2, tab1, &colNum, &rowNum, "+", 20)
-	setHeaderRow(file2, tab1, &colNum, &rowNum, "-", 20)
 	rowNum++
 	for _, b := range Liste.Artikel {
 
@@ -254,15 +241,15 @@ func (Liste *LAGERLISTE) writeStueckliste(name string) {
 		lineWriter(file2, tab1, &colNum, &rowNum, booltoString(b.DataSource.Siteca))
 		lineWriter(file2, tab1, &colNum, &rowNum, booltoString(b.DataSource.KNT))
 		lineWriter(file2, tab1, &colNum, &rowNum, booltoString(b.DataSource.Eplan))
+		lineWriter(file2, tab1, &colNum, &rowNum, b.ARTIKELINFO.Gewerk)
+		lineWriter(file2, tab1, &colNum, &rowNum, b.ARTIKELINFO.Produktgruppe)
+		lineWriter(file2, tab1, &colNum, &rowNum, b.ARTIKELINFO.Produktuntergruppe)
 		lineWriter(file2, tab1, &colNum, &rowNum, b.Beschreibung)
-		lineWriter(file2, tab1, &colNum, &rowNum, "")
-		lineWriter(file2, tab1, &colNum, &rowNum, "")
-		lineWriter(file2, tab1, &colNum, &rowNum, "")
 		rowNum++
 
 	}
 	file2.AddTable(tab1, &excelize.Table{
-		Range:             "B1:R" + fmt.Sprintf("%d", rowNum),
+		Range:             "A2:R" + fmt.Sprintf("%d", rowNum),
 		Name:              "table",
 		StyleName:         "TableStyleMedium1",
 		ShowFirstColumn:   true,

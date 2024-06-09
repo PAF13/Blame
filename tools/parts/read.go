@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -36,8 +37,8 @@ func LoadStueckliste(pfaden []string) {
 		}
 
 		betriebsmittelListe.setListe(rows, header, headerRow)
-		//betriebsmittelListe.writeJsonFile(fileName + "_Raw")
-		//writeStueckliste("\\\\ME-Datenbank-1\\Database\\Software\\Blame\\Data\\Stueckliste\\"+fileName+"_Raw", betriebsmittelListe.Betriebsmittel)
+		betriebsmittelListe.writeJsonFile(fileName + "_Raw")
+		writeStueckliste("\\\\ME-Datenbank-1\\Database\\Software\\Blame\\Data\\Stueckliste\\"+fileName+"_Raw", betriebsmittelListe.Betriebsmittel)
 
 		//beistellung.setListe(rows2, header2, headerRow2)
 		//beistellung.writeJsonFile(fileName2 + "_Raw")
@@ -48,8 +49,8 @@ func LoadStueckliste(pfaden []string) {
 		//writeStueckliste("\\\\ME-Datenbank-1\\Database\\Software\\Blame\\Data\\Stueckliste\\"+fileName+"_Rest", betriebsmittelListeRest.Betriebsmittel)
 
 		betriebsmittelListe.listSum()
-		//betriebsmittelListe.writeJsonFile(fileName + "_Sum")
-		//writeStueckliste("\\\\ME-Datenbank-1\\Database\\Software\\Blame\\Data\\Stueckliste\\"+fileName+"_Rest", betriebsmittelListeRest.Betriebsmittel)
+		betriebsmittelListe.writeJsonFile(fileName + "_Sum")
+		writeStueckliste("\\\\ME-Datenbank-1\\Database\\Software\\Blame\\Data\\Stueckliste\\"+fileName+"_Rest", betriebsmittelListe.Betriebsmittel)
 
 		//beistellung.listSum(filter2)
 		//beistellung.writeJsonFile(fileName2 + "_Sum")
@@ -72,7 +73,7 @@ func LoadStueckliste(pfaden []string) {
 
 func LoadLager(pfaden []string) {
 	lagerliste := NewLagerliste()
-	eplanArtikel := []*ARTIKEL{}
+
 	for _, pfad := range pfaden {
 
 		fileName := strings.ToUpper(strings.Split(strings.Split(pfad, "\\")[len(strings.Split(pfad, "\\"))-1], ".")[0])
@@ -87,14 +88,15 @@ func LoadLager(pfaden []string) {
 
 	dir := "\\\\ME-Datenbank-1\\Database\\Software\\Blame\\Data\\Quelldaten\\Eplan2024_Datenbank.xml"
 
-	readXML(dir, eplanArtikel)
+	artikel := readXML(dir)
 
-	//lagerliste.setListe2(artikel)
+	lagerliste.setListe2(artikel)
 
 	lagerliste.writeJsonFile("Lager")
 	lagerliste.writeStueckliste("Lager")
 }
-func readXML(dir string, artikel []*ARTIKEL) {
+func readXML(dir string) []*ARTIKEL {
+	artikel := []*ARTIKEL{}
 	xmlFile, err := os.Open(dir)
 	if err != nil {
 		fmt.Println(err)
@@ -105,26 +107,46 @@ func readXML(dir string, artikel []*ARTIKEL) {
 
 	var partsManagement PartsManagement
 
-	xml.Unmarshal(byteValue, &partsManagement)
+	err = xml.Unmarshal(byteValue, &partsManagement)
+	if err != nil {
+		fmt.Println(err)
+	}
 
-	eplangruppe := EPLANGRUPPEN{}
+	writeJsonFile2("\\\\ME-Datenbank-1\\Database\\Software\\Blame\\Data\\Lager", "eplanraw", partsManagement)
+
+	eplangruppe := &EPLANGRUPPEN{}
 	eplangruppe.setInfo()
 
 	for _, b := range partsManagement.Parts {
-		artikel = append(artikel, &ARTIKEL{
-			Bestellnummer:      b.PArticlePartNr,
-			ArtikelnummerEplan: b.PArticleOrderNr,
-			ERP:                b.PArticleErpNr,
-		})
+		if b.PArticleOrderNr != "" {
+			artikel = append(artikel, &ARTIKEL{
+				Bestellnummer:      b.PArticleOrderNr,
+				ArtikelnummerEplan: b.PArticlePartNr,
+				ERP:                b.PArticleErpNr,
+				DataSource: DATASOURCE{
+					Eplan: true,
+				},
+				ARTIKELINFO: ARTIKELINFO{
+					Gewerk:             setInfo2(eplangruppe.Gewerk, b.PArticlePartType),
+					Produktgruppe:      setInfo2(eplangruppe.Produktgruppe, b.PArticleProductGroup),
+					Produktuntergruppe: setInfo2(eplangruppe.Produktuntergruppe, b.PArticleProductSubGroup),
+				},
+			})
+		}
 	}
+	return artikel
+}
+func setInfo2(group map[int]string, num int) string {
+	var val string
+	_, ok := group[num]
+	if !ok {
+		val = strconv.Itoa(num)
+	} else {
+		val = group[num]
+	}
+	return val
 }
 
-func cleanEplan(partNumber string) string {
-	remove := strings.Split(partNumber, ".")
-	x := strings.Replace(partNumber, remove[0], "", 1)
-	x = bestellnummerCleaner2(x)
-	return x
-}
 func setHeader(P_rows *[][]string) (map[string]uint64, int, error) {
 	var headerRow int
 	rows := *P_rows
