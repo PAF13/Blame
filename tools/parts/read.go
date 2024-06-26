@@ -37,8 +37,8 @@ func LoadStueckliste(pfaden []string) {
 		}
 
 		betriebsmittelListe.setListe(rows, header, headerRow)
-		betriebsmittelListe.writeJsonFile(fileName + "_Raw")
-		writeStueckliste("\\\\ME-Datenbank-1\\Database\\Software\\Blame\\Data\\Stueckliste\\"+fileName+"_Raw", betriebsmittelListe.Betriebsmittel)
+		//betriebsmittelListe.writeJsonFile(fileName + "_Raw")
+		//writeStueckliste("\\\\ME-Datenbank-1\\Database\\Software\\Blame\\Data\\Stueckliste\\"+fileName+"_Raw", betriebsmittelListe.Betriebsmittel)
 
 		//beistellung.setListe(rows2, header2, headerRow2)
 		//beistellung.writeJsonFile(fileName2 + "_Raw")
@@ -49,8 +49,8 @@ func LoadStueckliste(pfaden []string) {
 		//writeStueckliste("\\\\ME-Datenbank-1\\Database\\Software\\Blame\\Data\\Stueckliste\\"+fileName+"_Rest", betriebsmittelListeRest.Betriebsmittel)
 
 		betriebsmittelListe.listSum()
-		betriebsmittelListe.writeJsonFile(fileName + "_Sum")
-		writeStueckliste("\\\\ME-Datenbank-1\\Database\\Software\\Blame\\Data\\Stueckliste\\"+fileName+"_Rest", betriebsmittelListe.Betriebsmittel)
+		//betriebsmittelListe.writeJsonFile(fileName + "_Sum")
+		//writeStueckliste("\\\\ME-Datenbank-1\\Database\\Software\\Blame\\Data\\Stueckliste\\"+fileName+"_Rest", betriebsmittelListe.Betriebsmittel)
 
 		//beistellung.listSum(filter2)
 		//beistellung.writeJsonFile(fileName2 + "_Sum")
@@ -61,7 +61,7 @@ func LoadStueckliste(pfaden []string) {
 		//writeStueckliste("\\\\ME-Datenbank-1\\Database\\Software\\Blame\\Data\\Stueckliste\\"+fileName+"_Rest", betriebsmittelListeRest.Betriebsmittel)
 
 		betriebsmittelListe.lagerstandabgleich(beistellung)
-		betriebsmittelListe.writeJsonFile(fileName)
+		//betriebsmittelListe.writeJsonFile(fileName)
 		writeStueckliste("\\\\ME-Datenbank-1\\Database\\Software\\Blame\\Data\\Stueckliste\\"+fileName, betriebsmittelListe.Betriebsmittel)
 
 		//betriebsmittelListeRest.lagerstandabgleich(beistellung)
